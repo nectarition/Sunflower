@@ -185,7 +185,9 @@ const Register: React.FC = () => {
           </>}
           <FormSection>
             <FormItem>
-              <FormButton onClick={() => setActive(s => !s)}>読み取りを{isActive ? '終了' : '開始'}</FormButton>
+              <FormButton
+                onClick={() => setActive(s => !s)}
+                color={isActive ? 'default' : undefined}>読み取りを{isActive ? '終了' : '開始'}</FormButton>
             </FormItem>
             <FormItem>
               <FormLabel>封筒コード</FormLabel>
@@ -193,6 +195,9 @@ const Register: React.FC = () => {
                 value={code}
                 onChange={e => setCode(e.target.value)}
                 onKeyPress={handleKeyPress} />
+            </FormItem>
+            <FormItem>
+              <FormButton onClick={() => code && handleSubmit(code)}>出席登録</FormButton>
             </FormItem>
           </FormSection>
         </Column>
