@@ -1,3 +1,5 @@
+import { useNavigate } from 'react-router-dom'
+
 import DefaultLayout from '../components/Layouts/Default/DefaultLayout'
 
 import FormSection from '../components/Form/FormSection'
@@ -7,6 +9,13 @@ import FormButton from '../components/Form/FormButton'
 import LinkButton from '../components/parts/LinkButton'
 
 const Menu: React.FC = () => {
+  const navigate = useNavigate()
+
+  const handleLogout: () => void =
+    () => {
+      navigate('/login')
+    }
+
   return (
     <DefaultLayout>
       <Panel title="操作中のイベント" subTitle="shiobana2">
@@ -25,7 +34,7 @@ const Menu: React.FC = () => {
       </p>
       <FormSection>
         <FormItem>
-          <FormButton color="default">ログアウト</FormButton>
+          <FormButton color="default" onClick={handleLogout}>ログアウト</FormButton>
         </FormItem>
       </FormSection>
     </DefaultLayout>

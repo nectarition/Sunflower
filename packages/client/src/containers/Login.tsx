@@ -1,3 +1,5 @@
+import { useNavigate } from 'react-router-dom'
+
 import DefaultLayout from '../components/Layouts/Default/DefaultLayout'
 
 import FormSection from '../components/Form/FormSection'
@@ -8,6 +10,13 @@ import FormButton from '../components/Form/FormButton'
 import Alert from '../components/parts/Alert'
 
 const Login: React.FC = () => {
+  const navigate = useNavigate()
+
+  const handleLogin: () => void =
+    () => {
+      navigate('/')
+    }
+
   return (
     <DefaultLayout>
       <FormSection>
@@ -24,7 +33,7 @@ const Login: React.FC = () => {
           <FormInput />
         </FormItem>
         <FormItem>
-          <FormButton>ログイン</FormButton>
+          <FormButton onClick={handleLogin}>ログイン</FormButton>
         </FormItem>
       </FormSection>
       <Alert>
