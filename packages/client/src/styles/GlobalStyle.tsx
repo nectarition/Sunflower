@@ -16,7 +16,10 @@ const GlobalStyle = createGlobalStyle`
     font-weight: 500;
   }
   h1 { font-size: 2em; }
-  h2 { font-size: 1.75em; }
+  h2 {
+    font-size: 1.75em;
+    color: var(--tertiary-color);
+  }
   h3 { font-size: 1.5em; }
   h4 { font-size: 1.25em; }
   h5 { font-size: 1em; }
@@ -44,10 +47,10 @@ const GlobalStyle = createGlobalStyle`
     }
 
     thead {
-      border-bottom: 2px solid var(--primary-color);
+      border-bottom: 2px solid var(--secondary-color);
     }
     tbody {
-      border-bottom: 2px solid var(--primary-color);
+      border-bottom: 2px solid var(--secondary-color);
     }
   }
 `
