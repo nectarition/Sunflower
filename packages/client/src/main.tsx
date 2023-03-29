@@ -16,6 +16,7 @@ import LoginComponent from './containers/Login'
 import RegisterComponent from './containers/Register'
 import ListComponent from './containers/List'
 import ManageComponent from './containers/Manage'
+import GuideComponent from './containers/Guide'
 
 getFirebaseApp()
 
@@ -50,6 +51,10 @@ const router = createBrowserRouter([
       {
         path: 'manage',
         element: <ManageComponent />
+      },
+      {
+        path: 'guide',
+        element: <GuideComponent />
       }
     ]
   }

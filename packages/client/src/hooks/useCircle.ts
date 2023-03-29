@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import type { SunflowerCircle, SunflowerCircleStatus } from 'sunflower'
 
 import * as FirebaseDB from 'firebase/database'
@@ -71,7 +70,7 @@ const useCircle: () => IUseCircle =
       async (sessionCode, circles) => {
         const db = getDatabase()
         const circlesRef = FirebaseDB.ref(db, `circles/${sessionCode}`)
-        await FirebaseDB.update(circlesRef, circles)
+        await FirebaseDB.set(circlesRef, circles)
       }
 
     return {

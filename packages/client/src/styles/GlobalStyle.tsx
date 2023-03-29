@@ -28,8 +28,7 @@ const GlobalStyle = createGlobalStyle`
     color: var(--secondary-color);
   }
   table {
-    min-width: 50%;
-    max-width: 100%;
+    width: 100%;
     border-collapse: collapse;
     text-align: left;
 

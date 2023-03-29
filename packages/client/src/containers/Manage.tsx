@@ -21,7 +21,7 @@ const Manage: React.FC = () => {
   const [file, setFile] = useState<File>()
   const { openAsText, data } = useFile()
   const { sessionCode } = useSession()
-  const { createCircles } = useCircle()
+  const { createCircles, convertCodeDataByCircleCode } = useCircle()
 
   const [circles, setCircles] = useState<Record<string, SunflowerCircle>>()
   const [error, setError] = useState<string>()
@@ -43,22 +43,36 @@ const Manage: React.FC = () => {
 
   const convertCircleDataByCSV: (csv: string) => Record<string, SunflowerCircle> | undefined =
     (csv) => {
+      if (!sessionCode) return
+
       setError(undefined)
+      setInvalidRows(undefined)
+      setCircles(undefined)
 
       const rowData = csv.split('\n')
         .filter(row => row)
         .map(row => row.split(','))
 
-      const invalidRows = rowData
+      const invalidColumns = rowData
         .map((data, i) => ({ dataCount: data.length, rowNumber: i + 1 }))
         .filter(row => row.dataCount !== 3)
         .map(row => row.rowNumber)
-      if (invalidRows.length) {
+      if (invalidColumns.length) {
         setError('データの形式は「封筒コード,スペース,サークル名」である必要があります。')
-        setInvalidRows(invalidRows)
+        setInvalidRows(invalidColumns)
         return
       }
-      console.log(invalidRows)
+
+      console.log(rowData)
+      const invalidSessionCodes = rowData
+        .map((data, i) => ({ circleCode: data[0], rowNumber: i + 1 }))
+        .filter(row => convertCodeDataByCircleCode(row.circleCode)?.sessionCode !== sessionCode)
+        .map(row => row.rowNumber)
+      if (invalidSessionCodes.length) {
+        setError('操作対象外のイベントコードが入力されています。')
+        setInvalidRows(invalidSessionCodes)
+        return
+      }
 
       const data = rowData
         .reduce<Record<string, SunflowerCircle>>((p, c) => ({
@@ -75,6 +89,10 @@ const Manage: React.FC = () => {
   const applyCircles: () => void =
     () => {
       if (!circles || !sessionCode) return
+
+      const confirm = window.confirm('封筒データを適用します。※出欠データは上書きされます。\n操作を実行してよろしいですか？')
+      if (!confirm) return
+
       createCircles(sessionCode, circles)
         .then(() => alert('反映しました'))
     }
@@ -101,11 +119,11 @@ const Manage: React.FC = () => {
       </FormSection>
       <p>
         <code>封筒コード,スペース,サークル名</code>の形式で作成したCSVファイルを選択してください。<br />
-        データの作り方は「ガイド」を参照してください。
+        データの作り方は「<Link to="/guide">ガイド</Link>」を参照してください。
       </p>
 
       {error && invalidRows &&
-        <Panel color="danger" title={error} subTitle={`エラー箇所: ${invalidRows?.map(row => `${row}行目`).join(', ')}`} />
+        <Panel color="danger" title={error} subTitle={`エラー箇所: ${invalidRows.map(row => `${row}行目`).join(', ')}`} />
       }
 
       <h3>データ確認</h3>
