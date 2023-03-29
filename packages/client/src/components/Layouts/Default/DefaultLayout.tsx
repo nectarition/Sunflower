@@ -68,6 +68,7 @@ const Main = styled.main`
 `
 const Footer = styled.footer`
   padding: 10px;
+  padding-bottom: calc(10px + env(safe-area-inset-bottom));
   background-color: #F0F0F0;
   text-align: center;
 `
