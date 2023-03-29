@@ -1,14 +1,18 @@
 import styled from 'styled-components'
 import useSession from '../../../hooks/useSession'
 
+import HeadHelper from '../../../libs/Helmet'
+
 interface Props {
   children: React.ReactNode
+  title?: string
 }
 const DefaultLayout: React.FC<Props> = (props) => {
   const { sessionCode, sessionName } = useSession()
 
   return (
     <Container>
+      <HeadHelper title={props.title} />
       <Header>
         <HeaderBrand>
           🌻 Sunflower

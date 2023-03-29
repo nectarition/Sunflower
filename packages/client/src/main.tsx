@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { Outlet, RouterProvider, ScrollRestoration, createBrowserRouter } from 'react-router-dom'
-
+import { HelmetProvider } from 'react-helmet-async'
 
 import ResetStyle from './styles/ResetStyle'
 import ColorStyle from './styles/ColorStyle'
@@ -57,9 +57,11 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <ResetStyle />
-    <ColorStyle />
-    <GlobalStyle />
-    <RouterProvider router={router} />
+    <HelmetProvider>
+      <ResetStyle />
+      <ColorStyle />
+      <GlobalStyle />
+      <RouterProvider router={router} />
+    </HelmetProvider>
   </React.StrictMode>
 )

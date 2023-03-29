@@ -117,7 +117,7 @@ const Register: React.FC = () => {
   useEffect(onReadData, [data])
 
   const handleKeyPress: (e: React.KeyboardEvent<HTMLInputElement>) => void =
-    (e) => {
+    e => {
       if (!e.ctrlKey || e.code !== 'Enter') return
       if (!code) {
         setError('コードが入力されていません')
@@ -137,7 +137,7 @@ const Register: React.FC = () => {
     } else if (Object.keys(queriedCircles).length === 0) {
       return (
         <tr>
-          <td>サークルが登録されていません</td>
+          <td>サークルが見つかりませんでした</td>
         </tr>
       )
     } else {
@@ -153,13 +153,16 @@ const Register: React.FC = () => {
   }, [queriedCircles])
 
   return (
-    <DefaultLayout>
+    <DefaultLayout title="出席登録">
       <RequiredLogin />
 
       <Breadcrumbs>
         <li><Link to="/">メニュー</Link></li>
       </Breadcrumbs>
       <h2>出席登録</h2>
+      <p>
+        欠席登録は「<Link to="/list">出欠確認</Link>」から行ってください。
+      </p>
 
       <Layout>
         <Column>

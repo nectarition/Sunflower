@@ -35,7 +35,7 @@ const Menu: React.FC = () => {
           <LinkButton to="/register" size="large">出席登録<small>を行う</small></LinkButton>
         </FormItem>
         <FormItem>
-          <LinkButton to="/list" size="large">出欠一覧<small>を表示する</small></LinkButton>
+          <LinkButton to="/list" size="large">出欠確認<small>を行う</small></LinkButton>
         </FormItem>
       </FormSection>
       {user &&

@@ -3,8 +3,7 @@ const enumerations = {
     status: {
       none: 0,
       attended: 1,
-      absenting: 2,
-      absented: 3
+      absented: 2
     }
   }
 } as const

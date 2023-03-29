@@ -46,8 +46,16 @@ const List: React.FC = () => {
 
   const updateStatus: (circleCode: string, status: SunflowerCircleStatus) => void =
     (circleCode, status) => {
+      if (!streamCircles) return
+
+      const circle = streamCircles[circleCode]
+      const statusText = sunflowerShared.constants.circle.status[status]
+
+      const confirm = window.confirm(`${circle.space}「${circle.name}」を「${statusText}」にします。\nよろしいですか？`)
+      if (!confirm) return
+
       updateCircleStatusByCodeAsync(circleCode, status)
-        .then(() => alert('状態が更新されました。'))
+        .then(() => alert('状態を更新しました。'))
     }
 
   const CirclesList = useMemo(() => {
@@ -60,16 +68,18 @@ const List: React.FC = () => {
     } else if (Object.keys(queriedCircles).length === 0) {
       return (
         <tr>
-          <td>サークルが登録されていません</td>
+          <td>サークルが見つかりませんでした</td>
         </tr>
       )
     } else {
       return Object.entries(queriedCircles).map(([co, ci]) => (
         <tr key={co}>
           <td>
-            <FormButton
-              onClick={() => updateStatus(co, sunflowerShared.enumerations.circle.status.absented)}
-              disabled={ci.status !== undefined}>欠席</FormButton>
+            {ci.status !== sunflowerShared.enumerations.circle.status.absented && <FormButton
+              onClick={() => updateStatus(co, sunflowerShared.enumerations.circle.status.absented)}>欠席</FormButton>}
+            {ci.status === sunflowerShared.enumerations.circle.status.absented && <FormButton
+              color="default"
+              onClick={() => updateStatus(co, sunflowerShared.enumerations.circle.status.attended)}>出席</FormButton>}
           </td>
           <td>{ci.space}</td>
           <td>{sunflowerShared.constants.circle.status[ci.status ?? 0]}</td>
@@ -81,13 +91,17 @@ const List: React.FC = () => {
   }, [queriedCircles])
 
   return (
-    <DefaultLayout>
+    <DefaultLayout title="出欠一覧">
       <RequiredLogin />
 
       <Breadcrumbs>
         <li><Link to="/">メニュー</Link></li>
       </Breadcrumbs>
-      <h2>一覧</h2>
+      <h2>出欠一覧</h2>
+
+      <p>
+        出席登録は「<Link to="/register">出席登録</Link>」から行ってください。
+      </p>
 
       <FormSection>
         <FormItem>

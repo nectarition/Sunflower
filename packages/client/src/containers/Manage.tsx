@@ -61,7 +61,7 @@ const Manage: React.FC = () => {
     }
 
   return (
-    <DefaultLayout>
+    <DefaultLayout title="封筒データ管理">
       <RequiredLogin />
 
       <Breadcrumbs>
