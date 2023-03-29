@@ -6,7 +6,7 @@ const Style = createGlobalStyle`
       &.disabled {
         background-color: #c0c0c0;
         color: #808080;
-        &:nth-child(2n) {
+        &:nth-child(2n + 1) {
         background-color: #d0d0d0;
         }
       }
