@@ -70,6 +70,8 @@ const Login: React.FC = () => {
             onChange={e => setSessionCode(e.target.value)}
           />
         </FormItem>
+      </FormSection>
+      <FormSection>
         <FormItem>
           <FormButton
             onClick={handleLogin}
@@ -78,6 +80,7 @@ const Login: React.FC = () => {
           </FormButton>
         </FormItem>
       </FormSection>
+
       {error &&
         <Panel title="ログインに失敗しました" subTitle={error} />
       }
