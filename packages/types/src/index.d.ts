@@ -8,6 +8,6 @@ export interface SunflowerCircle {
   status?: SunflowerCircleStatus
 }
 
-export type SunflowerCircleStatus = 1 | 2
+export type SunflowerCircleStatus = 0 | 1 | 2
 
 export type valueOf<T> = T[keyof T]

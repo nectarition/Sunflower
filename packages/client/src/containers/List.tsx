@@ -20,8 +20,8 @@ const List: React.FC = () => {
   const { streamCircles, startStreamBySessionCode } = useCircleStream()
   const { sessionCode } = useSession()
 
-  const [query, setQuery] = useState<string>()
   const [queriedCircles, setQueriedCircles] = useState<Record<string, SunflowerCircle>>()
+  const [query, setQuery] = useState<string>()
 
   const onInitialize = () => {
     if (!sessionCode) return
@@ -72,13 +72,14 @@ const List: React.FC = () => {
       )
     } else {
       return Object.entries(queriedCircles).map(([co, ci]) => (
-        <tr key={co}>
+        <tr key={co} className={ci.status ? 'disabled' : ''}>
           <td>
             {ci.status !== sunflowerShared.enumerations.circle.status.absented && <FormButton
-              onClick={() => updateStatus(co, sunflowerShared.enumerations.circle.status.absented)}>欠席</FormButton>}
+              onClick={() => updateStatus(co, sunflowerShared.enumerations.circle.status.absented)}
+              color={ci.status ? 'default' : undefined}>欠席</FormButton>}
             {ci.status === sunflowerShared.enumerations.circle.status.absented && <FormButton
               color="default"
-              onClick={() => updateStatus(co, sunflowerShared.enumerations.circle.status.attended)}>出席</FormButton>}
+              onClick={() => updateStatus(co, sunflowerShared.enumerations.circle.status.attended)}>出席済み</FormButton>}
           </td>
           <td>{ci.space}</td>
           <td>{sunflowerShared.constants.circle.status[ci.status ?? 0]}</td>
@@ -110,7 +111,7 @@ const List: React.FC = () => {
       <table>
         <thead>
           <tr>
-            <th>#</th>
+            <th>状態更新</th>
             <th>スペース</th>
             <th>状態</th>
             <th>サークル名</th>

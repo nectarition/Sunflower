@@ -43,8 +43,9 @@ const Register: React.FC = () => {
   const [isActive, setActive] = useState(false)
   const [error, setError] = useState<string>()
 
-  const [query, setQuery] = useState<string>()
   const [queriedCircles, setQueriedCircles] = useState<Record<string, SunflowerCircle>>()
+  const [query, setQuery] = useState<string>()
+  const [hideInputed, setHideInputed] = useState(true)
 
   const onInitialize: () => void =
     () => {
@@ -55,17 +56,13 @@ const Register: React.FC = () => {
 
   const onChangeCircles = () => {
     if (!streamCircles) return
-    if (!query) {
-      setQueriedCircles(streamCircles)
-      return
-    }
-
     const filtered = Object.entries(streamCircles)
-      .filter(([co, ci]) => co.includes(query) || ci.name.includes(query) || ci.space.includes(query))
+      .filter(([co, ci]) => !query || (co.includes(query) || ci.name.includes(query) || ci.space.includes(query)))
+      .filter(([_, ci]) => !hideInputed || (hideInputed && !ci.status))
       .reduce<Record<string, SunflowerCircle>>((p, c) => ({ ...p, [c[0]]: c[1] }), {})
     setQueriedCircles(filtered)
   }
-  useEffect(onChangeCircles, [query, streamCircles])
+  useEffect(onChangeCircles, [streamCircles, query, hideInputed])
 
   const handleSubmit: (circleCode: string) => Promise<void> =
     async (circleCode) => {
@@ -99,6 +96,7 @@ const Register: React.FC = () => {
 
       updateCircleStatusByCodeAsync(circleCode, sunflowerShared.enumerations.circle.status.attended)
         .then(() => {
+          setCode('')
           setPrevCode(circleCode)
           playSEOK()
         })
@@ -111,6 +109,7 @@ const Register: React.FC = () => {
   const onReadData: () => void =
     () => {
       if (!data) return
+      setCode(data)
       handleSubmit(data)
     }
   useEffect(onReadData, [data])
@@ -141,7 +140,7 @@ const Register: React.FC = () => {
       )
     } else {
       return Object.entries(queriedCircles).map(([co, ci]) => (
-        <tr key={co}>
+        <tr key={co} className={ci.status ? 'disabled' : ''}>
           <td>{co}</td>
           <td>{ci.name}</td>
           <td>{ci.space}</td>
@@ -153,17 +152,17 @@ const Register: React.FC = () => {
 
   return (
     <DefaultLayout title="出席登録">
-      <Breadcrumbs>
-        <li><Link to="/">メニュー</Link></li>
-      </Breadcrumbs>
-      <h2>出席登録</h2>
-      <p>
-        欠席登録は「<Link to="/list">出欠確認</Link>」から行ってください。
-      </p>
-
       <Layout>
         <Column>
-          {error && <Alert>{error}</Alert>}
+          <Breadcrumbs>
+            <li><Link to="/">メニュー</Link></li>
+          </Breadcrumbs>
+          <h2>出席登録</h2>
+          <p>
+            欠席登録は「<Link to="/list">出欠確認</Link>」から行ってください。
+          </p>
+
+          {error && <Alert color="danger">{error}</Alert>}
           {readCircle &&
             <Panel title="サークル情報" subTitle={readCircle.code}>
               {readCircle.data.name}({readCircle.data.space})
@@ -176,15 +175,12 @@ const Register: React.FC = () => {
             <ReaderWrap>
               <QRReaderComponent />
             </ReaderWrap>
-            <Panel title='読み取り結果'>
-              {data ?? '待機中'}
-            </Panel>
           </>}
           <FormSection>
             <FormItem>
               <FormButton
                 onClick={() => setActive(s => !s)}
-                color={isActive ? 'default' : undefined}>読み取りを{isActive ? '終了' : '開始'}</FormButton>
+                color={isActive ? 'default' : undefined}>QRコードリーダーを{isActive ? '閉じる' : '開く'}</FormButton>
             </FormItem>
             <FormItem>
               <FormLabel>封筒コード</FormLabel>
@@ -194,16 +190,26 @@ const Register: React.FC = () => {
                 onKeyPress={handleKeyPress} />
             </FormItem>
             <FormItem>
-              <FormButton onClick={() => code && handleSubmit(code)}>出席登録</FormButton>
+              <FormButton
+                onClick={() => code && handleSubmit(code)}
+                disabled={!code}>
+                出席登録(Ctrl+Enter)
+              </FormButton>
             </FormItem>
           </FormSection>
         </Column>
+
         <Column>
           <h2>一覧</h2>
           <FormSection>
             <FormItem>
               <FormLabel>検索フィルター(封筒コード, サークル名, スペース)</FormLabel>
               <FormInput value={query} onChange={e => setQuery(e.target.value)} />
+            </FormItem>
+            <FormItem>
+              <FormButton
+                onClick={() => setHideInputed(s => !s)}
+                color={hideInputed ? 'default' : undefined}>チェック済みを{hideInputed ? '表示' : '隠す'}</FormButton>
             </FormItem>
           </FormSection>
 

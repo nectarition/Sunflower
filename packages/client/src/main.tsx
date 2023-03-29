@@ -6,6 +6,7 @@ import { HelmetProvider } from 'react-helmet-async'
 import ResetStyle from './styles/ResetStyle'
 import ColorStyle from './styles/ColorStyle'
 import GlobalStyle from './styles/GlobalStyle'
+import Style from './styles/Style'
 
 import './index.css'
 
@@ -66,6 +67,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
       <ResetStyle />
       <ColorStyle />
       <GlobalStyle />
+      <Style />
       <RouterProvider router={router} />
     </HelmetProvider>
   </React.StrictMode>
