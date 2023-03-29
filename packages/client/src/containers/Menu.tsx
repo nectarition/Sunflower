@@ -48,6 +48,13 @@ const Menu: React.FC = () => {
           <FormButton color="default" onClick={handleLogout}>ログアウト</FormButton>
         </FormItem>
       </FormSection>
+
+      <h3>管理</h3>
+      <FormSection>
+        <FormItem>
+          <LinkButton to="/manage" color="default">封筒データ<small>を管理する</small></LinkButton>
+        </FormItem>
+      </FormSection>
     </DefaultLayout >
   )
 }

@@ -4,6 +4,7 @@ import { Outlet, RouterProvider, ScrollRestoration, createBrowserRouter } from '
 
 
 import ResetStyle from './styles/ResetStyle'
+import ColorStyle from './styles/ColorStyle'
 import GlobalStyle from './styles/GlobalStyle'
 
 import './index.css'
@@ -14,6 +15,7 @@ import MenuComponent from './containers/Menu'
 import LoginComponent from './containers/Login'
 import RegisterComponent from './containers/Register'
 import ListComponent from './containers/List'
+import ManageComponent from './containers/Manage'
 
 getFirebaseApp()
 
@@ -44,6 +46,10 @@ const router = createBrowserRouter([
       {
         path: 'list',
         element: <ListComponent />
+      },
+      {
+        path: 'manage',
+        element: <ManageComponent />
       }
     ]
   }
@@ -52,6 +58,7 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <ResetStyle />
+    <ColorStyle />
     <GlobalStyle />
     <RouterProvider router={router} />
   </React.StrictMode>

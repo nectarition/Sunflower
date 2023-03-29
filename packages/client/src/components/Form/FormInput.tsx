@@ -11,7 +11,7 @@ const FormInput = styled.input`
   border: 2px solid #c0c0c0;
 
   &:focus {
-    border: 2px solid #DFA920;
+    border: 2px solid var(--secondary-color);
   }
 `
 

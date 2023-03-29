@@ -5,9 +5,9 @@ export interface SunflowerSession {
 export interface SunflowerCircle {
   name: string
   space: string
-  status: SunflowerCircleStatus
+  status?: SunflowerCircleStatus
 }
 
-export type SunflowerCircleStatus = 0 | 1 | 2 | 3
+export type SunflowerCircleStatus = 1 | 2
 
 export type valueOf<T> = T[keyof T]

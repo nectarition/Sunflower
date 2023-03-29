@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { SunflowerSession } from 'sunflower'
 
 import * as FirebaseDB from 'firebase/database'
 

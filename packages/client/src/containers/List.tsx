@@ -1,13 +1,115 @@
-import styled from 'styled-components'
-import DefaultLayout from '../components/Layouts/Default/DefaultLayout'
+import { useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
+import type { SunflowerCircle, SunflowerCircleStatus } from 'sunflower'
+import sunflowerShared from '@sunflower/shared'
 
+import DefaultLayout from '../components/Layouts/Default/DefaultLayout'
 import RequiredLogin from '../libs/RequiredLogin'
 
+import useCircleStream from '../hooks/useCircleStream'
+import useSession from '../hooks/useSession'
+import useCircle from '../hooks/useCircle'
+import FormButton from '../components/Form/FormButton'
+import FormSection from '../components/Form/FormSection'
+import FormItem from '../components/Form/FormItem'
+import FormLabel from '../components/Form/FormLabel'
+import FormInput from '../components/Form/FormInput'
+import Breadcrumbs from '../components/parts/Breadcrumbs'
+
 const List: React.FC = () => {
+  const { updateCircleStatusByCodeAsync } = useCircle()
+  const { streamCircles, startStreamBySessionCode } = useCircleStream()
+  const { sessionCode } = useSession()
+
+  const [query, setQuery] = useState<string>()
+  const [queriedCircles, setQueriedCircles] = useState<Record<string, SunflowerCircle>>()
+
+  const onInitialize = () => {
+    if (!sessionCode) return
+    startStreamBySessionCode(sessionCode)
+  }
+  useEffect(onInitialize, [sessionCode])
+
+  const onChangeCircles = () => {
+    if (!streamCircles) return
+    if (!query) {
+      setQueriedCircles(streamCircles)
+      return
+    }
+
+    const filtered = Object.entries(streamCircles)
+      .filter(([co, ci]) => co.includes(query) || ci.name.includes(query) || ci.space.includes(query))
+      .reduce<Record<string, SunflowerCircle>>((p, c) => ({ ...p, [c[0]]: c[1] }), {})
+    setQueriedCircles(filtered)
+  }
+  useEffect(onChangeCircles, [query, streamCircles])
+
+  const updateStatus: (circleCode: string, status: SunflowerCircleStatus) => void =
+    (circleCode, status) => {
+      updateCircleStatusByCodeAsync(circleCode, status)
+        .then(() => alert('状態が更新されました。'))
+    }
+
+  const CirclesList = useMemo(() => {
+    if (queriedCircles === undefined) {
+      return (
+        <tr>
+          <td>サークルリストを取得中です</td>
+        </tr>
+      )
+    } else if (Object.keys(queriedCircles).length === 0) {
+      return (
+        <tr>
+          <td>サークルが登録されていません</td>
+        </tr>
+      )
+    } else {
+      return Object.entries(queriedCircles).map(([co, ci]) => (
+        <tr key={co}>
+          <td>
+            <FormButton
+              onClick={() => updateStatus(co, sunflowerShared.enumerations.circle.status.absented)}
+              disabled={ci.status !== undefined}>欠席</FormButton>
+          </td>
+          <td>{ci.space}</td>
+          <td>{sunflowerShared.constants.circle.status[ci.status ?? 0]}</td>
+          <td>{ci.name}</td>
+          <td>{co}</td>
+        </tr>
+      ))
+    }
+  }, [queriedCircles])
+
   return (
     <DefaultLayout>
       <RequiredLogin />
-      List
+
+      <Breadcrumbs>
+        <li><Link to="/">メニュー</Link></li>
+      </Breadcrumbs>
+      <h2>一覧</h2>
+
+      <FormSection>
+        <FormItem>
+          <FormLabel>検索フィルター(封筒コード, サークル名, スペース)</FormLabel>
+          <FormInput value={query} onChange={e => setQuery(e.target.value)} />
+        </FormItem>
+      </FormSection>
+
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>スペース</th>
+            <th>状態</th>
+            <th>サークル名</th>
+            <th>封筒コード</th>
+          </tr>
+        </thead>
+        <tbody>
+          {CirclesList}
+        </tbody>
+      </table>
     </DefaultLayout>
   )
 }

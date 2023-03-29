@@ -38,8 +38,8 @@ const Container = styled.div`
   grid-template-rows: auto 1fr auto;
 `
 const Header = styled.header`
-  padding: 10px 10%;
-  background-color: #FFC93F;
+  padding: 10px 5%;
+  background-color: var(--primary-color);
 
   display: grid;
   grid-template-columns: 1fr 1fr;

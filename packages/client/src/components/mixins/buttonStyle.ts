@@ -13,15 +13,15 @@ const buttonStyle = css`
   text-align: center;
   text-decoration: none;
   
-  background-color: #FFC93F;
+  background-color: var(--primary-color);
   color: #000000;
   border: none;
-  border-bottom: 2px solid #DFA920;
+  border-bottom: 2px solid var(--secondary-color);
 
   cursor: pointer;
 
   &:active {
-    background-color: #DFA920;
+    background-color: var(--secondary-color);
   }
 
   &:disabled {
