@@ -23,6 +23,13 @@ const buttonStyle = css`
   &:active {
     background-color: #DFA920;
   }
+
+  &:disabled {
+    background-color: #e8e8e8;
+    color: #808080;
+    border-bottom: 2px solid #e0e0e0;
+    cursor: unset;
+  }
 `
 
 export default buttonStyle

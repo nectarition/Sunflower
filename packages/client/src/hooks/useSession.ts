@@ -11,6 +11,7 @@ interface IUseSession {
   sessionCode: string | undefined
   sessionName: string | undefined
   fetchSessionByCodeAsync: (code: string) => Promise<void>
+  resetSession: () => void
 }
 const useSession: () => IUseSession =
   () => {
@@ -28,24 +29,33 @@ const useSession: () => IUseSession =
     useEffect(onUpdatedContext, [sessionContext])
 
     const fetchSessionByCodeAsync: (code: string) => Promise<void> =
-      async () => {
+      async (code) => {
         const db = getDatabase()
-        const sessionRef = FirebaseDB.ref(db, '')
+        const sessionRef = FirebaseDB.ref(db, `sessions/${code}`)
         const sessionSnap = await FirebaseDB.get(sessionRef)
         if (!sessionSnap.exists()) {
           throw new Error('session not found')
         }
 
         const sessionData = sessionSnap.val()
-        return {
-          name: sessionData.name
-        }
+        setSessionContext({
+          session: {
+            name: sessionData.name
+          },
+          sessionCode: code
+        })
+      }
+
+    const resetSession: () => void =
+      () => {
+        setSessionContext(undefined)
       }
 
     return {
-      fetchSessionByCodeAsync,
       sessionCode,
-      sessionName
+      sessionName,
+      fetchSessionByCodeAsync,
+      resetSession
     }
   }
 

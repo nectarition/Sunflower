@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
 interface Props {
-  children: React.ReactNode
+  children?: React.ReactNode
   title?: string
   subTitle?: string
 }
@@ -9,9 +9,9 @@ const Panel: React.FC<Props> = (props) => {
   return (
     <Container>
       {props.title && <Title>{props.title}</Title>}
-      <Main>
+      {props.children && <Main>
         {props.children}
-      </Main>
+      </Main>}
       {props.subTitle && <SubTitle>{props.subTitle}</SubTitle>}
     </Container>
   )
@@ -19,7 +19,12 @@ const Panel: React.FC<Props> = (props) => {
 
 export default Panel
 
-const Container = styled.p`
+const Container = styled.div`
+  margin-bottom: 20px;
+  &:last-child {
+    margin-bottom: 0;
+  }
+  
   padding: 10px;
   background-color: #FFC93F80;
 `

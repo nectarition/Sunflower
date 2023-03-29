@@ -2,15 +2,20 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { Outlet, RouterProvider, ScrollRestoration, createBrowserRouter } from 'react-router-dom'
 
+
 import ResetStyle from './styles/ResetStyle'
 import GlobalStyle from './styles/GlobalStyle'
 
 import './index.css'
 
+import { getFirebaseApp } from './libs/FirebaseApp'
+
 import MenuComponent from './containers/Menu'
 import LoginComponent from './containers/Login'
 import RegisterComponent from './containers/Register'
 import ListComponent from './containers/List'
+
+getFirebaseApp()
 
 const Root: React.FC = () => (
   <>

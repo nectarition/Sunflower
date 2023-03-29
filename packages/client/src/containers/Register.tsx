@@ -6,9 +6,10 @@ import useSound from 'use-sound'
 import OKSound from '../assets/se/ok.mp3'
 // import NGSound from '../assets/se/ng.mp3'
 
+import RequiredLogin from '../libs/RequiredLogin'
 import useQRReader from '../hooks/useQRReader'
-import Panel from '../components/parts/Panel'
 
+import Panel from '../components/parts/Panel'
 import FormSection from '../components/Form/FormSection'
 import FormItem from '../components/Form/FormItem'
 import FormButton from '../components/Form/FormButton'
@@ -38,6 +39,7 @@ const Register: React.FC = () => {
 
   return (
     <DefaultLayout>
+      <RequiredLogin />
       <Layout>
         <Column>
           <h2>出席登録</h2>
@@ -45,9 +47,9 @@ const Register: React.FC = () => {
             <p>
               封筒のQRコードを読み取ってください
             </p>
-            <p>
+            <ReaderWrap>
               <QRReaderComponent />
-            </p>
+            </ReaderWrap>
             <Panel title='読み取り結果'>
               {data ?? '待機中'}
             </Panel>
@@ -80,6 +82,12 @@ const Layout = styled.section`
     grid-template-columns: auto;
     grid-template-rows: auto auto;
     gap: 20px;
+  }
+`
+const ReaderWrap = styled.div`
+  margin-bottom: 20px;
+  &:last-child {
+    margin-bottom: 0;
   }
 `
 const Column = styled.section``

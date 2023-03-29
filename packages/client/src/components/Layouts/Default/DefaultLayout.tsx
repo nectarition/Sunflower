@@ -1,26 +1,34 @@
 import styled from 'styled-components'
+import useSession from '../../../hooks/useSession'
 
 interface Props {
   children: React.ReactNode
 }
-const DefaultLayout: React.FC<Props> = (props) => (
-  <Container>
-    <Header>
-      <HeaderBrand>
-        🌻 Sunflower
-      </HeaderBrand>
-      <HeaderStatus>
-        第二回しおばな祭 <small>(shiobana2)</small>
-      </HeaderStatus>
-    </Header>
-    <Main>
-      {props.children}
-    </Main>
-    <Footer>
-      &copy; 2023 Nectarition
-    </Footer>
-  </Container>
-)
+const DefaultLayout: React.FC<Props> = (props) => {
+  const { sessionCode, sessionName } = useSession()
+
+  return (
+    <Container>
+      <Header>
+        <HeaderBrand>
+          🌻 Sunflower
+        </HeaderBrand>
+        <HeaderStatus>
+          {sessionCode &&
+            <>
+              {sessionName} <small>({sessionCode})</small>
+            </>}
+        </HeaderStatus>
+      </Header>
+      <Main>
+        {props.children}
+      </Main>
+      <Footer>
+        &copy; 2023 Nectarition
+      </Footer>
+    </Container>
+  )
+}
 
 export default DefaultLayout
 
