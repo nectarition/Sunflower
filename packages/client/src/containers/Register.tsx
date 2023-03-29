@@ -9,7 +9,6 @@ import useSound from 'use-sound'
 import OKSound from '../assets/se/ok.mp3'
 import NGSound from '../assets/se/ng.mp3'
 
-import RequiredLogin from '../libs/RequiredLogin'
 import useQRReader from '../hooks/useQRReader'
 import useSession from '../hooks/useSession'
 import useCircle from '../hooks/useCircle'
@@ -154,8 +153,6 @@ const Register: React.FC = () => {
 
   return (
     <DefaultLayout title="出席登録">
-      <RequiredLogin />
-
       <Breadcrumbs>
         <li><Link to="/">メニュー</Link></li>
       </Breadcrumbs>

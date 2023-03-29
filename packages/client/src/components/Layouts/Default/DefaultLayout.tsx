@@ -2,16 +2,21 @@ import styled from 'styled-components'
 import useSession from '../../../hooks/useSession'
 
 import HeadHelper from '../../../libs/Helmet'
+import useFirebase from '../../../hooks/useFirebase'
+import RequiredLogin from '../../../libs/RequiredLogin'
 
 interface Props {
   children: React.ReactNode
   title?: string
+  allowAnonymous?: boolean
 }
 const DefaultLayout: React.FC<Props> = (props) => {
   const { sessionCode, sessionName } = useSession()
+  const { isLoggedIn } = useFirebase()
 
   return (
     <Container>
+      {!props.allowAnonymous && <RequiredLogin />}
       <HeadHelper title={props.title} />
       <Header>
         <HeaderBrand>
@@ -25,7 +30,7 @@ const DefaultLayout: React.FC<Props> = (props) => {
         </HeaderStatus>
       </Header>
       <Main>
-        {props.children}
+        {(props.allowAnonymous ?? (!props.allowAnonymous && isLoggedIn)) && props.children}
       </Main>
       <Footer>
         &copy; 2023 Nectarition

@@ -4,7 +4,6 @@ import type { SunflowerCircle, SunflowerCircleStatus } from 'sunflower'
 import sunflowerShared from '@sunflower/shared'
 
 import DefaultLayout from '../components/Layouts/Default/DefaultLayout'
-import RequiredLogin from '../libs/RequiredLogin'
 
 import useCircleStream from '../hooks/useCircleStream'
 import useSession from '../hooks/useSession'
@@ -92,8 +91,6 @@ const List: React.FC = () => {
 
   return (
     <DefaultLayout title="出欠一覧">
-      <RequiredLogin />
-
       <Breadcrumbs>
         <li><Link to="/">メニュー</Link></li>
       </Breadcrumbs>

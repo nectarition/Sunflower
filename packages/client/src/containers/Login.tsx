@@ -46,7 +46,7 @@ const Login: React.FC = () => {
     }
 
   return (
-    <DefaultLayout title="ログイン">
+    <DefaultLayout title="ログイン" allowAnonymous>
       <h2>ログイン</h2>
       <FormSection>
         <FormItem>

@@ -7,7 +7,6 @@ import useCircle from '../hooks/useCircle'
 import useSession from '../hooks/useSession'
 
 import DefaultLayout from '../components/Layouts/Default/DefaultLayout'
-import RequiredLogin from '../libs/RequiredLogin'
 
 import FormSection from '../components/Form/FormSection'
 import FormItem from '../components/Form/FormItem'
@@ -99,8 +98,6 @@ const Manage: React.FC = () => {
 
   return (
     <DefaultLayout title="封筒データ上書き">
-      <RequiredLogin />
-
       <Breadcrumbs>
         <li><Link to="/">メニュー</Link></li>
       </Breadcrumbs>

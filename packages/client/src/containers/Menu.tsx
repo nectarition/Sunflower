@@ -4,7 +4,6 @@ import DefaultLayout from '../components/Layouts/Default/DefaultLayout'
 
 import useFirebase from '../hooks/useFirebase'
 import useSession from '../hooks/useSession'
-import RequiredLogin from '../libs/RequiredLogin'
 
 import FormSection from '../components/Form/FormSection'
 import FormItem from '../components/Form/FormItem'
@@ -26,7 +25,6 @@ const Menu: React.FC = () => {
 
   return (
     <DefaultLayout>
-      <RequiredLogin />
       <Panel title="操作中のイベント" subTitle={sessionCode}>
         {sessionName}
       </Panel>
