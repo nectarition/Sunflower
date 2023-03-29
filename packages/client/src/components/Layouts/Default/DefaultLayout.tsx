@@ -43,7 +43,10 @@ const Container = styled.div`
 `
 const Header = styled.header`
   padding: 10px 5%;
-  background-color: var(--primary-color);
+  background-color: #404040;
+  color: #ffffff;
+
+  border-bottom: 2px solid var(--primary-color);
 
   display: grid;
   grid-template-columns: 1fr 1fr;
