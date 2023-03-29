@@ -16,7 +16,6 @@ import FormInput from '../components/Form/FormInput'
 import FormButton from '../components/Form/FormButton'
 import Breadcrumbs from '../components/parts/Breadcrumbs'
 import Panel from '../components/parts/Panel'
-import Alert from '../components/parts/Alert'
 
 const Manage: React.FC = () => {
   const [file, setFile] = useState<File>()
@@ -36,12 +35,13 @@ const Manage: React.FC = () => {
 
   const onChangeData = () => {
     if (!data) return
-    var convertedCircle = convertCircleDataByCSV(data)
+    const convertedCircle = convertCircleDataByCSV(data)
+    if (!convertedCircle) return
     setCircles(convertedCircle)
   }
   useEffect(onChangeData, [data])
 
-  const convertCircleDataByCSV: (csv: string) => Record<string, SunflowerCircle> =
+  const convertCircleDataByCSV: (csv: string) => Record<string, SunflowerCircle> | undefined =
     (csv) => {
       setError(undefined)
 
