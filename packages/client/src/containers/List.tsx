@@ -79,7 +79,7 @@ const List: React.FC = () => {
               color={ci.status ? 'default' : undefined}>欠席</FormButton>}
             {ci.status === sunflowerShared.enumerations.circle.status.absented && <FormButton
               color="default"
-              onClick={() => updateStatus(co, sunflowerShared.enumerations.circle.status.attended)}>出席済み</FormButton>}
+              onClick={() => updateStatus(co, sunflowerShared.enumerations.circle.status.attended)}>出席</FormButton>}
           </td>
           <td>{ci.space}</td>
           <td>{sunflowerShared.constants.circle.status[ci.status ?? 0]}</td>
