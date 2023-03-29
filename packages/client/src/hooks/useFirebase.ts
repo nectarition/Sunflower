@@ -14,6 +14,7 @@ import {
 } from 'firebase/auth'
 import { type Firestore, getFirestore as getFirebaseFirestore } from 'firebase/firestore'
 import { type FirebaseStorage, getStorage as getFirebaseStorage } from 'firebase/storage'
+import { type Database, getDatabase as getFirebaseDatabase } from 'firebase/database'
 import { getFirebaseApp } from '../libs/FirebaseApp'
 
 interface IUseFirebase {
@@ -26,6 +27,7 @@ interface IUseFirebase {
   sendPasswordResetURL: (email: string) => void
   getFirestore: () => Firestore
   getStorage: () => FirebaseStorage
+  getDatabase: () => Database
 }
 
 const useFirebase: () => IUseFirebase =
@@ -95,6 +97,9 @@ const useFirebase: () => IUseFirebase =
     const getStorage: () => FirebaseStorage =
       () => getFirebaseStorage()
 
+    const getDatabase: () => Database =
+      () => getFirebaseDatabase()
+
     const onAuthenticationUpdated: () => Unsubscribe =
       () => {
         const auth = getAuth()
@@ -115,7 +120,8 @@ const useFirebase: () => IUseFirebase =
       createUser,
       sendPasswordResetURL,
       getFirestore,
-      getStorage
+      getStorage,
+      getDatabase
     }
   }
 

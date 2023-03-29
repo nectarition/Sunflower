@@ -1,20 +1,51 @@
-import { } from 'react'
+import { useEffect, useState } from 'react'
+import { SunflowerSession } from 'sunflower'
+
+import * as FirebaseDB from 'firebase/database'
 
 import { useAtom } from 'jotai'
 import sessionAtom from '../atoms/session'
+import useFirebase from './useFirebase'
 
 interface IUseSession {
-  getSessionByCodeAsync: (code: string) => 
+  sessionCode: string | undefined
+  sessionName: string | undefined
+  fetchSessionByCodeAsync: (code: string) => Promise<void>
 }
 const useSession: () => IUseSession =
   () => {
-    const getSessionByCodeAsync: (code: string) => =
-      () => {
+    const { getDatabase } = useFirebase()
 
+    const [sessionContext, setSessionContext] = useAtom(sessionAtom)
+    const [sessionCode, setSessionCode] = useState<string>()
+    const [sessionName, setSessionName] = useState<string>()
+
+    const onUpdatedContext: () => void =
+      () => {
+        setSessionCode(sessionContext?.sessionCode)
+        setSessionName(sessionContext?.session.name)
+      }
+    useEffect(onUpdatedContext, [sessionContext])
+
+    const fetchSessionByCodeAsync: (code: string) => Promise<void> =
+      async () => {
+        const db = getDatabase()
+        const sessionRef = FirebaseDB.ref(db, '')
+        const sessionSnap = await FirebaseDB.get(sessionRef)
+        if (!sessionSnap.exists()) {
+          throw new Error('session not found')
+        }
+
+        const sessionData = sessionSnap.val()
+        return {
+          name: sessionData.name
+        }
       }
 
     return {
-      getSessionByCodeAsync
+      fetchSessionByCodeAsync,
+      sessionCode,
+      sessionName
     }
   }
 
