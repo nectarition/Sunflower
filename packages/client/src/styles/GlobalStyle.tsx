@@ -15,17 +15,18 @@ const GlobalStyle = createGlobalStyle`
     font-size: 0.8em;
     font-weight: 500;
   }
-  h1 { font-size: 2em; }
-  h2 {
-    font-size: 1.75em;
+
+  h1, h2, h3, h4, h5, h6 {
     color: var(--tertiary-color);
   }
+  h1 { font-size: 2em; }
+  h2 { font-size: 1.75em; }
   h3 { font-size: 1.5em; }
   h4 { font-size: 1.25em; }
   h5 { font-size: 1em; }
   h6 { font-size: 0.9em; }
   a {
-    color: var(--secondary-color);
+    color: var(--tertiary-color);
   }
   table {
     width: 100%;

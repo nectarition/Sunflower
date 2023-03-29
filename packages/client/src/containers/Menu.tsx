@@ -50,10 +50,10 @@ const Menu: React.FC = () => {
       <h3>管理</h3>
       <FormSection>
         <FormItem>
-          <LinkButton to="/guide">利用ガイド<small>を見る</small></LinkButton>
+          <LinkButton to="/manage" color="default">封筒データ<small>を上書きする</small></LinkButton>
         </FormItem>
         <FormItem>
-          <LinkButton to="/manage" color="default">封筒データ<small>を上書きする</small></LinkButton>
+          <LinkButton to="/guide">利用ガイド<small>を見る</small></LinkButton>
         </FormItem>
       </FormSection>
     </DefaultLayout >
