@@ -8,6 +8,9 @@ const GlobalStyle = createGlobalStyle`
       margin-bottom: 0;
     }
   }
+  input {
+    font-size: 16px;
+  }
   small {
     font-size: 0.8em;
     font-weight: 500;
