@@ -84,7 +84,6 @@ const List: React.FC = () => {
           <td>{ci.space}</td>
           <td>{sunflowerShared.constants.circle.status[ci.status ?? 0]}</td>
           <td>{ci.name}</td>
-          <td>{co}</td>
         </tr>
       ))
     }
@@ -115,7 +114,6 @@ const List: React.FC = () => {
             <th>スペース</th>
             <th>状態</th>
             <th>サークル名</th>
-            <th>封筒コード</th>
           </tr>
         </thead>
         <tbody>
