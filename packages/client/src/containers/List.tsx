@@ -2,9 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import type { SunflowerCircle, SunflowerCircleStatus } from 'sunflower'
 import sunflowerShared from '@sunflower/shared'
-
 import DefaultLayout from '../components/Layouts/Default/DefaultLayout'
-
 import useCircleStream from '../hooks/useCircleStream'
 import useSession from '../hooks/useSession'
 import useCircle from '../hooks/useCircle'
