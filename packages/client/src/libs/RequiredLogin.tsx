@@ -7,12 +7,11 @@ const RequiredLogin: React.FC = () => {
   const { isLoggedIn } = useFirebase()
   const navigate = useNavigate()
 
-  const onChangeLoggedInState: () => void =
-    () => {
-      if (isLoggedIn === undefined) return
-      if (!isLoggedIn) navigate('/login')
-    }
-  useEffect(onChangeLoggedInState, [isLoggedIn])
+  useEffect(() => {
+    if (isLoggedIn === undefined) return
+    if (!isLoggedIn) navigate('/login')
+  }, [ isLoggedIn ])
+
   return null
 }
 

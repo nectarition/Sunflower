@@ -5,36 +5,36 @@ interface IUseQRReader {
   data: string | undefined
   QRReaderComponent: React.FC
 }
-const useQRReader: () => IUseQRReader =
-  () => {
-    const [data, setData] = useState<string>()
 
-    const handleResult: (result: any) => void =
-      (result) => {
-        if (!result) return
-        if (result.text === data) return
-        setData(result.text)
-      }
+const useQRReader = (): IUseQRReader => {
+  const [ data, setData ] = useState<string>()
 
-    const QRReaderComponent: React.FC = useCallback(() => (
-      <>
-        <QrReader
-          constraints={{ facingMode: 'environment' }}
-          onResult={handleResult}
-          videoStyle={{
-            // position: 'unset'
-          }}
-          videoContainerStyle={{
-            // paddingTop: 'unset'
-          }}
-        />
-      </>
-    ), [QrReader])
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleResult = useCallback((result: any): void => {
+    if (!result) return
+    if (result.text === data) return
+    setData(result.text)
+  }, [])
 
-    return {
-      data,
-      QRReaderComponent
-    }
+  const QRReaderComponent: React.FC = useCallback(() => (
+    <>
+      <QrReader
+        constraints={{ facingMode: 'environment' }}
+        onResult={handleResult}
+        videoStyle={{
+          // position: 'unset'
+        }}
+        videoContainerStyle={{
+          // paddingTop: 'unset'
+        }}
+      />
+    </>
+  ), [ QrReader ])
+
+  return {
+    data,
+    QRReaderComponent
   }
+}
 
 export default useQRReader

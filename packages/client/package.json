@@ -9,7 +9,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@sunflower/shared": "../shared",
     "firebase": "^9.18.0",
     "jotai": "^2.0.3",
     "react": "^18.2.0",

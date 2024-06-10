@@ -1,5 +1,5 @@
-import styled from 'styled-components'
 import { Link } from 'react-router-dom'
+import styled from 'styled-components'
 import buttonStyle from '../mixins/buttonStyle'
 
 const LinkButton = styled(Link) <{ size?: 'large', color?: 'default' }>`

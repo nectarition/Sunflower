@@ -1,9 +1,8 @@
 import styled from 'styled-components'
-import useSession from '../../../hooks/useSession'
-
-import HeadHelper from '../../../libs/Helmet'
-import useFirebase from '../../../hooks/useFirebase'
-import RequiredLogin from '../../../libs/RequiredLogin'
+import useFirebase from '../../hooks/useFirebase'
+import useSession from '../../hooks/useSession'
+import HeadHelper from '../../libs/Helmet'
+import RequiredLogin from '../../libs/RequiredLogin'
 
 interface Props {
   children: React.ReactNode
@@ -33,7 +32,7 @@ const DefaultLayout: React.FC<Props> = (props) => {
         {(props.allowAnonymous ?? (!props.allowAnonymous && isLoggedIn)) && props.children}
       </Main>
       <Footer>
-        &copy; 2023 Nectarition
+        &copy; 2023 ねくたりしょん
       </Footer>
     </Container>
   )
