@@ -13,7 +13,7 @@ const GuidePage: React.FC = () => {
 
       <h3>利用準備</h3>
       <p>
-        Sunflowerを使うためには、以下の準備が必要です。
+        Soleil を使うためには、以下の準備が必要です。
       </p>
       <ol>
         <li>封筒コードの作成</li>

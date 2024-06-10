@@ -19,7 +19,7 @@ const DefaultLayout: React.FC<Props> = (props) => {
       <HeadHelper title={props.title} />
       <Header>
         <HeaderBrand>
-          🌻 Sunflower
+          🌻 Soleil
         </HeaderBrand>
         <HeaderStatus>
           {sessionCode &&

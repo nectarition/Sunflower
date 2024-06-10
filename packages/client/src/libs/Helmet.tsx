@@ -5,7 +5,7 @@ interface Props {
 }
 
 const HeadHelper: React.FC<Props> = (props) => {
-  const title = props.title ? `🌻 ${props.title} - Nectarition Sunflower` : '🌻 Nectarition Sunflower'
+  const title = props.title ? `🌻 ${props.title} - Soleil` : '🌻 Soleil'
   return (
     <Helmet>
       <title>{title}</title>
