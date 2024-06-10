@@ -17,7 +17,7 @@ const ManagePage: React.FC = () => {
   const [ file, setFile ] = useState<File>()
   const { openAsText, data} = useFile()
   const { sessionCode } = useSession()
-  const { createCircles, convertCodeDataByCircleCode} = useCircle()
+  const { createCirclesAsync, convertCodeDataByCircleCode } = useCircle()
 
   const [ circles, setCircles ] = useState<Record<string, SunflowerCircle>>()
   const [ error, setError ] = useState<string>()
@@ -65,7 +65,7 @@ const ManagePage: React.FC = () => {
     if (!circles || !sessionCode) return
     if (!confirm('封筒データを適用します。※出欠データは上書きされます。\n操作を実行してよろしいですか？')) return
 
-    createCircles(sessionCode, circles)
+    createCirclesAsync(sessionCode, circles)
       .then(() => alert('反映しました'))
   }, [ circles, sessionCode ])
 
