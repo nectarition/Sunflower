@@ -1,8 +1,10 @@
 import styled from 'styled-components'
 
+type ColorType = 'danger' | 'success'
+
 interface Props {
   children: React.ReactNode
-  color?: 'danger'
+  color?: ColorType
 }
 const Alert: React.FC<Props> = (props) => {
   return (
@@ -14,15 +16,19 @@ const Alert: React.FC<Props> = (props) => {
 
 export default Alert
 
-const Container = styled.p<{ color?: 'danger' }>`
+const Container = styled.p<{ color?: ColorType }>`
   padding: 10px;
-  background-color: #FFC93F80;
+  background-color: #ffc93f80;
 
   ${props => {
     if (props.color === 'danger') {
-      return `
-        background-color: #FF000040;
-      `
+      return {
+        backgroundColor: '#ff000040'
+      }
+    } else if (props.color === 'success') {
+      return {
+        backgroundColor: '#5ce42280'
+      }
     }
   }}
 `

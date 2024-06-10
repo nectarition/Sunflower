@@ -23,22 +23,22 @@ const ManagePage: React.FC = () => {
   const [error, setError] = useState<string>()
   const [invalidRows, setInvalidRows] = useState<number[]>()
 
-  const convertCircleDataByCSV = useCallback((csv: string) => {
+  const convertCircleDataByTSV = useCallback((tsv: string) => {
     if (!sessionCode) return
     setError(undefined)
     setInvalidRows(undefined)
     setCircles(undefined)
 
-    const rowData = csv.split('\n')
+    const rowData = tsv.split('\n')
       .filter(row => row)
-      .map(row => row.split(','))
+      .map(row => row.split('\t'))
 
     const invalidColumns = rowData
       .map((data, i) => ({ dataCount: data.length, rowNumber: i + 1 }))
       .filter(row => row.dataCount !== 3)
       .map(row => row.rowNumber)
     if (invalidColumns.length > 0) {
-      setError('データの形式は「封筒コード,スペース,サークル名」である必要があります。')
+      setError('データの形式は「封筒コード\tスペース\tサークル名」である必要があります。')
       setInvalidRows(invalidColumns)
       return
     }
@@ -76,7 +76,7 @@ const ManagePage: React.FC = () => {
 
   useEffect(() => {
     if (!data) return
-    const convertedCircle = convertCircleDataByCSV(data)
+    const convertedCircle = convertCircleDataByTSV(data)
     if (!convertedCircle) return
     setCircles(convertedCircle)
   }, [data])
@@ -95,12 +95,12 @@ const ManagePage: React.FC = () => {
           <FormLabel>封筒データ</FormLabel>
           <FormInput
             type="file"
-            accept=".csv"
+            accept=".tsv"
             onChange={e => setFile(e.target.files?.[0])} />
         </FormItem>
       </FormSection>
       <p>
-        <code>封筒コード,スペース,サークル名</code>の形式で作成したCSVファイルを選択してください。<br />
+        <code>封筒コード\tスペース\tサークル名</code>の形式で作成したTSVファイルを選択してください。<br />
         データの作り方は「<Link to="/guide">ガイド</Link>」を参照してください。
       </p>
 

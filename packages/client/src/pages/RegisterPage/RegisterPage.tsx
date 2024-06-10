@@ -35,11 +35,12 @@ const RegisterPage: React.FC = () => {
   const [playSEOK] = useSound(OKSound)
   const [playSENG] = useSound(NGSound)
 
-  const [code, setCode] = useState<string>()
+  const [code, setCode] = useState('')
   const [prevCode, setPrevCode] = useState<string>()
   const [readCircle, setReadCircle] = useState<{ code: string, data: SunflowerCircle }>()
 
-  const [isActive, setActive] = useState(false)
+  const [isActiveQRReader, setActiveQRReader] = useState(false)
+  const [isActiveReadKey, setActiveReadKey] = useState(false)
   const [error, setError] = useState<string>()
 
   const [query, setQuery] = useState<string>()
@@ -127,15 +128,29 @@ const RegisterPage: React.FC = () => {
         alert(`エラーが発生しました ${err.message}`)
         throw err
       })
-  }, [prevCode])
+  }, [sessionCode, prevCode])
 
   const handleKeyDownEvent = useCallback((event: KeyboardEvent) => {
-    if (!code) return
-    if (!event.ctrlKey || event.key !== 'Enter') {
+    if (code && event.key == 'Enter') {
+      handleSubmit(code)
+      if (isActiveReadKey) {
+        setCode('')
+      }
+      return
+    } else if (!isActiveReadKey) {
       return
     }
-    handleSubmit(code)
-  }, [code])
+
+    if (event.key === 'Backspace') {
+      const newCode = code.slice(0, code.length - 1)
+      setCode(newCode)
+      return
+    } else if (event.key.length > 1) {
+      return
+    }
+
+    setCode(s => `${s}${event.key}`)
+  }, [code, isActiveReadKey])
 
   useEffect(() => {
     if (!sessionCode) return
@@ -167,11 +182,26 @@ const RegisterPage: React.FC = () => {
 
           {error && <Alert color="danger">{error}</Alert>}
           {readCircle &&
-            <Panel title="サークル情報" subTitle={readCircle.code}>
-              {readCircle.data.name}({readCircle.data.space})
+            <Panel color="success" title="出席登録が完了しました" subTitle={readCircle.code}>
+              {readCircle.data.name} ({readCircle.data.space})
             </Panel>
           }
-          {isActive && <>
+          <FormSection>
+            {!isActiveReadKey && <FormItem>
+              <FormButton
+                onClick={() => setActiveQRReader(s => !s)}
+                color={isActiveQRReader ? 'default' : undefined}>ソフトウェアQRリーダーを{isActiveQRReader ? '閉じる' : '開く'}</FormButton>
+            </FormItem>}
+            {!isActiveQRReader && <FormItem>
+              <FormButton
+                onClick={() => setActiveReadKey(s => !s)}
+                color={isActiveReadKey ? 'default' : undefined}
+                onFocus={e => e.target.blur()}>
+                ハードウェアQRリーダを{isActiveReadKey ? '使用しない' : '使用する'}
+              </FormButton>
+            </FormItem>}
+          </FormSection>
+          {isActiveQRReader && <>
             <p>
               封筒のQRコードを読み取ってください
             </p>
@@ -181,21 +211,17 @@ const RegisterPage: React.FC = () => {
           </>}
           <FormSection>
             <FormItem>
-              <FormButton
-                onClick={() => setActive(s => !s)}
-                color={isActive ? 'default' : undefined}>QRコードリーダーを{isActive ? '閉じる' : '開く'}</FormButton>
-            </FormItem>
-            <FormItem>
               <FormLabel>封筒コード</FormLabel>
               <FormInput
                 value={code}
-                onChange={e => setCode(e.target.value)} />
+                onChange={e => setCode(e.target.value)}
+                disabled={isActiveReadKey} />
             </FormItem>
             <FormItem>
               <FormButton
                 onClick={() => code && handleSubmit(code)}
                 disabled={!code}>
-                出席登録(Ctrl+Enter)
+                出席登録(Enter)
               </FormButton>
             </FormItem>
           </FormSection>
@@ -206,7 +232,10 @@ const RegisterPage: React.FC = () => {
           <FormSection>
             <FormItem>
               <FormLabel>検索フィルター(封筒コード, サークル名, スペース)</FormLabel>
-              <FormInput value={query} onChange={e => setQuery(e.target.value)} />
+              <FormInput
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+                onFocus={() => setActiveReadKey(false)}/>
             </FormItem>
             <FormItem>
               <FormButton

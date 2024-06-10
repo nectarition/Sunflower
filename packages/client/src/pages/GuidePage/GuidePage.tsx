@@ -33,21 +33,21 @@ const GuidePage: React.FC = () => {
 
       <h4>STEP2: 封筒データの作成</h4>
       <p>
-        以下の構造のデータを作成します。<br />
-        <code>封筒コード,スペース,サークル名</code>
+        以下の構造のデータを作成します。(\tはタブ文字)<br />
+        <code>封筒コード\tスペース\tサークル名</code>
       </p>
       <Alert>
         <h5>例</h5>
         <pre>
-          hogehoge-0001,あ01a,ほげほげサークル<br />
-          hogehoge-0002,あ01b,Studioふがふが<br />
+          hogehoge-0001\tあ01a\tほげほげサークル<br />
+          hogehoge-0002\tあ01b\tStudioふがふが<br />
           ︙
         </pre>
       </Alert>
 
       <h4>STEP3: 封筒データの適用</h4>
       <ul>
-        <li>STEP2で作成した封筒データをCSV形式で保存します。</li>
+        <li>STEP2で作成した封筒データをTSV形式で保存します。</li>
         <li>「<Link to="/manage">封筒データ上書き</Link>」に移動し、先ほど作成したファイルを選択します。</li>
         <li>適用内容を確認し「反映する」ボタンを押します。</li>
       </ul>
