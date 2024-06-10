@@ -14,14 +14,14 @@ import useSession from '../../hooks/useSession'
 import DefaultLayout from '../../layouts/DefaultLayout/DefaultLayout'
 
 const ManagePage: React.FC = () => {
-  const [ file, setFile ] = useState<File>()
-  const { openAsText, data} = useFile()
+  const [file, setFile] = useState<File>()
+  const { openAsText, data } = useFile()
   const { sessionCode } = useSession()
   const { createCirclesAsync, convertCodeDataByCircleCode } = useCircle()
 
-  const [ circles, setCircles ] = useState<Record<string, SunflowerCircle>>()
-  const [ error, setError ] = useState<string>()
-  const [ invalidRows, setInvalidRows ] = useState<number[]>()
+  const [circles, setCircles] = useState<Record<string, SunflowerCircle>>()
+  const [error, setError] = useState<string>()
+  const [invalidRows, setInvalidRows] = useState<number[]>()
 
   const convertCircleDataByCSV = useCallback((csv: string) => {
     if (!sessionCode) return
@@ -34,7 +34,7 @@ const ManagePage: React.FC = () => {
       .map(row => row.split(','))
 
     const invalidColumns = rowData
-      .map((data, i) => ({ dataCount: data.length, rowNumber: i + 1}))
+      .map((data, i) => ({ dataCount: data.length, rowNumber: i + 1 }))
       .filter(row => row.dataCount !== 3)
       .map(row => row.rowNumber)
     if (invalidColumns.length > 0) {
@@ -44,7 +44,7 @@ const ManagePage: React.FC = () => {
     }
 
     const invalidSessionCodes = rowData
-      .map((data, i) => ({circleCode: data[0], rowNumber: i + 1}))
+      .map((data, i) => ({ circleCode: data[0], rowNumber: i + 1 }))
       .filter(row => convertCodeDataByCircleCode(row.circleCode)?.sessionCode !== sessionCode)
       .map(row => row.rowNumber)
     if (invalidSessionCodes.length > 0) {
@@ -57,9 +57,9 @@ const ManagePage: React.FC = () => {
       (p, c) => ({ ...p, [c[0]]: {
         space: c[1],
         name: c[2]
-      }}), {})
+      } }), {})
     return data
-  }, [ sessionCode ])
+  }, [sessionCode])
 
   const applyCircles = useCallback(() => {
     if (!circles || !sessionCode) return
@@ -67,19 +67,19 @@ const ManagePage: React.FC = () => {
 
     createCirclesAsync(sessionCode, circles)
       .then(() => alert('反映しました'))
-  }, [ circles, sessionCode ])
+  }, [circles, sessionCode])
 
   useEffect(() => {
     if (!file) return
     openAsText(file)
-  }, [ file ])
+  }, [file])
 
   useEffect(() => {
     if (!data) return
     const convertedCircle = convertCircleDataByCSV(data)
     if (!convertedCircle) return
     setCircles(convertedCircle)
-  }, [ data ])
+  }, [data])
 
   return (
     <DefaultLayout title="封筒データ上書き">
@@ -127,7 +127,7 @@ const ManagePage: React.FC = () => {
             </thead>
             <tbody>
               {
-                circles && Object.entries(circles).map(([ co, ci ]) => <tr key={co}>
+                circles && Object.entries(circles).map(([co, ci]) => <tr key={co}>
                   <td>{co}</td>
                   <td>{ci.space}</td>
                   <td>{ci.name}</td>

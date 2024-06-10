@@ -20,7 +20,7 @@ import DefaultLayout from '../../layouts/DefaultLayout/DefaultLayout'
 import type { SunflowerCircle } from 'sunflower'
 
 const RegisterPage: React.FC = () => {
-  const {sessionCode} = useSession()
+  const { sessionCode } = useSession()
   const {
     convertCodeDataByCircleCode,
     getCircleByCodeAsync,
@@ -30,29 +30,29 @@ const RegisterPage: React.FC = () => {
     startStreamBySessionCode,
     streamCircles
   } = useCircleStream()
-  const {data, QRReaderComponent} = useQRReader()
+  const { data, QRReaderComponent } = useQRReader()
 
-  const [ playSEOK ] = useSound(OKSound)
-  const [ playSENG ] = useSound(NGSound)
+  const [playSEOK] = useSound(OKSound)
+  const [playSENG] = useSound(NGSound)
 
-  const [ code, setCode ] = useState<string>()
-  const [ prevCode, setPrevCode ] = useState<string>()
-  const [ readCircle, setReadCircle ] = useState<{ code: string, data: SunflowerCircle}>()
+  const [code, setCode] = useState<string>()
+  const [prevCode, setPrevCode] = useState<string>()
+  const [readCircle, setReadCircle] = useState<{ code: string, data: SunflowerCircle }>()
 
-  const [ isActive, setActive ] = useState(false)
-  const [ error, setError ] = useState<string>()
+  const [isActive, setActive] = useState(false)
+  const [error, setError] = useState<string>()
 
-  const [ query, setQuery ] = useState<string>()
-  const [ hideInputed, setHideInputed ] = useState(true)
+  const [query, setQuery] = useState<string>()
+  const [hideInputed, setHideInputed] = useState(true)
 
   const queriedCircles = useMemo(() => {
     if (!streamCircles) return
     const filteredCircles = Object.entries(streamCircles)
-      .filter(([ co, ci ]) => !query || (co.includes(query) || ci.name.includes(query) || ci.space.includes(query)))
-      .filter(([ , ci ])=> !hideInputed || (hideInputed && !ci.status))
-      .reduce<Record<string, SunflowerCircle>>((p, c) => ({...p, [c[0]]: c[1]}), {})
+      .filter(([co, ci]) => !query || (co.includes(query) || ci.name.includes(query) || ci.space.includes(query)))
+      .filter(([, ci])=> !hideInputed || (hideInputed && !ci.status))
+      .reduce<Record<string, SunflowerCircle>>((p, c) => ({ ...p, [c[0]]: c[1] }), {})
     return filteredCircles
-  }, [ streamCircles, query, hideInputed ])
+  }, [streamCircles, query, hideInputed])
 
   const CirclesList = useMemo(() => {
     if (queriedCircles === undefined) {
@@ -68,7 +68,7 @@ const RegisterPage: React.FC = () => {
         </tr>
       )
     } else {
-      return Object.entries(queriedCircles).map(([ co, ci ]) => {
+      return Object.entries(queriedCircles).map(([co, ci]) => {
         const circleStatus = ci.status === 1
           ? '出席済み'
           : ci.status === 2
@@ -84,7 +84,7 @@ const RegisterPage: React.FC = () => {
         )
       })
     }
-  }, [ queriedCircles ])
+  }, [queriedCircles])
 
   const handleSubmit = useCallback(async (circleCode: string): Promise<void> => {
     if (circleCode === prevCode) return
@@ -127,7 +127,7 @@ const RegisterPage: React.FC = () => {
         alert(`エラーが発生しました ${err.message}`)
         throw err
       })
-  }, [ prevCode ])
+  }, [prevCode])
 
   const handleKeyDownEvent = useCallback((event: KeyboardEvent) => {
     if (!code) return
@@ -135,23 +135,23 @@ const RegisterPage: React.FC = () => {
       return
     }
     handleSubmit(code)
-  }, [ code ])
+  }, [code])
 
   useEffect(() => {
     if (!sessionCode) return
     startStreamBySessionCode(sessionCode )
-  }, [ sessionCode ])
+  }, [sessionCode])
 
   useEffect(() => {
     if (!data) return
     setCode(data)
     handleSubmit(data)
-  }, [ data ])
+  }, [data])
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDownEvent)
     return () => document.removeEventListener('keydown', handleKeyDownEvent)
-  }, [ handleKeyDownEvent ])
+  }, [handleKeyDownEvent])
 
   return (
     <DefaultLayout title="出席登録">

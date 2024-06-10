@@ -11,7 +11,7 @@ interface IUseCircleStream {
 
 const useCircleStream = (): IUseCircleStream => {
   const { getDatabase } = useFirebase()
-  const [ streamCircles, setStreamCircles ] = useState<Record<string, SunflowerCircle>>()
+  const [streamCircles, setStreamCircles] = useState<Record<string, SunflowerCircle>>()
 
   const startStreamBySessionCode =
     (sessionCode: string): FirebaseDB.Unsubscribe => {

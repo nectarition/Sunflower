@@ -30,9 +30,9 @@ interface IUseFirebase {
 }
 
 const useFirebase = (): IUseFirebase => {
-  const [ auth, setAuth ] = useState<Auth | undefined>()
-  const [ isLoggedIn, setLoggedIn ] = useState<boolean | undefined>()
-  const [ user, setUser ] = useState<User | null | undefined>()
+  const [auth, setAuth] = useState<Auth | undefined>()
+  const [isLoggedIn, setLoggedIn] = useState<boolean | undefined>()
+  const [user, setUser] = useState<User | null | undefined>()
 
   const getAuth = (): Auth => {
     if (auth) {

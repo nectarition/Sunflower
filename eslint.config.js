@@ -7,7 +7,7 @@ import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
   {
-    ignores: [ '.gitignore' ],
+    ignores: ['.gitignore'],
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
@@ -37,7 +37,7 @@ export default tseslint.config(
               position: 'before',
             },
           ],
-          pathGroupsExcludedImportTypes: [ 'builtin' ],
+          pathGroupsExcludedImportTypes: ['builtin'],
           alphabetize: {
             order: 'asc',
           },
@@ -49,9 +49,9 @@ export default tseslint.config(
     ...stylistic.configs['recommended-flat'],
     rules: {
       '@stylistic/semi': 'off',
-      '@stylistic/quotes': [ 'error', 'single' ],
+      '@stylistic/quotes': ['error', 'single'],
       '@stylistic/eol-last': 'error',
-      '@stylistic/indent': [ 'error', 2 ],
+      '@stylistic/indent': ['error', 2],
       '@stylistic/multiline-ternary': [
         'error',
         'always-multiline',
@@ -59,11 +59,24 @@ export default tseslint.config(
       '@stylistic/member-delimiter-style': 'off',
       '@stylistic/prop-types': 'off',
       '@stylistic/react-in-jsx-scope': 'off',
-      '@stylistic/array-bracket-spacing': [ 'error', 'always' ]
+      '@stylistic/array-bracket-spacing': [
+        'error',
+        'never'
+      ],
+      '@stylistic/comma-spacing': [
+        'error',
+        {
+          after: true
+        }
+      ],
+      '@stylistic/object-curly-spacing': [
+        'error',
+        'always'
+      ]
     }
   },
   {
-    files: [ '**/*.{js,jsx,ts,tsx}' ],
+    files: ['**/*.{js,jsx,ts,tsx}'],
     ...reactRecommended,
     ...reactJSXRuntime,
     settings: {

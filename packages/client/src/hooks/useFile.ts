@@ -1,8 +1,8 @@
 import { useState } from 'react'
 
 const useFile = () => {
-  const [ data, setData ] = useState('')
-  const [ error, setError ] = useState<DOMException | null>(null)
+  const [data, setData] = useState('')
+  const [error, setError] = useState<DOMException | null>(null)
 
   const openAsText = async (file: Blob) => {
     const reader = new FileReader()

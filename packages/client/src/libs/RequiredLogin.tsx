@@ -10,7 +10,7 @@ const RequiredLogin: React.FC = () => {
   useEffect(() => {
     if (isLoggedIn === undefined) return
     if (!isLoggedIn) navigate('/login')
-  }, [ isLoggedIn ])
+  }, [isLoggedIn])
 
   return null
 }

@@ -14,10 +14,10 @@ import DefaultLayout from '../../layouts/DefaultLayout/DefaultLayout'
 
 const ListPage: React.FC = () => {
   const { sessionCode } = useSession()
-  const {updateCircleStatusByCodeAsync} = useCircle()
-  const {streamCircles, startStreamBySessionCode} = useCircleStream()
+  const { updateCircleStatusByCodeAsync } = useCircle()
+  const { streamCircles, startStreamBySessionCode } = useCircleStream()
 
-  const [ query, setQuery ] = useState<string>()
+  const [query, setQuery] = useState<string>()
 
   const queriedCircles = useMemo(() => {
     if (!streamCircles) return
@@ -26,10 +26,10 @@ const ListPage: React.FC = () => {
     }
 
     const filtered = Object.entries(streamCircles)
-      .filter(([ co, ci ]) => co.includes(query) || ci.name.includes(query) || ci.space.includes(query))
+      .filter(([co, ci]) => co.includes(query) || ci.name.includes(query) || ci.space.includes(query))
       .reduce<Record<string, SunflowerCircle>>((p, c) => ({ ...p, [c[0]]: c[1] }), {})
     return filtered
-  }, [ query, streamCircles ])
+  }, [query, streamCircles])
 
   const convertStatusText = useCallback((status: SunflowerCircleStatus) => {
     return status === 1
@@ -51,7 +51,7 @@ const ListPage: React.FC = () => {
 
     updateCircleStatusByCodeAsync(circleCode, status)
       .then(() => alert('状態を更新しました'))
-  }, [ streamCircles ])
+  }, [streamCircles])
 
   const CirclesList = useMemo(() => {
     if (queriedCircles === undefined) {
@@ -67,7 +67,7 @@ const ListPage: React.FC = () => {
         </tr>
       )
     } else {
-      return Object.entries(queriedCircles).map(([ co, ci ]) => (
+      return Object.entries(queriedCircles).map(([co, ci]) => (
         <tr key={co} className={ci.status ? 'disabled' : ''}>
           <td>
             {ci.status !== 2 && <FormButton
@@ -83,12 +83,12 @@ const ListPage: React.FC = () => {
         </tr>
       ))
     }
-  }, [ queriedCircles ])
+  }, [queriedCircles])
 
   useEffect(() => {
     if (!sessionCode) return
     startStreamBySessionCode(sessionCode)
-  }, [ sessionCode ])
+  }, [sessionCode])
 
   return (
     <DefaultLayout title="出欠一覧">

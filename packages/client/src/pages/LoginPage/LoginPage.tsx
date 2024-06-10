@@ -13,16 +13,16 @@ import DefaultLayout from '../../layouts/DefaultLayout/DefaultLayout'
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate()
-  const { loginByEmail} = useFirebase()
-  const { localize} = useLocalizeFirebaseError()
-  const { fetchSessionByCodeAsync} = useSession()
+  const { loginByEmail } = useFirebase()
+  const { localize } = useLocalizeFirebaseError()
+  const { fetchSessionByCodeAsync } = useSession()
 
-  const [ email, setEmail ] = useState<string>()
-  const [ password, setPassword ] = useState<string>()
-  const [ sessionCode, setSessionCode ] = useState<string>()
+  const [email, setEmail] = useState<string>()
+  const [password, setPassword] = useState<string>()
+  const [sessionCode, setSessionCode] = useState<string>()
   
-  const [ isProcess, setProcess ] = useState(false)
-  const [ error, setError ] = useState<string>()
+  const [isProcess, setProcess] = useState(false)
+  const [error, setError] = useState<string>()
 
   const handleLogin = useCallback(() => {
     if (!email || !password || !sessionCode) return
@@ -42,7 +42,7 @@ const LoginPage: React.FC = () => {
         setError(error)
         setProcess(false)
       })
-  }, [ email, password, sessionCode ])
+  }, [email, password, sessionCode])
   return (
     <DefaultLayout title="ログイン" allowAnonymous>
       <h2>ログイン</h2>

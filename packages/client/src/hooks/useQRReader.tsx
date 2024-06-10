@@ -7,7 +7,7 @@ interface IUseQRReader {
 }
 
 const useQRReader = (): IUseQRReader => {
-  const [ data, setData ] = useState<string>()
+  const [data, setData] = useState<string>()
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleResult = useCallback((result: any): void => {
@@ -29,7 +29,7 @@ const useQRReader = (): IUseQRReader => {
         }}
       />
     </>
-  ), [ QrReader ])
+  ), [QrReader])
 
   return {
     data,
