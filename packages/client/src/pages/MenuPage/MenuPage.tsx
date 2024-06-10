@@ -57,7 +57,7 @@ const MenuPage: React.FC = () => {
           </LinkButton>
         </FormItem>
         <FormItem>
-          <LinkButton to="/guide">
+          <LinkButton to="/guide" color="default">
             利用ガイド<small>を見る</small>
           </LinkButton>
         </FormItem>

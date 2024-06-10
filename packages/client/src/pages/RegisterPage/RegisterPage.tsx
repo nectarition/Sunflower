@@ -121,12 +121,21 @@ const RegisterPage: React.FC = () => {
         setCode('')
         setPrevCode(circleCode)
         playSEOK()
+        alert(`${circleCode}「${fetchedCircle.name}」の出席登録を行いました`)
       })
       .catch(err => {
-        setError(err.message)
+        alert(`エラーが発生しました ${err.message}`)
         throw err
       })
   }, [ prevCode ])
+
+  const handleKeyDownEvent = useCallback((event: KeyboardEvent) => {
+    if (!code) return
+    if (!event.ctrlKey || event.key !== 'Enter') {
+      return
+    }
+    handleSubmit(code)
+  }, [ code ])
 
   useEffect(() => {
     if (!sessionCode) return
@@ -138,6 +147,11 @@ const RegisterPage: React.FC = () => {
     setCode(data)
     handleSubmit(data)
   }, [ data ])
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDownEvent)
+    return () => document.removeEventListener('keydown', handleKeyDownEvent)
+  }, [ handleKeyDownEvent ])
 
   return (
     <DefaultLayout title="出席登録">

@@ -47,9 +47,9 @@ const Container = styled.div`
 `
 const Header = styled.header`
   padding: 10px 5%;
-  background-color: #404040;
-  color: #ffffff;
-
+  background-color: #f0f0f0;
+  color: #404040;
+  font-weight: bold;
   border-bottom: 2px solid var(--primary-color);
 
   display: grid;
