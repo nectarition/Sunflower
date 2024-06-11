@@ -170,11 +170,11 @@ const RegisterPage: React.FC = () => {
 
   return (
     <DefaultLayout title="出席登録">
+      <Breadcrumbs>
+        <li><Link to="/">メニュー</Link></li>
+      </Breadcrumbs>
       <Layout>
         <Column>
-          <Breadcrumbs>
-            <li><Link to="/">メニュー</Link></li>
-          </Breadcrumbs>
           <h2>出席登録</h2>
           <p>
             欠席登録は「<Link to="/list">出欠確認</Link>」から行ってください。
