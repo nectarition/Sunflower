@@ -205,7 +205,7 @@ const RegisterPage: React.FC = () => {
                 onClick={() => code && handleSubmit(code)}
                 disabled={!code}>
                 <IconLabel
-                  label="出席登録(Enter)"
+                  label="出席登録 (Enter)"
                   icon={<MdEdit />} />
               </FormButton>
             </FormItem>
