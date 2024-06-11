@@ -1,8 +1,10 @@
 import { useCallback } from 'react'
+import { MdEdit, MdListAlt, MdLogout } from 'react-icons/md'
 import { useNavigate } from 'react-router-dom'
 import FormButton from '../../components/Form/FormButton'
 import FormItem from '../../components/Form/FormItem'
 import FormSection from '../../components/Form/FormSection'
+import IconLabel from '../../components/parts/IconLabel'
 import LinkButton from '../../components/parts/LinkButton'
 import Panel from '../../components/parts/Panel'
 import useFirebase from '../../hooks/useFirebase'
@@ -15,6 +17,10 @@ const MenuPage: React.FC = () => {
   const { user, logout } = useFirebase()
 
   const handleLogout = useCallback(() => {
+    if (!confirm('ログアウトしてもよろしいですか？')) {
+      return
+    }
+
     logout()
     resetSession()
     navigate('/login')
@@ -28,12 +34,16 @@ const MenuPage: React.FC = () => {
       <FormSection>
         <FormItem>
           <LinkButton to="/register" size="large">
-            出席登録<small>を行う</small>
+            <IconLabel
+              label={<>出席登録<small>を行う</small></>}
+              icon={<MdEdit />} />
           </LinkButton>
         </FormItem>
         <FormItem>
           <LinkButton to="/list" size="large">
-            出欠確認<small>を行う</small>
+            <IconLabel
+              label={<>出欠確認<small>を行う</small></>}
+              icon={<MdListAlt />} />
           </LinkButton>
         </FormItem>
       </FormSection>
@@ -45,7 +55,9 @@ const MenuPage: React.FC = () => {
       )}
       <FormSection>
         <FormItem>
-          <FormButton color="default" onClick={handleLogout}>ログアウト</FormButton>
+          <FormButton color="default" onClick={handleLogout}>
+            <IconLabel label="ログアウト" icon={<MdLogout />} />
+          </FormButton>
         </FormItem>
       </FormSection>
 

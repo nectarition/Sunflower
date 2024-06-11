@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { MdDevices, MdEdit, MdQrCodeScanner } from 'react-icons/md'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import useSound from 'use-sound'
@@ -11,6 +12,7 @@ import FormLabel from '../../components/Form/FormLabel'
 import FormSection from '../../components/Form/FormSection'
 import Alert from '../../components/parts/Alert'
 import Breadcrumbs from '../../components/parts/Breadcrumbs'
+import IconLabel from '../../components/parts/IconLabel'
 import Panel from '../../components/parts/Panel'
 import useCircle from '../../hooks/useCircle'
 import useCircleStream from '../../hooks/useCircleStream'
@@ -182,33 +184,14 @@ const RegisterPage: React.FC = () => {
 
           {error && <Alert color="danger">{error}</Alert>}
           {readCircle &&
-            <Panel color="success" title="出席登録が完了しました" subTitle={readCircle.code}>
+            <Panel
+              color="success"
+              title="出席登録が完了しました"
+              subTitle={readCircle.code}
+              isLarge={true}>
               {readCircle.data.name} ({readCircle.data.space})
             </Panel>
           }
-          <FormSection>
-            {!isActiveReadKey && <FormItem>
-              <FormButton
-                onClick={() => setActiveQRReader(s => !s)}
-                color={isActiveQRReader ? 'default' : undefined}>ソフトウェアQRリーダーを{isActiveQRReader ? '閉じる' : '開く'}</FormButton>
-            </FormItem>}
-            {!isActiveQRReader && <FormItem>
-              <FormButton
-                onClick={() => setActiveReadKey(s => !s)}
-                color={isActiveReadKey ? 'default' : undefined}
-                onFocus={e => e.target.blur()}>
-                ハードウェアQRリーダを{isActiveReadKey ? '使用しない' : '使用する'}
-              </FormButton>
-            </FormItem>}
-          </FormSection>
-          {isActiveQRReader && <>
-            <p>
-              封筒のQRコードを読み取ってください
-            </p>
-            <ReaderWrap>
-              <QRReaderComponent />
-            </ReaderWrap>
-          </>}
           <FormSection>
             <FormItem>
               <FormLabel>封筒コード</FormLabel>
@@ -221,7 +204,43 @@ const RegisterPage: React.FC = () => {
               <FormButton
                 onClick={() => code && handleSubmit(code)}
                 disabled={!code}>
-                出席登録(Enter)
+                <IconLabel
+                  label="出席登録(Enter)"
+                  icon={<MdEdit />} />
+              </FormButton>
+            </FormItem>
+          </FormSection>
+          <Panel>
+            <ul>
+              {isActiveQRReader && <li>ソフトウェアQRリーダを起動中</li>}
+              {isActiveReadKey && <li>ハードウェアQRリーダを待機中</li>}
+              {(!isActiveQRReader && !isActiveReadKey) && <li>封筒コードを直接入力してください</li>}
+              {(isActiveQRReader || isActiveReadKey) && <li>封筒のQRコードを読み取ってください</li>}
+            </ul>
+          </Panel>
+          {isActiveQRReader && <ReaderWrap>
+            <QRReaderComponent />
+          </ReaderWrap>}
+          <FormSection>
+            <FormItem>
+              <FormButton
+                onClick={() => setActiveQRReader(s => !s)}
+                color={isActiveQRReader ? 'default' : undefined}
+                disabled={isActiveReadKey}>
+                <IconLabel
+                  label={<>ソフトウェアQRリーダーを{isActiveQRReader ? '閉じる' : '開く'}</>}
+                  icon={<MdQrCodeScanner />} />
+              </FormButton>
+            </FormItem>
+            <FormItem>
+              <FormButton
+                onClick={() => setActiveReadKey(s => !s)}
+                color={isActiveReadKey ? 'default' : undefined}
+                onFocus={e => e.target.blur()}
+                disabled={isActiveQRReader}>
+                <IconLabel
+                  label={<>ハードウェアQRリーダを{isActiveReadKey ? '使用しない' : '使用する'}</>}
+                  icon={<MdDevices />} />
               </FormButton>
             </FormItem>
           </FormSection>
@@ -235,12 +254,14 @@ const RegisterPage: React.FC = () => {
               <FormInput
                 value={query}
                 onChange={e => setQuery(e.target.value)}
-                onFocus={() => setActiveReadKey(false)}/>
+                onFocus={() => setActiveReadKey(false)} />
             </FormItem>
             <FormItem>
               <FormButton
                 onClick={() => setHideInputed(s => !s)}
-                color={hideInputed ? 'default' : undefined}>チェック済みを{hideInputed ? '表示' : '隠す'}</FormButton>
+                color={hideInputed ? 'default' : undefined}>
+                  チェック済みを{hideInputed ? '表示' : '隠す'}
+              </FormButton>
             </FormItem>
           </FormSection>
 

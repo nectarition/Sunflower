@@ -7,13 +7,20 @@ import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
   {
-    ignores: ['.gitignore'],
+    files: ['**/*.{js,ts,jsx,tsx}']
+  },
+  {
+    ignores: [
+      '.gitignore',
+      'node_modules',
+      '**/dist/**'
+    ]
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   {
     plugins: {
-      import: importPlugin,
+      import: importPlugin
     },
     rules: {
       'import/order': [
@@ -28,22 +35,22 @@ export default tseslint.config(
             'sibling',
             'index',
             'object',
-            'type',
+            'type'
           ],
           pathGroups: [
             {
               pattern: '{react,react-dom/**,react-router-dom,react-icons/**,styled-components}',
               group: 'builtin',
-              position: 'before',
-            },
+              position: 'before'
+            }
           ],
           pathGroupsExcludedImportTypes: ['builtin'],
           alphabetize: {
-            order: 'asc',
-          },
-        },
-      ],
-    },
+            order: 'asc'
+          }
+        }
+      ]
+    }
   },
   {
     ...stylistic.configs['recommended-flat'],
@@ -52,27 +59,15 @@ export default tseslint.config(
       '@stylistic/quotes': ['error', 'single'],
       '@stylistic/eol-last': 'error',
       '@stylistic/indent': ['error', 2],
-      '@stylistic/multiline-ternary': [
-        'error',
-        'always-multiline',
-      ],
+      '@stylistic/multiline-ternary': ['error', 'always-multiline'],
       '@stylistic/member-delimiter-style': 'off',
       '@stylistic/prop-types': 'off',
       '@stylistic/react-in-jsx-scope': 'off',
-      '@stylistic/array-bracket-spacing': [
-        'error',
-        'never'
-      ],
-      '@stylistic/comma-spacing': [
-        'error',
-        {
-          after: true
-        }
-      ],
-      '@stylistic/object-curly-spacing': [
-        'error',
-        'always'
-      ]
+      '@stylistic/array-bracket-spacing': ['error', 'never'],
+      '@stylistic/comma-spacing': ['error', { after: true }],
+      '@stylistic/object-curly-spacing': ['error', 'always'],
+      '@stylistic/jsx-tag-spacing': ['error', { beforeSelfClosing: 'always' }],
+      '@stylistic/comma-dangle': ['error', 'never']
     }
   },
   {
@@ -95,7 +90,8 @@ export default tseslint.config(
     rules: {
       ...reactRecommended.rules,
       ...reactJSXRuntime.rules,
-      'react/prop-types': 'off'
+      'react/prop-types': 'off',
+      'react/jsx-closing-bracket-location': ['error', 'after-props']
     }
   }
 )

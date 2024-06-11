@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { MdEdit, MdEditOff } from 'react-icons/md'
 import { Link } from 'react-router-dom'
 import { SunflowerCircle, SunflowerCircleStatus } from 'sunflower'
 import FormButton from '../../components/Form/FormButton'
@@ -7,6 +8,7 @@ import FormItem from '../../components/Form/FormItem'
 import FormLabel from '../../components/Form/FormLabel'
 import FormSection from '../../components/Form/FormSection'
 import Breadcrumbs from '../../components/parts/Breadcrumbs'
+import IconLabel from '../../components/parts/IconLabel'
 import useCircle from '../../hooks/useCircle'
 import useCircleStream from '../../hooks/useCircleStream'
 import useSession from '../../hooks/useSession'
@@ -18,6 +20,7 @@ const ListPage: React.FC = () => {
   const { streamCircles, startStreamBySessionCode } = useCircleStream()
 
   const [query, setQuery] = useState<string>()
+  const [forceAttendanceCheck, setForceAttendanceCheck] = useState(false)
 
   const queriedCircles = useMemo(() => {
     if (!streamCircles) return
@@ -44,14 +47,26 @@ const ListPage: React.FC = () => {
 
     const circle = streamCircles[circleCode]
     const statusText = convertStatusText(status)
-    
+
+    if (status === 1 && !forceAttendanceCheck) {
+      const promptText = '【一覧からの出席登録には主催の許可が必要です】\n'
+        + '主催に制限解除コードを確認し入力してください。\n'
+        + '\n'
+        + '※一度承認した後は再読み込みするまでこのダイアログは表示されません。'
+      if (prompt(promptText) !== '承認') {
+        alert('操作をキャンセルしました')
+        return
+      }
+      setForceAttendanceCheck(true)
+    }
+
     if (!confirm(`${circle.space}「${circle.name}」のステータスを ${statusText} にします。\nよろしいですか？`)) {
       return
     }
 
     updateCircleStatusByCodeAsync(circleCode, status)
       .then(() => alert('状態を更新しました'))
-  }, [streamCircles])
+  }, [streamCircles, forceAttendanceCheck])
 
   const CirclesList = useMemo(() => {
     if (queriedCircles === undefined) {
@@ -69,17 +84,19 @@ const ListPage: React.FC = () => {
     } else {
       return Object.entries(queriedCircles).map(([co, ci]) => (
         <tr key={co} className={ci.status ? 'disabled' : ''}>
-          <td>
-            {ci.status !== 2 && <FormButton
-              onClick={() => updateStatus(co, 2)}
-              color={ci.status ? 'default' : undefined}>欠席</FormButton>}
-            {ci.status === 2 && <FormButton
-              color="default"
-              onClick={() => updateStatus(co, 1)}>出席</FormButton>}
-          </td>
           <td>{ci.space}</td>
           <td>{convertStatusText(ci.status ?? 0)}</td>
           <td>{ci.name}</td>
+          <td>
+            {ci.status !== 2 && <FormButton
+              onClick={() => updateStatus(co, 2)}
+              color={ci.status ? 'danger' : undefined}>
+              <IconLabel label="欠席" icon={<MdEditOff />} />
+            </FormButton>}
+            {ci.status === 2 && <FormButton onClick={() => updateStatus(co, 1)}>
+              <IconLabel label="出席" icon={<MdEdit />} />
+            </FormButton>}
+          </td>
         </tr>
       ))
     }
@@ -111,10 +128,10 @@ const ListPage: React.FC = () => {
       <table>
         <thead>
           <tr>
-            <th>状態更新</th>
             <th>スペース</th>
             <th>状態</th>
             <th>サークル名</th>
+            <th>状態変更</th>
           </tr>
         </thead>
         <tbody>

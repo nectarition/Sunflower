@@ -19,6 +19,7 @@ export default Alert
 const Container = styled.p<{ color?: ColorType }>`
   padding: 10px;
   background-color: #ffc93f80;
+  border-radius: 5px;
 
   ${props => {
     if (props.color === 'danger') {

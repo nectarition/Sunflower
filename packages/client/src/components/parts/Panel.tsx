@@ -7,12 +7,13 @@ interface Props {
   title?: string
   subTitle?: string
   color?: ColorType
+  isLarge?: boolean
 }
 const Panel: React.FC<Props> = (props) => {
   return (
     <Container color={props.color}>
       {props.title && <Title>{props.title}</Title>}
-      {props.children && <Main>
+      {props.children && <Main isLarge={props.isLarge}>
         {props.children}
       </Main>}
       {props.subTitle && <SubTitle>{props.subTitle}</SubTitle>}
@@ -30,6 +31,7 @@ const Container = styled.div<{ color?: ColorType }>`
   
   padding: 10px;
   background-color: #ffc93f80;
+  border-radius: 5px;
 
   ${props => {
     if (props.color === 'danger') {
@@ -43,11 +45,14 @@ const Container = styled.div<{ color?: ColorType }>`
     }
   }}
 `
-const Main = styled.main`
-  font-size: 1.5em;
+const Main = styled.main<{ isLarge?: boolean }>`
+  ${props => props.isLarge && {
+    fontSize: '1.25em',
+    fontWeight: 'bold'
+  }}
+`
+const Title = styled.div`
   font-weight: bold;
 `
-const Title = styled.div``
 const SubTitle = styled.div`
-  font-size: 0.9em;
 `

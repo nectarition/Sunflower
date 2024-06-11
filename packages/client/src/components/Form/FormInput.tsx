@@ -10,8 +10,19 @@ const FormInput = styled.input`
   outline: none;
   border: 2px solid #c0c0c0;
 
+  transition: border 0.2s;
+
   &:focus {
     border: 2px solid var(--secondary-color);
+  }
+
+  border-radius: 5px;
+  
+  &:disabled {
+    background-color: #c8c8c8;
+    color: #808080;
+    border-bottom: 2px solid #c0c0c0;
+    cursor: unset;
   }
 `
 

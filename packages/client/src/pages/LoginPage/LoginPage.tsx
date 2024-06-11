@@ -49,24 +49,23 @@ const LoginPage: React.FC = () => {
       <FormSection>
         <FormItem>
           <FormLabel>メールアドレス</FormLabel>
-          <FormInput type="email"
+          <FormInput
+            type="email"
             value={email}
-            onChange={e => setEmail(e.target.value)}
-          />
+            onChange={e => setEmail(e.target.value)} />
         </FormItem>
         <FormItem>
           <FormLabel>パスワード</FormLabel>
-          <FormInput type="password"
+          <FormInput
+            type="password"
             value={password}
-            onChange={e => setPassword(e.target.value)}
-          />
+            onChange={e => setPassword(e.target.value)} />
         </FormItem>
         <FormItem>
           <FormLabel>イベントコード</FormLabel>
           <FormInput
             value={sessionCode}
-            onChange={e => setSessionCode(e.target.value)}
-          />
+            onChange={e => setSessionCode(e.target.value)} />
         </FormItem>
       </FormSection>
       <FormSection>

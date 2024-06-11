@@ -26,8 +26,7 @@ const useQRReader = (): IUseQRReader => {
         }}
         videoContainerStyle={{
           // paddingTop: 'unset'
-        }}
-      />
+        }} />
     </>
   ), [QrReader])
 
