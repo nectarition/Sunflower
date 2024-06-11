@@ -28,7 +28,10 @@ const MenuPage: React.FC = () => {
 
   return (
     <DefaultLayout>
-      <Panel title="操作中のイベント" subTitle={sessionCode}>
+      <Panel
+        title="操作中のイベント"
+        subTitle={sessionCode}
+        isLarge={true}>
         {sessionName}
       </Panel>
       <FormSection>
@@ -47,12 +50,9 @@ const MenuPage: React.FC = () => {
           </LinkButton>
         </FormItem>
       </FormSection>
-      {user
-      && (
-        <p>
-          {user.email} としてログイン中です。
-        </p>
-      )}
+      {user && <p>
+        {user.email} としてログイン中です。
+      </p>}
       <FormSection>
         <FormItem>
           <FormButton color="default" onClick={handleLogout}>
