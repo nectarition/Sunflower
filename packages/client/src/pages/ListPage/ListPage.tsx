@@ -20,19 +20,18 @@ const ListPage: React.FC = () => {
   const { streamCircles, startStreamBySessionCode } = useCircleStream()
 
   const [query, setQuery] = useState<string>()
+  const [hideAttended, setHideAttended] = useState(true)
   const [forceAttendanceCheck, setForceAttendanceCheck] = useState(false)
 
   const queriedCircles = useMemo(() => {
     if (!streamCircles) return
-    if (!query) {
-      return streamCircles
-    }
 
     const filtered = Object.entries(streamCircles)
-      .filter(([co, ci]) => co.includes(query) || ci.name.includes(query) || ci.space.includes(query))
+      .filter(([co, ci]) => !query || co.includes(query) || ci.name.includes(query) || ci.space.includes(query))
+      .filter(([, ci]) => !hideAttended || ci.status === 0)
       .reduce<Record<string, SunflowerCircle>>((p, c) => ({ ...p, [c[0]]: c[1] }), {})
     return filtered
-  }, [query, streamCircles])
+  }, [query, streamCircles, hideAttended])
 
   const convertStatusText = useCallback((status: SunflowerCircleStatus) => {
     return status === 1
@@ -48,8 +47,8 @@ const ListPage: React.FC = () => {
     const circle = streamCircles[circleCode]
     const statusText = convertStatusText(status)
 
-    if (status === 1 && !forceAttendanceCheck) {
-      const promptText = '【一覧からの出席登録には主催の許可が必要です】\n'
+    if (!forceAttendanceCheck) {
+      const promptText = '【一覧からの出欠登録には主催の許可が必要です】\n'
         + '主催に制限解除コードを確認し入力してください。\n'
         + '\n'
         + '※一度承認した後は再読み込みするまでこのダイアログは表示されません。'
@@ -115,13 +114,24 @@ const ListPage: React.FC = () => {
       <h2>出欠一覧</h2>
 
       <p>
-        出席登録は「<Link to="/register">出席登録</Link>」から行ってください。
+        出欠状態が未確認のサークルを表示しています。<br />
+        出席登録は「<Link to="/register">出席登録</Link>」から行ってください。<br />
+        このページでの出欠の直接登録は主催の許可が必要です。
       </p>
 
       <FormSection>
         <FormItem>
           <FormLabel>検索フィルター(封筒コード, サークル名, スペース)</FormLabel>
           <FormInput value={query} onChange={e => setQuery(e.target.value)} />
+        </FormItem>
+      </FormSection>
+      <FormSection>
+        <FormItem>
+          <FormButton
+            onClick={() => setHideAttended(s => !s)}
+            color={!hideAttended ? 'default' : undefined}>
+            確認済みサークル{hideAttended ? 'も表示する' : 'を表示しない'}
+          </FormButton>
         </FormItem>
       </FormSection>
 

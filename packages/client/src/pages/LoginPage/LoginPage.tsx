@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import styled from 'styled-components'
 import FormButton from '../../components/Form/FormButton'
 import FormInput from '../../components/Form/FormInput'
 import FormItem from '../../components/Form/FormItem'
@@ -45,7 +46,19 @@ const LoginPage: React.FC = () => {
   }, [email, password, sessionCode])
   return (
     <DefaultLayout title="ログイン" allowAnonymous>
+      <HeroContainer>
+        <HeroTitle>🌻Soleil <small>ねくたりしょんソレイユ</small></HeroTitle>
+        <p>
+          同人誌即売会向け出欠確認支援システム
+        </p>
+      </HeroContainer>
+
       <h2>ログイン</h2>
+
+      <p>
+        主催から提供されたアカウントでログインしてください。
+      </p>
+
       <FormSection>
         <FormItem>
           <FormLabel>メールアドレス</FormLabel>
@@ -86,3 +99,14 @@ const LoginPage: React.FC = () => {
 }
 
 export default LoginPage
+
+const HeroContainer = styled.div`
+  margin-bottom: 20px;
+  padding: 20px;
+  background-color: #f0f0f0;
+  border-radius: 5px;
+`
+const HeroTitle = styled.div`
+  font-size: 1.5em;
+  font-weight: bold;
+`

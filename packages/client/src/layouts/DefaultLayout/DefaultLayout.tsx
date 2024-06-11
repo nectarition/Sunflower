@@ -19,7 +19,7 @@ const DefaultLayout: React.FC<Props> = (props) => {
       <HeadHelper title={props.title} />
       <Header>
         <HeaderBrand>
-          🌻 Soleil
+          🌻Soleil
         </HeaderBrand>
         <HeaderStatus>
           {sessionCode &&
@@ -71,8 +71,13 @@ const Main = styled.main`
   }
 `
 const Footer = styled.footer`
-  padding: 10px;
+  padding: 10px 5%;
   padding-bottom: calc(10px + env(safe-area-inset-bottom));
   background-color: #F0F0F0;
-  text-align: center;
+  color: #808080;
+  text-align: right;
+  @media screen and (max-width: 840px) {
+    padding: 10px 20px;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom));
+  }
 `

@@ -17,6 +17,7 @@
     "react-icons": "^5.2.1",
     "react-qr-reader": "^3.0.0-beta-1",
     "react-router-dom": "^6.9.0",
+    "sass": "^1.77.4",
     "styled-components": "^5.3.9",
     "use-sound": "^4.0.1"
   },
