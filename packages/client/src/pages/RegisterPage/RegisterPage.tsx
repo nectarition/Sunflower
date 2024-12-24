@@ -17,7 +17,7 @@ import Panel from '../../components/parts/Panel'
 import QRReaderComponent from '../../components/parts/QRReaderComponent'
 import useCircle from '../../hooks/useCircle'
 import useCircleStream from '../../hooks/useCircleStream'
-
+import useModal from '../../hooks/useModal'
 import useSession from '../../hooks/useSession'
 import DefaultLayout from '../../layouts/DefaultLayout/DefaultLayout'
 import type { SunflowerCircle } from 'sunflower'
@@ -33,12 +33,13 @@ const RegisterPage: React.FC = () => {
     startStreamBySessionCode,
     streamCircles
   } = useCircleStream()
+  const { showModalAsync } = useModal()
 
   const [playSEOK] = useSound(OKSound)
   const [playSENG] = useSound(NGSound)
 
-  const [qrData, setQRData] = useState('')
   const [code, setCode] = useState('')
+  const [qrData, setQRData] = useState('')
   const [readCircle, setReadCircle] = useState<{ code: string, data: SunflowerCircle }>()
 
   const [isActiveQRReader, setActiveQRReader] = useState(false)
@@ -100,7 +101,7 @@ const RegisterPage: React.FC = () => {
     }
 
     if (codeData.sessionCode !== sessionCode) {
-      setError('違うイベントコードの封筒コードが入力されました')
+      setError(`違うイベントコードの封筒コードが入力されました ${codeData.sessionCode} ${sessionCode}`)
       playSENG()
       return
     }
@@ -121,10 +122,10 @@ const RegisterPage: React.FC = () => {
       .then(() => {
         setCode('')
         playSEOK()
-        alert(`${circleCode}「${fetchedCircle.name}」の出席登録を行いました`)
+        showModalAsync({ title: '出席登録完了', type: 'alert', children: `${circleCode}「${fetchedCircle.name}」の出席登録を行いました` })
       })
       .catch(err => {
-        alert(`エラーが発生しました ${err.message}`)
+        showModalAsync({ title: 'エラー', type: 'alert', children: `エラーが発生しました ${err.message}` })
         throw err
       })
   }, [sessionCode])
@@ -149,17 +150,30 @@ const RegisterPage: React.FC = () => {
     }
 
     setCode(s => `${s}${event.key}`)
-  }, [code, isActiveReadKey])
+  }, [handleSubmit, code, isActiveReadKey])
+
+  useEffect(() => {
+    if (!qrData) return
+    showModalAsync({
+      title: 'QRコードを読み取りました',
+      type: 'confirm',
+      children: <>
+        封筒コード: {qrData}<br />
+        このコードの出席登録を行いますか？
+      </>,
+      action: () => handleSubmit(qrData)
+    })
+      .catch(err => {
+        showModalAsync({ title: 'エラー', type: 'alert', children: `エラーが発生しました ${err.message}` })
+        throw err
+      })
+      .finally(() => setQRData(''))
+  }, [qrData])
 
   useEffect(() => {
     if (!sessionCode) return
     startStreamBySessionCode(sessionCode)
-  }, [sessionCode])
-
-  useEffect(() => {
-    if (!qrData) return
-    setCode(qrData)
-  }, [qrData])
+  }, [handleSubmit, sessionCode])
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDownEvent)
