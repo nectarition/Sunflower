@@ -14,9 +14,10 @@ import Alert from '../../components/parts/Alert'
 import Breadcrumbs from '../../components/parts/Breadcrumbs'
 import IconLabel from '../../components/parts/IconLabel'
 import Panel from '../../components/parts/Panel'
+import QRReaderComponent from '../../components/parts/QRReaderComponent'
 import useCircle from '../../hooks/useCircle'
 import useCircleStream from '../../hooks/useCircleStream'
-import useQRReader from '../../hooks/useQRReader'
+
 import useSession from '../../hooks/useSession'
 import DefaultLayout from '../../layouts/DefaultLayout/DefaultLayout'
 import type { SunflowerCircle } from 'sunflower'
@@ -32,13 +33,12 @@ const RegisterPage: React.FC = () => {
     startStreamBySessionCode,
     streamCircles
   } = useCircleStream()
-  const { data, QRReaderComponent } = useQRReader()
 
   const [playSEOK] = useSound(OKSound)
   const [playSENG] = useSound(NGSound)
 
+  const [qrData, setQRData] = useState('')
   const [code, setCode] = useState('')
-  const [prevCode, setPrevCode] = useState<string>()
   const [readCircle, setReadCircle] = useState<{ code: string, data: SunflowerCircle }>()
 
   const [isActiveQRReader, setActiveQRReader] = useState(false)
@@ -90,8 +90,6 @@ const RegisterPage: React.FC = () => {
   }, [queriedCircles])
 
   const handleSubmit = useCallback(async (circleCode: string): Promise<void> => {
-    if (circleCode === prevCode) return
-
     setError(undefined)
 
     const codeData = convertCodeDataByCircleCode(circleCode)
@@ -122,7 +120,6 @@ const RegisterPage: React.FC = () => {
     updateCircleStatusByCodeAsync(circleCode, 1)
       .then(() => {
         setCode('')
-        setPrevCode(circleCode)
         playSEOK()
         alert(`${circleCode}「${fetchedCircle.name}」の出席登録を行いました`)
       })
@@ -130,7 +127,7 @@ const RegisterPage: React.FC = () => {
         alert(`エラーが発生しました ${err.message}`)
         throw err
       })
-  }, [sessionCode, prevCode])
+  }, [sessionCode])
 
   const handleKeyDownEvent = useCallback((event: KeyboardEvent) => {
     if (code && event.key == 'Enter') {
@@ -156,14 +153,13 @@ const RegisterPage: React.FC = () => {
 
   useEffect(() => {
     if (!sessionCode) return
-    startStreamBySessionCode(sessionCode )
+    startStreamBySessionCode(sessionCode)
   }, [sessionCode])
 
   useEffect(() => {
-    if (!data) return
-    setCode(data)
-    handleSubmit(data)
-  }, [data])
+    if (!qrData) return
+    setCode(qrData)
+  }, [qrData])
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDownEvent)
@@ -219,7 +215,11 @@ const RegisterPage: React.FC = () => {
             </ul>
           </Panel>
           {isActiveQRReader && <ReaderWrap>
-            <QRReaderComponent />
+            <QRReaderComponent
+              style={{
+                width: '100%'
+              }}
+              onScan={data => setQRData(data.getText())} />
           </ReaderWrap>}
           <FormSection>
             <FormItem>
