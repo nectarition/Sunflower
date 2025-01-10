@@ -7,7 +7,7 @@ interface IUseCircle {
   getCircleByCodeAsync: (circleCode: string) => Promise<SunflowerCircleAppModel>
   updateCircleStatusByCodeAsync: (circleCode: string, status: SunflowerCircleStatus) => Promise<void>
   getCirclesBySessionCodeAsync: (sessionCode: string) => Promise<Record<string, SunflowerCircleAppModel>>
-  createCirclesAsync: (sessionCode: string, circles: Record<string, SunflowerCircleAppModel>) => Promise<void>
+  createCirclesAsync: (sessionCode: string, circles: Record<string, SunflowerCircle>) => Promise<void>
 }
 
 const useCircle = (): IUseCircle => {
