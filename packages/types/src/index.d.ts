@@ -7,6 +7,12 @@ export interface SunflowerCircle {
   space: string
   status?: SunflowerCircleStatus
 }
+export type SunflowerCircleAppModel = SunflowerCircle & {
+  updatedAt: number
+}
+export type SunflowerCircleDbModel = SunflowerCircle & {
+  updatedAt: object
+}
 
 /**
  * 出欠ステータス
@@ -15,5 +21,3 @@ export interface SunflowerCircle {
  * 2: 欠席
  */
 export type SunflowerCircleStatus = 0 | 1 | 2
-
-export type valueOf<T> = T[keyof T]

@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { MdEdit, MdEditOff } from 'react-icons/md'
 import { Link } from 'react-router-dom'
-import { SunflowerCircle, SunflowerCircleStatus } from 'sunflower'
+import styled, { css } from 'styled-components'
+import { SunflowerCircleAppModel, SunflowerCircleStatus } from 'sunflower'
 import FormButton from '../../components/Form/FormButton'
 import FormInput from '../../components/Form/FormInput'
 import FormItem from '../../components/Form/FormItem'
@@ -11,11 +12,13 @@ import Breadcrumbs from '../../components/parts/Breadcrumbs'
 import IconLabel from '../../components/parts/IconLabel'
 import useCircle from '../../hooks/useCircle'
 import useCircleStream from '../../hooks/useCircleStream'
+import useDayjs from '../../hooks/useDayjs'
 import useSession from '../../hooks/useSession'
 import DefaultLayout from '../../layouts/DefaultLayout/DefaultLayout'
 
 const ListPage: React.FC = () => {
   const { sessionCode } = useSession()
+  const { formatByDate } = useDayjs()
   const { updateCircleStatusByCodeAsync } = useCircle()
   const { streamCircles, startStreamBySessionCode } = useCircleStream()
 
@@ -28,8 +31,8 @@ const ListPage: React.FC = () => {
 
     const filtered = Object.entries(streamCircles)
       .filter(([co, ci]) => !query || co.includes(query) || ci.name.includes(query) || ci.space.includes(query))
-      .filter(([, ci]) => !hideAttended || ci.status === 0)
-      .reduce<Record<string, SunflowerCircle>>((p, c) => ({ ...p, [c[0]]: c[1] }), {})
+      .filter(([, ci]) => !hideAttended || !ci.status)
+      .reduce<Record<string, SunflowerCircleAppModel>>((p, c) => ({ ...p, [c[0]]: c[1] }), {})
     return filtered
   }, [query, streamCircles, hideAttended])
 
@@ -86,6 +89,7 @@ const ListPage: React.FC = () => {
           <td>{ci.space}</td>
           <td>{convertStatusText(ci.status ?? 0)}</td>
           <td>{ci.name}</td>
+          <PCTableData>{ci.updatedAt && formatByDate(ci.updatedAt)}</PCTableData>
           <td>
             {ci.status !== 2 && <FormButton
               onClick={() => updateStatus(co, 2)}
@@ -141,6 +145,7 @@ const ListPage: React.FC = () => {
             <th>スペース</th>
             <th>状態</th>
             <th>サークル名</th>
+            <PCTableHeader>更新日時</PCTableHeader>
             <th>状態変更</th>
           </tr>
         </thead>
@@ -153,3 +158,15 @@ const ListPage: React.FC = () => {
 }
 
 export default ListPage
+
+const pcOnly = css`
+  @media (max-width: 840px) {
+    display: none;
+  }
+`
+const PCTableHeader = styled.th`
+  ${pcOnly}
+`
+const PCTableData = styled.td`
+  ${pcOnly}
+`
