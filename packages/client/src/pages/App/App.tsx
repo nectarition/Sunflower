@@ -1,5 +1,6 @@
 import { createBrowserRouter, Outlet, RouterProvider, ScrollRestoration } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
+import { ModalProvider } from '../../contexts/ModalContext'
 import GuidePage from '../GuidePage/GuidePage'
 import ListPage from '../ListPage/ListPage'
 import LoginPage from '../LoginPage/LoginPage'
@@ -50,7 +51,9 @@ const router = createBrowserRouter([
 const App: React.FC = () => {
   return (
     <HelmetProvider>
-      <RouterProvider router={router} />
+      <ModalProvider>
+        <RouterProvider router={router} />
+      </ModalProvider>
     </HelmetProvider>
   )
 }
