@@ -1,12 +1,12 @@
 import * as FirebaseDB from 'firebase/database'
 import useFirebase from './useFirebase'
-import type { SunflowerCircle, SunflowerCircleStatus } from 'sunflower'
+import type { SunflowerCircle, SunflowerCircleAppModel, SunflowerCircleStatus } from 'sunflower'
 
 interface IUseCircle {
   convertCodeDataByCircleCode: (codeData: string) => { sessionCode: string, circleId: string } | null
-  getCircleByCodeAsync: (circleCode: string) => Promise<SunflowerCircle>
+  getCircleByCodeAsync: (circleCode: string) => Promise<SunflowerCircleAppModel>
   updateCircleStatusByCodeAsync: (circleCode: string, status: SunflowerCircleStatus) => Promise<void>
-  getCirclesBySessionCodeAsync: (sessionCode: string) => Promise<Record<string, SunflowerCircle>>
+  getCirclesBySessionCodeAsync: (sessionCode: string) => Promise<Record<string, SunflowerCircleAppModel>>
   createCirclesAsync: (sessionCode: string, circles: Record<string, SunflowerCircle>) => Promise<void>
 }
 
@@ -27,7 +27,7 @@ const useCircle = (): IUseCircle => {
     }
 
   const getCircleByCodeAsync =
-    async (circleCode: string): Promise<SunflowerCircle> => {
+    async (circleCode: string): Promise<SunflowerCircleAppModel> => {
       const codeData = convertCodeDataByCircleCode(circleCode)
       if (!codeData) {
         throw new Error('invalid circleCode')
@@ -40,7 +40,8 @@ const useCircle = (): IUseCircle => {
         throw new Error('circle not found')
       }
 
-      return circleDoc.val() as SunflowerCircle
+      const circle = circleDoc.val() as SunflowerCircleAppModel
+      return circle
     }
 
   const updateCircleStatusByCodeAsync =
@@ -52,16 +53,20 @@ const useCircle = (): IUseCircle => {
 
       const db = getDatabase()
       const circleRef = FirebaseDB.ref(db, `circles/${codeData.sessionCode}/${circleCode}`)
-      await FirebaseDB.update(circleRef, { status })
+      const circle = {
+        status,
+        updatedAt: FirebaseDB.serverTimestamp()
+      }
+      await FirebaseDB.update(circleRef, circle)
     }
 
   const getCirclesBySessionCodeAsync =
-    async (sessionCode: string): Promise<Record<string, SunflowerCircle>> => {
+    async (sessionCode: string): Promise<Record<string, SunflowerCircleAppModel>> => {
       const db = getDatabase()
       const circlesRef = FirebaseDB.ref(db, `circles/${sessionCode}`)
       const circlesDoc = await FirebaseDB.get(circlesRef)
 
-      const circles = circlesDoc.val() as Record<string, SunflowerCircle>
+      const circles = circlesDoc.val() as Record<string, SunflowerCircleAppModel>
       return circles
     }
 

@@ -2,16 +2,16 @@ import { useState } from 'react'
 
 import * as FirebaseDB from 'firebase/database'
 import useFirebase from './useFirebase'
-import type { SunflowerCircle } from 'sunflower'
+import type { SunflowerCircleAppModel } from 'sunflower'
 
 interface IUseCircleStream {
-  streamCircles: Record<string, SunflowerCircle> | undefined
+  streamCircles: Record<string, SunflowerCircleAppModel> | undefined
   startStreamBySessionCode: (sessionCode: string) => void
 }
 
 const useCircleStream = (): IUseCircleStream => {
   const { getDatabase } = useFirebase()
-  const [streamCircles, setStreamCircles] = useState<Record<string, SunflowerCircle>>()
+  const [streamCircles, setStreamCircles] = useState<Record<string, SunflowerCircleAppModel>>()
 
   const startStreamBySessionCode =
     (sessionCode: string): FirebaseDB.Unsubscribe => {
@@ -20,7 +20,7 @@ const useCircleStream = (): IUseCircleStream => {
       return FirebaseDB.onValue(
         circleRef,
         (snapshot: FirebaseDB.DataSnapshot) => {
-          setStreamCircles(snapshot.val() as Record<string, SunflowerCircle>)
+          setStreamCircles(snapshot.val() as Record<string, SunflowerCircleAppModel>)
         },
         (err: Error) => {
           console.log(err)
