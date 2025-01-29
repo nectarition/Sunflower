@@ -44,9 +44,9 @@ export const ModalProvider: React.FC<Props> = props => {
         setIsShow(false)
         resolve()
       })
-      setHandleCancel(() => (err: Error) => {
+      setHandleCancel(() => () => {
         setIsShow(false)
-        reject(err)
+        reject(new Error('canceled'))
       })
     })
   }, [])

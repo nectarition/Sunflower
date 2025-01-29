@@ -164,6 +164,7 @@ const RegisterPage: React.FC = () => {
       action: () => handleSubmit(qrData)
     })
       .catch(err => {
+        if (err.message === 'canceled') return
         showModalAsync({ title: 'エラー', type: 'alert', children: `エラーが発生しました ${err.message}` })
         throw err
       })
