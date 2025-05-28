@@ -1,30 +1,23 @@
-import {
-  MdEdit,
-  MdHome,
-  MdInfo,
-  MdListAlt,
-  MdLogin,
-  MdLogout,
-  MdSettings
-} from 'react-icons/md'
 import { Link } from 'react-router-dom'
 import styled, { css } from 'styled-components'
+import { GearIcon, HouseIcon, ListIcon, PencilIcon, SignInIcon, SignOutIcon } from '@phosphor-icons/react'
+import { InfoIcon } from '@phosphor-icons/react/dist/ssr'
 import { User } from 'firebase/auth'
 
 const menuLinks = [
   {
     sectionName: null,
     items: [
-      { to: '/', icon: <MdHome />, label: 'ホーム' },
-      { to: '/roll-call', icon: <MdEdit />, label: '出席登録を行う' },
-      { to: '/records', icon: <MdListAlt />, label: '出席簿を見る' }
+      { to: '/', icon: <HouseIcon />, label: 'ホーム' },
+      { to: '/roll-call', icon: <PencilIcon />, label: '出席登録を行う' },
+      { to: '/records', icon: <ListIcon />, label: '出席簿を見る' }
     ]
   },
   {
     sectionName: '管理者向け',
     items: [
-      { to: '/guide', icon: <MdInfo />, label: '利用ガイドを見る' },
-      { to: '/manage', icon: <MdSettings />, label: '封筒コード管理' }
+      { to: '/guide', icon: <InfoIcon />, label: '利用ガイドを見る' },
+      { to: '/manage', icon: <GearIcon />, label: '封筒コード管理' }
     ]
   }
 ]
@@ -45,7 +38,7 @@ const SideMenu: React.FC<Props> = (props) => {
           {props.user === null && (
             <MenuSection>
               <MenuLinkItem to="/login">
-                <MenuIcon><MdLogin /></MenuIcon>
+                <MenuIcon><SignInIcon /></MenuIcon>
                 <MenuLabel>ログイン</MenuLabel>
               </MenuLinkItem>
             </MenuSection>
@@ -61,7 +54,7 @@ const SideMenu: React.FC<Props> = (props) => {
                   </MenuItemCardContent>
                 </MenuItemCard>
                 <MenuButtonItem onClick={props.handleLogout}>
-                  <MenuIcon><MdLogout /></MenuIcon>
+                  <MenuIcon><SignOutIcon /></MenuIcon>
                   <MenuLabel>ログアウト</MenuLabel>
                 </MenuButtonItem>
               </MenuSection>

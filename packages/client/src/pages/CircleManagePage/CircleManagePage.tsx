@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { SunflowerCircle } from 'sunflower'
+import { SoleilCircle } from 'sunflower'
 import FormButton from '../../components/Form/FormButton'
 import FormInput from '../../components/Form/FormInput'
 import FormItem from '../../components/Form/FormItem'
@@ -19,7 +19,7 @@ const CircleManagePage: React.FC = () => {
   const { sessionCode } = useSession()
   const { createCirclesAsync, convertCodeDataByCircleCode } = useCircle()
 
-  const [circles, setCircles] = useState<Record<string, SunflowerCircle>>()
+  const [circles, setCircles] = useState<Record<string, SoleilCircle>>()
   const [error, setError] = useState<string>()
   const [invalidRows, setInvalidRows] = useState<number[]>()
 
@@ -53,7 +53,7 @@ const CircleManagePage: React.FC = () => {
       return
     }
 
-    const data = rowData.reduce<Record<string, SunflowerCircle>>(
+    const data = rowData.reduce<Record<string, SoleilCircle>>(
       (p, c) => ({ ...p, [c[0]]: {
         space: c[1],
         name: c[2]

@@ -1,16 +1,16 @@
-export interface SunflowerSession {
+export interface SoleilSession {
   name: string
 }
 
-export interface SunflowerCircle {
+export interface SoleilCircle {
   name: string
   space: string
-  status?: SunflowerCircleStatus
+  status?: SoleilCircleStatus
 }
-export type SunflowerCircleAppModel = SunflowerCircle & {
+export type SoleilCircleAppModel = SoleilCircle & {
   updatedAt: number
 }
-export type SunflowerCircleDbModel = SunflowerCircle & {
+export type SoleilCircleDbModel = SoleilCircle & {
   updatedAt: object
 }
 
@@ -20,4 +20,4 @@ export type SunflowerCircleDbModel = SunflowerCircle & {
  * 1: 出席
  * 2: 欠席
  */
-export type SunflowerCircleStatus = 0 | 1 | 2
+export type SoleilCircleStatus = 0 | 1 | 2

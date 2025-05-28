@@ -1,37 +1,33 @@
-import { useState } from 'react'
-
-import * as FirebaseDB from 'firebase/database'
+import { useEffect, useState } from 'react'
+import { ref, onValue, DataSnapshot, off } from 'firebase/database'
 import useFirebase from './useFirebase'
-import type { SunflowerCircleAppModel } from 'sunflower'
+import type { SoleilCircleAppModel } from 'sunflower'
 
-interface IUseCircleStream {
-  streamCircles: Record<string, SunflowerCircleAppModel> | undefined
-  startStreamBySessionCode: (sessionCode: string) => void
-}
-
-const useCircleStream = (): IUseCircleStream => {
+const useCircleStream = (sessionCode: string | undefined): Record<string, SoleilCircleAppModel> | undefined => {
   const { getDatabase } = useFirebase()
-  const [streamCircles, setStreamCircles] = useState<Record<string, SunflowerCircleAppModel>>()
+  const db = getDatabase()
 
-  const startStreamBySessionCode =
-    (sessionCode: string): FirebaseDB.Unsubscribe => {
-      const db = getDatabase()
-      const circleRef = FirebaseDB.ref(db, `circles/${sessionCode}`)
-      return FirebaseDB.onValue(
-        circleRef,
-        (snapshot: FirebaseDB.DataSnapshot) => {
-          setStreamCircles(snapshot.val() as Record<string, SunflowerCircleAppModel>)
-        },
-        (err: Error) => {
-          console.log(err)
-          throw err
-        })
+  const [streamCircles, setStreamCircles] = useState<Record<string, SoleilCircleAppModel>>()
+
+  useEffect(() => {
+    if (!sessionCode) return
+    
+    const circleRef = ref(db, `circles/${sessionCode}`)
+    const unsubscribe = onValue(
+      circleRef,
+      (snapshot: DataSnapshot) => {
+        setStreamCircles(snapshot.val() as Record<string, SoleilCircleAppModel>)
+      }, (err) => {
+        console.error(err)
+        throw err
+      }
+    )
+    return () => {
+      off(circleRef, 'value', unsubscribe)
     }
+  }, [sessionCode])
 
-  return {
-    streamCircles,
-    startStreamBySessionCode
-  }
+  return streamCircles
 }
 
 export default useCircleStream

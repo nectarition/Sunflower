@@ -1,9 +1,9 @@
 import { atomWithStorage } from 'jotai/utils'
-import type { SunflowerSession } from 'sunflower'
+import type { SoleilSession } from 'sunflower'
 
 interface SessionType {
   sessionCode: string
-  session: SunflowerSession
+  session: SoleilSession
 }
 const session = atomWithStorage<SessionType | undefined>('session', undefined)
 

@@ -1,4 +1,4 @@
-import { MdEdit, MdListAlt } from 'react-icons/md'
+import { ListIcon, PencilIcon } from '@phosphor-icons/react'
 import FormItem from '../../components/Form/FormItem'
 import FormSection from '../../components/Form/FormSection'
 import IconLabel from '../../components/parts/IconLabel'
@@ -15,14 +15,14 @@ const IndexPage: React.FC = () => {
           <LinkButton to="/roll-call" size="large">
             <IconLabel
               label={<>出席登録<small>を行う</small></>}
-              icon={<MdEdit />} />
+              icon={<PencilIcon />} />
           </LinkButton>
         </FormItem>
         <FormItem>
           <LinkButton to="/records" size="large">
             <IconLabel
               label={<>出席簿<small>を見る</small></>}
-              icon={<MdListAlt />} />
+              icon={<ListIcon />} />
           </LinkButton>
         </FormItem>
       </FormSection>

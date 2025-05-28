@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { getFirebaseApp } from './libs/FirebaseApp'
 import App from './App'
+import { getFirebaseApp } from './libs/FirebaseApp'
 import './index.scss'
 
 getFirebaseApp()

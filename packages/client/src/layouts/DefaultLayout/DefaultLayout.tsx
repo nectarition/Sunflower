@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react'
-import { MdClose, MdMenu } from 'react-icons/md'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
+import { ListIcon, XIcon } from '@phosphor-icons/react'
 import LogotypeSVG from '../../assets/logotype.svg'
 import useFirebase from '../../hooks/useFirebase'
 import useSession from '../../hooks/useSession'
@@ -43,7 +43,7 @@ const DefaultLayout: React.FC<Props> = (props) => {
           <MenuButtonArea>
             {isSmallDisplay && (
               <MenuButton onClick={() => setIsShowMenu(!showMenu)}>
-                {showMenu ? <MdClose /> : <MdMenu />}
+                {showMenu ? <XIcon /> : <ListIcon />}
               </MenuButton>
             )}
           </MenuButtonArea>
@@ -126,4 +126,5 @@ const LogotypeImage = styled.img`
 `
 const MainContainer = styled.main`
   padding: 20px;
+  overflow-y: auto;
 `

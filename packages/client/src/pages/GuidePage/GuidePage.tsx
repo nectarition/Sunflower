@@ -56,12 +56,12 @@ const GuidePage: React.FC = () => {
 
       <h4>出席登録</h4>
       <ol>
-        <li>「<Link to="/register">出席登録</Link>」を開きます。</li>
+        <li>「<Link to="/roll-call">出席登録</Link>」を開きます。</li>
       </ol>
 
       <h4>出欠確認</h4>
       <ol>
-        <li>「<Link to="/list">出欠確認</Link>」を開きます。</li>
+        <li>「<Link to="/records">出欠確認</Link>」を開きます。</li>
       </ol>
     </DefaultLayout>
   )

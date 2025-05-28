@@ -4,7 +4,7 @@ import type { Result } from '@zxing/library'
 
 interface Props {
   onScan: (data: Result) => void
-  style: React.CSSProperties
+  style?: React.CSSProperties
 }
 const QRReaderComponent: React.FC<Props> = props => {
   const mountedRef = useRef<boolean>(false)
@@ -34,7 +34,7 @@ const QRReaderComponent: React.FC<Props> = props => {
     return () => {
       mountedRef.current = false
     }
-  }, [])
+  }, [props.onScan])
 
   return (
     <>
