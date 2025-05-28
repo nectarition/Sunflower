@@ -7,7 +7,7 @@ import IconLabel from './IconLabel'
 interface Props {
   status: SoleilCircleStatus | null | undefined
 }
-const StatusLabel: React.FC<Props> = props => {
+const AttendStatusLabel: React.FC<Props> = props => {
   const status = useMemo(() => {
   
     switch (props.status) {
@@ -26,7 +26,7 @@ const StatusLabel: React.FC<Props> = props => {
       default:
         return {
           className: 'pending',
-          text: '未登録',
+          text: '未提出',
           icon: <HourglassIcon />
         }
     }
@@ -41,7 +41,7 @@ const StatusLabel: React.FC<Props> = props => {
   )
 }
 
-export default StatusLabel
+export default AttendStatusLabel
 
 const Container = styled.span`
   display: inline-block;
@@ -51,17 +51,20 @@ const Container = styled.span`
   color: #fff;
 
   &.attended {
-    border: 1px solid #28a745;
-    color: #28a745;
+    border: 1px solid #2b9a45;
+    color: #2b9a45;
+    background-color: #e2f3e6;
   }
 
   &.absent {
     border: 1px solid #dc3545;
     color: #dc3545;
+    background-color: #fbe2e4;
   }
 
   &.pending {
     border: 1px solid #808080;
     color: #808080;
+    background-color: #f0f0f0;
   }
 `

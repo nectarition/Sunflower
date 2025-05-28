@@ -6,9 +6,9 @@ import FormButton from '../../components/Form/FormButton'
 import FormCheckbox from '../../components/Form/FormCheckbox'
 import FormItem from '../../components/Form/FormItem'
 import FormSection from '../../components/Form/FormSection'
+import AttendStatusLabel from '../../components/parts/AttendStatusLabel'
 import Breadcrumbs from '../../components/parts/Breadcrumbs'
 import IconLabel from '../../components/parts/IconLabel'
-import StatusLabel from '../../components/parts/StatusLabel'
 import useCircle from '../../hooks/useCircle'
 import useCircleStream from '../../hooks/useCircleStream'
 import useSession from '../../hooks/useSession'
@@ -35,7 +35,7 @@ const AttendanceRecordPage: React.FC = () => {
       ? '出席済み'
       : status === 2
         ? '欠席'
-        : '未確認'
+        : '未提出'
   }, [])
   
   const updateStatus = useCallback((circleCode: string, status: SoleilCircleStatus) => {
@@ -89,7 +89,7 @@ const AttendanceRecordPage: React.FC = () => {
         <FormItem $inlined>
           <FormCheckbox
             name="showUnregistered"
-            label="未登録のみ表示"
+            label="未提出のみ表示"
             checked={isShowUnregistered}
             onChange={checked => setIsShowUnregistered(checked)}
             inlined={true} />
@@ -117,7 +117,7 @@ const AttendanceRecordPage: React.FC = () => {
             <tr key={id}>
               <td>{c.space}</td>
               <td>{c.name}</td>
-              <td><StatusLabel status={c.status} /></td>
+              <td><AttendStatusLabel status={c.status} /></td>
               {!isShowUnregistered && <td>{c.updatedAt && new Date(c.updatedAt).toLocaleString()}</td>}
               <td>{id}</td>
               <td>

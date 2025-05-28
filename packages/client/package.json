@@ -21,7 +21,7 @@
     "react-router-dom": "^6.9.0",
     "sass": "^1.77.4",
     "styled-components": "^5.3.9",
-    "use-sound": "^4.0.1"
+    "use-sound": "^5.0.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.0",

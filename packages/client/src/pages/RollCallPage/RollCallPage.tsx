@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { CameraIcon, CameraSlashIcon, KeyboardIcon, UsbIcon } from '@phosphor-icons/react'
 import { Result } from '@zxing/library'
-import { SoleilCircleAppModel } from 'sunflower'
+import useSound from 'use-sound'
+import OKSE from '../../assets/se/ok.wav'
 import FormButton from '../../components/Form/FormButton'
 import FormInput from '../../components/Form/FormInput'
 import FormItem from '../../components/Form/FormItem'
@@ -13,15 +14,11 @@ import Breadcrumbs from '../../components/parts/Breadcrumbs'
 import IconLabel from '../../components/parts/IconLabel'
 import KeyboardInputComponent from '../../components/parts/KeyboardInputComponent'
 import QRReaderComponent from '../../components/parts/QRReaderComponent'
+import RollCallStatusLabel from '../../components/parts/RollCallStatusLabel'
 import useCircle from '../../hooks/useCircle'
 import useSession from '../../hooks/useSession'
 import DefaultLayout from '../../layouts/DefaultLayout/DefaultLayout'
-
-/**
- * 出席登録の処理結果ステータス
- * 1: 成功, 2: エラー
- */
-type ProcessStatus = 1 | 2
+import type { RollCallProcessStatus, SoleilCircleAppModel } from 'sunflower'
 
 /**
  * スキャナーモード
@@ -40,12 +37,14 @@ const RollCallPage: React.FC = () => {
   const readResult = useRef<string>('')
 
   const [inputtedCodes, setInputtedCodes] = useState<{ id: string, code: string, readAt: Date }[]>([])
-  const [processResults, setProcessResults] = useState<Record<string, ProcessStatus>>({})
+  const [processResults, setProcessResults] = useState<Record<string, RollCallProcessStatus>>({})
 
   const [circles, setCircles] = useState<Record<string, SoleilCircleAppModel>>({})
 
+  const [playOKSE] = useSound(OKSE)
+
   const submitCode = useCallback((code: string) => {
-    if (!sessionCode) return
+    if (!sessionCode || !code.trim()) return
 
     const now = new Date()
     const guid = crypto.randomUUID()
@@ -55,6 +54,7 @@ const RollCallPage: React.FC = () => {
     const codeData = convertCodeDataByCircleCode(code)
     if (!codeData || codeData.sessionCode !== sessionCode) {
       setProcessResults(s => ({ ...s, [guid]: 2 }))
+      setCode('')
       return
     }
 
@@ -79,7 +79,7 @@ const RollCallPage: React.FC = () => {
   }, [sessionCode])
 
   const handleSubmit = useCallback((e: React.KeyboardEvent) => {
-    if (e.ctrlKey || e.metaKey && e.key === 'Enter') {
+    if (e.key === 'Enter') {
       e.preventDefault()
       submitCode(code)
     }
@@ -87,10 +87,11 @@ const RollCallPage: React.FC = () => {
 
   const handleOnScan = useCallback((result: Result) => {
     const currentCode = result.getText()
-
     if (readResult.current === currentCode) return
     readResult.current = currentCode
     submitCode(currentCode)
+    setIsCameraMute(true)
+    playOKSE()
   }, [submitCode])
 
   const getCircle = useCallback((code: string) => {
@@ -154,7 +155,7 @@ const RollCallPage: React.FC = () => {
                   placeholder="封筒コードを入力" />
               </FormItem>
               <FormItem>
-                <FormButton type="button" onClick={() => submitCode(code)}>登録 (Ctrl+Enter)</FormButton>
+                <FormButton type="button" onClick={() => submitCode(code)}>登録</FormButton>
               </FormItem>
             </FormSection>
           )}
@@ -171,7 +172,7 @@ const RollCallPage: React.FC = () => {
               </FormSection>
               {!isCameraMute && (
                 <QRReaderComponent
-                  style={{ width: '100%', height: '300px' }}
+                  style={{ width: '100%' }}
                   onScan={handleOnScan} />
               )}
             </>
@@ -203,7 +204,7 @@ const RollCallPage: React.FC = () => {
             <thead>
               <tr>
                 <th>封筒コード</th>
-                <th style={{ width: '10%' }}>結果</th>
+                <th>結果</th>
                 <th>配置番号</th>
                 <th>サークル名</th>
                 <th>登録日時</th>
@@ -215,21 +216,11 @@ const RollCallPage: React.FC = () => {
                   <td colSpan={6} style={{ textAlign: 'center' }}>登録された封筒コードはありません</td>
                 </tr>
               )}
-              {inputtedCodes.map((code, index) => {
+              {inputtedCodes.map((code) => {
                 const circle = getCircle(code.code)
                 return (<tr key={code.id}>
                   <td>{code.code}</td>
-                  <td>
-                    {processResults[code.id] === 1
-                      ? (
-                        <span style={{ color: 'green' }}>完了</span>
-                      )
-                      : processResults[code.id] === 2
-                        ? (
-                          <span style={{ color: 'red' }}>エラー</span>
-                        )
-                        : '処理中'}
-                  </td>
+                  <td><RollCallStatusLabel status={processResults[code.id]} /></td>
                   <td>{circle?.space}</td>
                   <td>{circle?.name}</td>
                   <td>{code.readAt.toLocaleString()}</td>
