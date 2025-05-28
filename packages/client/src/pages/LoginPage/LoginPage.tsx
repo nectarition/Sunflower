@@ -1,11 +1,13 @@
 import { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
+import { SignInIcon } from '@phosphor-icons/react'
 import FormButton from '../../components/Form/FormButton'
 import FormInput from '../../components/Form/FormInput'
 import FormItem from '../../components/Form/FormItem'
 import FormLabel from '../../components/Form/FormLabel'
 import FormSection from '../../components/Form/FormSection'
+import IconLabel from '../../components/parts/IconLabel'
 import Panel from '../../components/parts/Panel'
 import useFirebase from '../../hooks/useFirebase'
 import useLocalizeFirebaseError from '../../hooks/useLocalizeFirebaseError'
@@ -85,8 +87,9 @@ const LoginPage: React.FC = () => {
         <FormItem>
           <FormButton
             onClick={handleLogin}
-            disabled={!email || !password || !sessionCode || isProcess}>
-            ログイン
+            disabled={!email || !password || !sessionCode || isProcess}
+            $inlined>
+            <IconLabel icon={<SignInIcon />} label="ログイン" />
           </FormButton>
         </FormItem>
       </FormSection>

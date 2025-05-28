@@ -8,7 +8,6 @@ const FormItem = styled.div<{ $inlined?: boolean }>`
 
   ${props => props.$inlined && `
     display: flex;
-    justify-content: flex-end;
     gap: 10px;
   `}
 `

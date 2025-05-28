@@ -2,11 +2,17 @@ import { css } from 'styled-components'
 
 type ColorType =  'danger' | 'default'
 
-const buttonStyle = css<{ size?: 'small' | 'large', color?: ColorType }>`
+const buttonStyle = css<{ size?: 'small' | 'large', color?: ColorType, $inlined?: boolean }>`
   display: block;
-
   width: 100%;
   padding: 10px;
+
+  ${props => props.$inlined && ({
+    display: 'inline-block',
+    width: 'auto',
+    padding: '10px 20px'
+  })}
+
 
   font-family: inherit;
   font-weight: inherit;
@@ -29,6 +35,7 @@ const buttonStyle = css<{ size?: 'small' | 'large', color?: ColorType }>`
     color: var(--disabled-text-color);
     border-bottom: 1px solid var(--border-color);
     cursor: unset;
+    pointer-events: none;
   }
 
   ${props => {

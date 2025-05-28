@@ -1,8 +1,11 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { PencilIcon, PencilSlashIcon } from '@phosphor-icons/react'
-import { SoleilCircleStatus } from 'sunflower'
+import { SoleilCircleAppModel, SoleilCircleStatus } from 'sunflower'
 import FormButton from '../../components/Form/FormButton'
+import FormCheckbox from '../../components/Form/FormCheckbox'
+import FormItem from '../../components/Form/FormItem'
+import FormSection from '../../components/Form/FormSection'
 import Breadcrumbs from '../../components/parts/Breadcrumbs'
 import IconLabel from '../../components/parts/IconLabel'
 import StatusLabel from '../../components/parts/StatusLabel'
@@ -18,6 +21,14 @@ const AttendanceRecordPage: React.FC = () => {
 
   const [now, setNow] = useState<Date>(new Date())
   const [forceAttendanceCheck, setForceAttendanceCheck] = useState(false)
+  const [isShowUnregistered, setIsShowUnregistered] = useState(false)
+
+  const filteredCircles = useMemo(() => {
+    if (!streamCircles) return null
+    return Object.entries(streamCircles)
+      .filter(([_, circle]) => !isShowUnregistered || !circle.status)
+      .reduce((acc, [code, circle]) => ({ ...acc, [code]: circle }), {} as Record<string, SoleilCircleAppModel>)
+  }, [streamCircles, isShowUnregistered])
 
   const convertStatusText = useCallback((status: SoleilCircleStatus | undefined) => {
     return status === 1
@@ -74,29 +85,40 @@ const AttendanceRecordPage: React.FC = () => {
         出席状況はリアルタイムで更新されます。
       </p>
 
+      <FormSection>
+        <FormItem $inlined>
+          <FormCheckbox
+            name="showUnregistered"
+            label="未登録のみ表示"
+            checked={isShowUnregistered}
+            onChange={checked => setIsShowUnregistered(checked)}
+            inlined={true} />
+        </FormItem>
+      </FormSection>
+
       <table>
         <thead>
           <tr>
             <th>配置番号</th>
             <th>サークル名</th>
             <th>出欠</th>
-            <th>更新日時</th>
+            {!isShowUnregistered && <th>更新日時</th>}
             <th>封筒コード</th>
             <th>状態変更</th>
           </tr>
         </thead>
         <tbody>
-          {!streamCircles && (
+          {!filteredCircles && (
             <tr>
               <td colSpan={6}>サークルリストを取得中です</td>
             </tr>
           )}
-          {streamCircles && Object.entries(streamCircles).map(([id, c]) => (
+          {filteredCircles && Object.entries(filteredCircles).map(([id, c]) => (
             <tr key={id}>
               <td>{c.space}</td>
               <td>{c.name}</td>
               <td><StatusLabel status={c.status} /></td>
-              <td>{c.updatedAt && new Date(c.updatedAt).toLocaleString()}</td>
+              {!isShowUnregistered && <td>{c.updatedAt && new Date(c.updatedAt).toLocaleString()}</td>}
               <td>{id}</td>
               <td>
                 {c.status !== 2 && (
