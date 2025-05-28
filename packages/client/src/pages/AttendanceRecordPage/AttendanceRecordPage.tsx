@@ -16,7 +16,7 @@ import useDayjs from '../../hooks/useDayjs'
 import useSession from '../../hooks/useSession'
 import DefaultLayout from '../../layouts/DefaultLayout/DefaultLayout'
 
-const ListPage: React.FC = () => {
+const AttendanceRecordPage: React.FC = () => {
   const { sessionCode } = useSession()
   const { formatByDate } = useDayjs()
   const { updateCircleStatusByCodeAsync } = useCircle()
@@ -91,14 +91,19 @@ const ListPage: React.FC = () => {
           <td>{ci.name}</td>
           <PCTableData>{ci.updatedAt && formatByDate(ci.updatedAt)}</PCTableData>
           <td>
-            {ci.status !== 2 && <FormButton
-              onClick={() => updateStatus(co, 2)}
-              color={ci.status ? 'danger' : undefined}>
-              <IconLabel label="欠席" icon={<MdEditOff />} />
-            </FormButton>}
-            {ci.status === 2 && <FormButton onClick={() => updateStatus(co, 1)}>
-              <IconLabel label="出席" icon={<MdEdit />} />
-            </FormButton>}
+            {ci.status !== 2 && (
+              <FormButton
+                onClick={() => updateStatus(co, 2)}
+                color={ci.status ? 'danger' : undefined}
+                size="small">
+                <IconLabel label="欠席" icon={<MdEditOff />} />
+              </FormButton>
+            )}
+            {ci.status === 2 && (
+              <FormButton onClick={() => updateStatus(co, 1)} size="small">
+                <IconLabel label="出席" icon={<MdEdit />} />
+              </FormButton>
+            )}
           </td>
         </tr>
       ))
@@ -157,7 +162,7 @@ const ListPage: React.FC = () => {
   )
 }
 
-export default ListPage
+export default AttendanceRecordPage
 
 const pcOnly = css`
   @media (max-width: 840px) {

@@ -13,7 +13,7 @@ import useFile from '../../hooks/useFile'
 import useSession from '../../hooks/useSession'
 import DefaultLayout from '../../layouts/DefaultLayout/DefaultLayout'
 
-const ManagePage: React.FC = () => {
+const CircleManagePage: React.FC = () => {
   const [file, setFile] = useState<File>()
   const { openAsText, data } = useFile()
   const { sessionCode } = useSession()
@@ -141,4 +141,4 @@ const ManagePage: React.FC = () => {
   )
 }
 
-export default ManagePage
+export default CircleManagePage

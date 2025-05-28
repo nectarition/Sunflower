@@ -2,14 +2,15 @@ import styled from 'styled-components'
 
 const Breadcrumbs = styled.ul`
   margin: 0;
-  margin-bottom: 10px;
   padding: 0;
-  
+  margin-bottom: 10px;
   &:last-child {
     margin-bottom: 0;
   }
-  
+
+  font-size: 0.9em;
   list-style: none;
+  
   li {
     margin: 0;
     padding: 0;
@@ -20,14 +21,13 @@ const Breadcrumbs = styled.ul`
     &::after {
       position: absolute;
       display: inline-block;
-      content: '';
-      width: 8px;
-      height: 8px;
-      top: calc(50% - 4px);
+      content: "";
+      width: 6px;
+      height: 6px;
+      top: calc(50% - 3px);
       right: 10px;
-      
-      border-bottom: 2px solid #c0c0c0;
-      border-right: 2px solid #c0c0c0;
+      border-bottom: 1px solid var(--outline-color);
+      border-right: 1px solid var(--outline-color);
       transform: rotate(-45deg);
     }
   }

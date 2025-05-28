@@ -1,7 +1,15 @@
-@import url('https://nectarition.github.io/LINE-Seed-JP/css/line-seed-jp.css');
-
 :root {
-  --primary-color: #FFC93F;
+  --brand-color: #f2b71f;
+  --brand-background-color: #242420;
+  --brand-background-active-color: #e4e4e0;
+  --panel-background-color: #e8e8e8;
+  --body-background-color: #f0f0f0;
+  --inputfield-background-color: #fcfcfc;
+  --outline-color: #909088;
+  --border-color: #e4e4e0;
+  --text-color: #242420;
+  --white-color: #ffffff;
+  --text-light-color: #848480;
   --secondary-color: #DFA920;
   --tertiary-color: #957014;
 }
@@ -14,6 +22,12 @@ html, body, #root {
   height: 100%;
 }
 
+body {
+  background-color: var(--body-background-color);
+  color: var(--text-color);
+  font-size: 14px;
+}
+
 html, body, p, pre,
 h1, h2, h3, h4, h5, h6 {
   margin: 0;
@@ -21,7 +35,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 body {
-  font-family: 'LINE Seed JP';
+  font-family: sans-serif;
 }
 
 p, table,
@@ -38,9 +52,6 @@ small {
   font-size: 0.8em;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  color: var(--tertiary-color);
-}
 h1 { font-size: 2em; }
 h2 { font-size: 1.75em; }
 h3 { font-size: 1.5em; }
@@ -62,17 +73,17 @@ table {
   }
   th,
   td {
-    padding: 10px;
+    padding: 5px 10px;
   }
   th:empty {
     display: none;
   }
 
   thead {
-    border-bottom: 2px solid var(--secondary-color);
+    border-bottom: 1px solid var(--secondary-color);
   }
   tbody {
-    border-bottom: 2px solid var(--secondary-color);
+    border-bottom: 1px solid var(--secondary-color);
   }
 }
 

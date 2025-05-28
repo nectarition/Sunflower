@@ -8,12 +8,13 @@ const FormInput = styled.input`
   width: 100%;
   padding: 5px;
   outline: none;
-  border: 2px solid #c0c0c0;
+  border: 1px solid var(--border-color);
+  background-color: var(--inputfield-background-color);
 
   transition: border 0.2s;
 
   &:focus {
-    border: 2px solid var(--secondary-color);
+    border: 1px solid var(--text-color);
   }
 
   border-radius: 5px;

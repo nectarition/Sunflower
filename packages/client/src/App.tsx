@@ -1,12 +1,13 @@
 import { createBrowserRouter, Outlet, RouterProvider, ScrollRestoration } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
-import { ModalProvider } from '../../contexts/ModalContext'
-import GuidePage from '../GuidePage/GuidePage'
-import ListPage from '../ListPage/ListPage'
-import LoginPage from '../LoginPage/LoginPage'
-import ManagePage from '../ManagePage/ManagePage'
-import MenuPage from '../MenuPage/MenuPage'
-import RegisterPage from '../RegisterPage/RegisterPage'
+import { ModalProvider } from './contexts/ModalContext'
+import AttendanceRecordPage from './pages/AttendanceRecordPage/AttendanceRecordPage'
+import CircleManagePage from './pages/CircleManagePage/CircleManagePage'
+import GuidePage from './pages/GuidePage/GuidePage'
+import IndexPage from './pages/IndexPage/IndexPage'
+import LoginPage from './pages/LoginPage/LoginPage'
+import RollCallPage from './pages/RollCallPage/RollCallPage'
+
 
 const Root: React.FC = () => (
   <>
@@ -22,23 +23,23 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <MenuPage />
+        element: <IndexPage />
       },
       {
         path: 'login',
         element: <LoginPage />
       },
       {
-        path: 'register',
-        element: <RegisterPage />
+        path: 'roll-call',
+        element: <RollCallPage />
       },
       {
-        path: 'list',
-        element: <ListPage />
+        path: 'records',
+        element: <AttendanceRecordPage />
       },
       {
         path: 'manage',
-        element: <ManagePage />
+        element: <CircleManagePage />
       },
       {
         path: 'guide',

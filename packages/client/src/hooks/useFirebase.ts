@@ -21,7 +21,7 @@ interface IUseFirebase {
   user: User | null | undefined
   getAuth: () => Auth
   loginByEmail: (email: string, password: string) => Promise<UserCredential>
-  logout: () => void
+  logoutAsync: () => Promise<void>
   createUser: (email: string, password: string) => Promise<User>
   sendPasswordResetURL: (email: string) => void
   getFirestore: () => Firestore
@@ -56,16 +56,11 @@ const useFirebase = (): IUseFirebase => {
       return credential
     }
 
-  const logout = (): void => {
+  const logoutAsync = async (): Promise<void> => {
     const auth = getAuth()
-    signOut(auth)
-      .then(() => {
-        setUser(null)
-        setLoggedIn(false)
-      })
-      .catch((err: FirebaseError) => {
-        throw err
-      })
+    await signOut(auth)
+    setUser(null)
+    setLoggedIn(false)
   }
 
   const createUser =
@@ -106,7 +101,7 @@ const useFirebase = (): IUseFirebase => {
     user,
     getAuth,
     loginByEmail,
-    logout,
+    logoutAsync,
     createUser,
     sendPasswordResetURL,
     getFirestore,

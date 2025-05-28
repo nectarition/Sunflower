@@ -22,7 +22,7 @@ import useSession from '../../hooks/useSession'
 import DefaultLayout from '../../layouts/DefaultLayout/DefaultLayout'
 import type { SunflowerCircle } from 'sunflower'
 
-const RegisterPage: React.FC = () => {
+const RollCallPage: React.FC = () => {
   const { sessionCode } = useSession()
   const {
     convertCodeDataByCircleCode,
@@ -275,7 +275,7 @@ const RegisterPage: React.FC = () => {
               <FormButton
                 onClick={() => setHideInputed(s => !s)}
                 color={hideInputed ? 'default' : undefined}>
-                  チェック済みを{hideInputed ? '表示' : '隠す'}
+                チェック済みを{hideInputed ? '表示' : '隠す'}
               </FormButton>
             </FormItem>
           </FormSection>
@@ -299,7 +299,7 @@ const RegisterPage: React.FC = () => {
   )
 }
 
-export default RegisterPage
+export default RollCallPage
 
 const Layout = styled.section`
   display: grid;
