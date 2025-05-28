@@ -107,12 +107,12 @@ const RollCallPage: React.FC = () => {
     submitCodeAsync(currentCode)
       .then(() => playOKSE())
     setIsCameraMute(true)
-  }, [submitCodeAsync])
+  }, [playOKSE, submitCodeAsync])
 
   const handleOnData = useCallback((data: string) => {
     submitCodeAsync(data)
       .then(() => playOKSE())
-  }, [])
+  }, [playOKSE])
 
   const getCircle = useCallback((code: string) => {
     const circle = circles[code]
