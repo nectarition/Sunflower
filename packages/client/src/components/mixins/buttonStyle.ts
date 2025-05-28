@@ -25,9 +25,9 @@ const buttonStyle = css<{ size?: 'small' | 'large', color?: ColorType }>`
   transition: border 0.2s, background-color 0.2s;
 
   &:disabled {
-    background-color: #c8c8c8;
-    color: #808080;
-    border-bottom: 2px solid #c0c0c0;
+    background-color: var(--disabled-background-color);
+    color: var(--disabled-text-color);
+    border-bottom: 1px solid var(--border-color);
     cursor: unset;
   }
 
