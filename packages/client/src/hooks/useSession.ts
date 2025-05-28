@@ -14,13 +14,6 @@ interface IUseSession {
 const useSession = (): IUseSession => {
   const { getDatabase } = useFirebase()
   const [sessionContext, setSessionContext] = useAtom(sessionAtom)
-  const [sessionCode, setSessionCode] = useState<string>()
-  const [sessionName, setSessionName] = useState<string>()
-
-  useEffect(() => {
-    setSessionCode(sessionContext?.sessionCode)
-    setSessionName(sessionContext?.session.name)
-  }, [sessionContext])
 
   const fetchSessionByCodeAsync = async (code: string): Promise<void> => {
     const db = getDatabase()
@@ -42,8 +35,8 @@ const useSession = (): IUseSession => {
   const resetSession = () => setSessionContext(undefined)
 
   return {
-    sessionCode,
-    sessionName,
+    sessionCode: sessionContext?.sessionCode,
+    sessionName: sessionContext?.session.name,
     fetchSessionByCodeAsync,
     resetSession
   }
