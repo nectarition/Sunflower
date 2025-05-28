@@ -44,7 +44,7 @@ const RollCallPage: React.FC = () => {
 
   const [playOKSE] = useSound(OKSE)
 
-  const submitCode = useCallback((code: string) => {
+  const submitCodeAsync = useCallback(async (code: string) => {
     if (!sessionCode || !code.trim()) return
 
     const now = new Date()
@@ -57,27 +57,22 @@ const RollCallPage: React.FC = () => {
       toast.error('封筒コードの形式が正しくありません。')
       setProcessResults(s => ({ ...s, [guid]: 2 }))
       setCode('')
-      return
+      throw new Error('invalid circleCode')
     }
     else if (codeData.sessionCode !== sessionCode) {
       toast.error('イベントコードが一致しません。')
       setProcessResults(s => ({ ...s, [guid]: 2 }))
       setCode('')
-      return
+      throw new Error('sessionCode mismatch')
     }
 
     if (!circles[code]) {
       getCircleByCodeAsync(code)
-        .then(circle => {
-          setCircles(s => ({ ...s, [code]: circle }))
-        })
-        .catch(err => {
-          console.log(err.message)
-          throw err
-        })
+        .then(circle => setCircles(s => ({ ...s, [code]: circle })))
+        .catch(err => { throw err })
     }
 
-    toast.promise(
+    await toast.promise(
       updateCircleStatusByCodeAsync(code, 1),
       {
         loading: '出席登録中…',
@@ -95,25 +90,29 @@ const RollCallPage: React.FC = () => {
         }
       }
     )
-
     setCode('')
   }, [sessionCode])
 
   const handleSubmit = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       e.preventDefault()
-      submitCode(code)
+      submitCodeAsync(code)
     }
-  }, [submitCode, code])
+  }, [submitCodeAsync, code])
 
   const handleOnScan = useCallback((result: Result) => {
     const currentCode = result.getText()
     if (readResult.current === currentCode) return
     readResult.current = currentCode
-    submitCode(currentCode)
+    submitCodeAsync(currentCode)
+      .then(() => playOKSE())
     setIsCameraMute(true)
-    playOKSE()
-  }, [submitCode])
+  }, [submitCodeAsync])
+
+  const handleOnData = useCallback((data: string) => {
+    submitCodeAsync(data)
+      .then(() => playOKSE())
+  }, [])
 
   const getCircle = useCallback((code: string) => {
     const circle = circles[code]
@@ -178,7 +177,7 @@ const RollCallPage: React.FC = () => {
                   placeholder="封筒コードを入力" />
               </FormItem>
               <FormItem>
-                <FormButton type="button" onClick={() => submitCode(code)}>登録</FormButton>
+                <FormButton type="button" onClick={() => submitCodeAsync(code)}>登録</FormButton>
               </FormItem>
             </FormSection>
           )}
@@ -213,7 +212,7 @@ const RollCallPage: React.FC = () => {
               </FormSection>
               <KeyboardInputComponent
                 onKeyDown={setTempCode}
-                onData={submitCode} />
+                onData={handleOnData} />
             </>
           )}
         </Column>
