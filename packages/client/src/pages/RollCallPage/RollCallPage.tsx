@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { CameraIcon, CameraSlashIcon, KeyboardIcon, UsbIcon } from '@phosphor-icons/react'
 import { Result } from '@zxing/library'
+import toast, { Toaster } from 'react-hot-toast'
 import useSound from 'use-sound'
 import OKSE from '../../assets/se/ok.wav'
 import FormButton from '../../components/Form/FormButton'
@@ -52,7 +53,14 @@ const RollCallPage: React.FC = () => {
     setInputtedCodes(s => ([newCode, ...s]))
 
     const codeData = convertCodeDataByCircleCode(code)
-    if (!codeData || codeData.sessionCode !== sessionCode) {
+    if (!codeData) {
+      toast.error('封筒コードの形式が正しくありません。')
+      setProcessResults(s => ({ ...s, [guid]: 2 }))
+      setCode('')
+      return
+    }
+    else if (codeData.sessionCode !== sessionCode) {
+      toast.error('イベントコードが一致しません。')
       setProcessResults(s => ({ ...s, [guid]: 2 }))
       setCode('')
       return
@@ -63,17 +71,30 @@ const RollCallPage: React.FC = () => {
         .then(circle => {
           setCircles(s => ({ ...s, [code]: circle }))
         })
-        .catch(err => { throw err })
+        .catch(err => {
+          console.log(err.message)
+          throw err
+        })
     }
 
-    updateCircleStatusByCodeAsync(code, 1)
-      .then(() => {
-        setProcessResults(s => ({ ...s, [guid]: 1 }))
-      })
-      .catch(err => {
-        console.error(err)
-        setProcessResults(s => ({ ...s, [guid]: 2 }))
-      })
+    toast.promise(
+      updateCircleStatusByCodeAsync(code, 1),
+      {
+        loading: '出席登録中…',
+        success: () => {
+          setProcessResults(s => ({ ...s, [guid]: 1 }))
+          return '出席登録が完了しました。'
+        },
+        error: (err) => {
+          console.error(err)
+          setProcessResults(s => ({ ...s, [guid]: 2 }))
+          if (err.message === 'circle not found') {
+            return 'この封筒コードは登録されていません。'
+          }
+          return '出席登録に失敗しました。'
+        }
+      }
+    )
 
     setCode('')
   }, [sessionCode])
@@ -102,6 +123,8 @@ const RollCallPage: React.FC = () => {
 
   return (
     <DefaultLayout title="出席登録">
+      <Toaster />
+
       <Breadcrumbs>
         <li><Link to="/">メニュー</Link></li>
       </Breadcrumbs>
