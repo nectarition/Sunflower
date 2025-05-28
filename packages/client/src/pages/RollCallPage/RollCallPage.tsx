@@ -35,7 +35,7 @@ const RollCallPage: React.FC = () => {
   const [isCameraMute, setIsCameraMute] = useState(true)
   const [code, setCode] = useState('')
   const [tempCode, setTempCode] = useState('')
-  const readResult = useRef<string>('')
+  const scanResult = useRef<string>('')
 
   const [inputtedCodes, setInputtedCodes] = useState<{ id: string, code: string, readAt: Date }[]>([])
   const [processResults, setProcessResults] = useState<Record<string, RollCallProcessStatus>>({})
@@ -102,8 +102,8 @@ const RollCallPage: React.FC = () => {
 
   const handleOnScan = useCallback((result: Result) => {
     const currentCode = result.getText()
-    if (readResult.current === currentCode) return
-    readResult.current = currentCode
+    if (scanResult.current === currentCode) return
+    scanResult.current = currentCode
     submitCodeAsync(currentCode)
       .then(() => playOKSE())
     setIsCameraMute(true)
@@ -122,7 +122,7 @@ const RollCallPage: React.FC = () => {
 
   return (
     <DefaultLayout title="出席登録">
-      <Toaster />
+      <Toaster position="bottom-center" />
 
       <Breadcrumbs>
         <li><Link to="/">メニュー</Link></li>
@@ -185,7 +185,10 @@ const RollCallPage: React.FC = () => {
             <>
               <FormSection>
                 <FormItem>
-                  <FormButton onClick={() => setIsCameraMute(!isCameraMute)}>
+                  <FormButton onClick={() => {
+                    setIsCameraMute(!isCameraMute)
+                    scanResult.current = ''
+                  }}>
                     <IconLabel
                       icon={isCameraMute ? <CameraIcon /> : <CameraSlashIcon />}
                       label={isCameraMute ? 'カメラオン' : 'カメラオフ'} />

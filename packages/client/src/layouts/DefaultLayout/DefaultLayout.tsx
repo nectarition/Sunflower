@@ -88,12 +88,12 @@ const HeaderWrap = styled.div`
   display: grid;
   grid-template-columns: 1fr 36px;
   background-color: var(--brand-background-color);
+  border-left: 24px solid var(--brand-color);
   @media screen and (max-width: 840px) {
     border-left: none;
   }
 `
 const BrandArea = styled.div`
-  border-left: 24px solid var(--brand-color);
   background-color: var(--brand-background-color);
   padding: 10px;
   font-size: 0;
