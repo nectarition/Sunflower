@@ -11,12 +11,12 @@ const RequiredLogin: React.FC<Props> = (props) => {
   const navigate = useNavigate()
   const location = useLocation()
   const { user } = useAccount()
-  const { session } = useSession()
+  const { sessionState } = useSession()
 
   useEffect(() => {
     if (user === undefined) return
     if (props.allowAnonymous && user === null) return
-    if (user !== null && session !== undefined && location.pathname === '/login') {
+    if (user !== null && sessionState !== undefined && location.pathname === '/login') {
       const beforeLocationPath = `${location.state?.from?.pathname ?? ''}${location.state?.from?.search ?? ''}` || '/'
       navigate(beforeLocationPath, { replace: true })
       return
@@ -26,7 +26,7 @@ const RequiredLogin: React.FC<Props> = (props) => {
       state: { from: (location.pathname !== '/' && location) || undefined },
       replace: true
     })
-  }, [user])
+  }, [user, sessionState, location])
 
   return <>
     {(user || props.allowAnonymous) && props.children}
