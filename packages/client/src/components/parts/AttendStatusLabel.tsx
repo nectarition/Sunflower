@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import styled from 'styled-components'
 import { CheckIcon, HourglassIcon, PencilSlashIcon } from '@phosphor-icons/react'
-import { SoleilCircleStatus } from 'sunflower'
+import { SoleilCircleStatus } from 'soleil'
 import IconLabel from './IconLabel'
 
 interface Props {
@@ -35,7 +35,9 @@ const AttendStatusLabel: React.FC<Props> = props => {
   return (
     status
       ? <Container className={status.className}>
-        <IconLabel icon={status.icon} label={status.text} />
+        <IconLabel
+          icon={status.icon}
+          label={status.text} />
       </Container>
       : null
   )

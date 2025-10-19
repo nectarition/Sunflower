@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import styled from 'styled-components'
 import { CheckIcon, HourglassIcon, PencilSlashIcon, WarningIcon } from '@phosphor-icons/react'
 import IconLabel from './IconLabel'
-import type { RollCallProcessStatus } from 'sunflower'
+import type { RollCallProcessStatus } from 'soleil'
 
 interface Props {
   status: RollCallProcessStatus | null | undefined
@@ -35,7 +35,9 @@ const RollCallStatusLabel: React.FC<Props> = props => {
   return (
     status
       ? <Container className={status.className}>
-        <IconLabel icon={status.icon} label={status.text} />
+        <IconLabel
+          icon={status.icon}
+          label={status.text} />
       </Container>
       : null
   )

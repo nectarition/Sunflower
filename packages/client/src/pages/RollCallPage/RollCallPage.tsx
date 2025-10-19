@@ -19,7 +19,7 @@ import RollCallStatusLabel from '../../components/parts/RollCallStatusLabel'
 import useCircle from '../../hooks/useCircle'
 import useSession from '../../hooks/useSession'
 import DefaultLayout from '../../layouts/DefaultLayout/DefaultLayout'
-import type { RollCallProcessStatus, SoleilCircleAppModel } from 'sunflower'
+import type { RollCallProcessStatus, SoleilCircleAppModel } from 'soleil'
 
 /**
  * スキャナーモード
@@ -137,8 +137,8 @@ const RollCallPage: React.FC = () => {
             </FormItem>
             <FormItem>
               <FormButton
-                onClick={() => setScannerMode(0)}
-                disabled={scannerMode === 0}>
+                disabled={scannerMode === 0}
+                onClick={() => setScannerMode(0)}>
                 <IconLabel
                   icon={<KeyboardIcon />}
                   label="手入力" />
@@ -146,11 +146,11 @@ const RollCallPage: React.FC = () => {
             </FormItem>
             <FormItem>
               <FormButton
+                disabled={scannerMode === 1}
                 onClick={() => {
                   setScannerMode(1)
                   setIsCameraMute(true)
-                }}
-                disabled={scannerMode === 1}>
+                }}>
                 <IconLabel
                   icon={<CameraIcon />}
                   label="内蔵カメラ" />
@@ -158,8 +158,8 @@ const RollCallPage: React.FC = () => {
             </FormItem>
             <FormItem>
               <FormButton
-                onClick={() => setScannerMode(2)}
-                disabled={scannerMode === 2}>
+                disabled={scannerMode === 2}
+                onClick={() => setScannerMode(2)}>
                 <IconLabel
                   icon={<UsbIcon />}
                   label="外付けリーダー" />
@@ -171,13 +171,15 @@ const RollCallPage: React.FC = () => {
               <FormItem>
                 <FormLabel>封筒コード入力</FormLabel>
                 <FormInput
-                  value={code}
                   onChange={(e) => setCode(e.target.value)}
                   onKeyDown={handleSubmit}
-                  placeholder="封筒コードを入力" />
+                  placeholder="封筒コードを入力"
+                  value={code} />
               </FormItem>
               <FormItem>
-                <FormButton type="button" onClick={() => submitCodeAsync(code)}>登録</FormButton>
+                <FormButton
+                  onClick={() => submitCodeAsync(code)}
+                  type="button">登録</FormButton>
               </FormItem>
             </FormSection>
           )}
@@ -185,10 +187,11 @@ const RollCallPage: React.FC = () => {
             <>
               <FormSection>
                 <FormItem>
-                  <FormButton onClick={() => {
-                    setIsCameraMute(!isCameraMute)
-                    scanResult.current = ''
-                  }}>
+                  <FormButton
+                    onClick={() => {
+                      setIsCameraMute(!isCameraMute)
+                      scanResult.current = ''
+                    }}>
                     <IconLabel
                       icon={isCameraMute ? <CameraIcon /> : <CameraSlashIcon />}
                       label={isCameraMute ? 'カメラオン' : 'カメラオフ'} />
@@ -197,8 +200,8 @@ const RollCallPage: React.FC = () => {
               </FormSection>
               {!isCameraMute && (
                 <QRReaderComponent
-                  style={{ width: '100%' }}
-                  onScan={handleOnScan} />
+                  onScan={handleOnScan}
+                  style={{ width: '100%' }} />
               )}
             </>
           )}
@@ -214,8 +217,8 @@ const RollCallPage: React.FC = () => {
                 </FormItem>
               </FormSection>
               <KeyboardInputComponent
-                onKeyDown={setTempCode}
-                onData={handleOnData} />
+                onData={handleOnData}
+                onKeyDown={setTempCode} />
             </>
           )}
         </Column>
@@ -238,7 +241,9 @@ const RollCallPage: React.FC = () => {
             <tbody>
               {inputtedCodes.length === 0 && (
                 <tr>
-                  <td colSpan={6} style={{ textAlign: 'center' }}>登録された封筒コードはありません</td>
+                  <td
+                    colSpan={6}
+                    style={{ textAlign: 'center' }}>登録された封筒コードはありません</td>
                 </tr>
               )}
               {inputtedCodes.map((code) => {

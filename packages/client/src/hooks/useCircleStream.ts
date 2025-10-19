@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { ref, onValue, DataSnapshot, off } from 'firebase/database'
 import useFirebase from './useFirebase'
-import type { SoleilCircleAppModel } from 'sunflower'
+import type { SoleilCircleAppModel } from 'soleil'
 
 const useCircleStream = (sessionCode: string | undefined): Record<string, SoleilCircleAppModel> | undefined => {
   const { getDatabase } = useFirebase()

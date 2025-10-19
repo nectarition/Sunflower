@@ -1,5 +1,5 @@
 import { atomWithStorage } from 'jotai/utils'
-import type { SoleilSession } from 'sunflower'
+import type { SoleilSession } from 'soleil'
 
 interface SessionType {
   sessionCode: string

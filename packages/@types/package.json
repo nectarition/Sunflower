@@ -1,5 +1,5 @@
 {
-  "name": "@types/sunflower",
+  "name": "@types/soleil",
   "version": "1.0.0",
   "types": "src/index.d.ts",
   "private": true

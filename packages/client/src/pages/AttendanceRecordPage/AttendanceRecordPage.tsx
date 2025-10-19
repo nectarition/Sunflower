@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { PencilIcon, PencilSlashIcon } from '@phosphor-icons/react'
-import { SoleilCircleAppModel, SoleilCircleStatus } from 'sunflower'
+import { SoleilCircleAppModel, SoleilCircleStatus } from 'soleil'
 import FormButton from '../../components/Form/FormButton'
 import FormCheckbox from '../../components/Form/FormCheckbox'
 import FormItem from '../../components/Form/FormItem'
@@ -88,11 +88,11 @@ const AttendanceRecordPage: React.FC = () => {
       <FormSection>
         <FormItem $inlined>
           <FormCheckbox
-            name="showUnregistered"
-            label="未提出のみ表示"
             checked={isShowUnregistered}
-            onChange={checked => setIsShowUnregistered(checked)}
-            inlined={true} />
+            inlined={true}
+            label="未提出のみ表示"
+            name="showUnregistered"
+            onChange={checked => setIsShowUnregistered(checked)} />
         </FormItem>
       </FormSection>
 
@@ -123,12 +123,12 @@ const AttendanceRecordPage: React.FC = () => {
               <td>
                 {c.status !== 2 && (
                   <FormButton
-                    onClick={() => updateStatus(id, 2)}
                     color={c.status ? 'danger' : undefined}
+                    onClick={() => updateStatus(id, 2)}
                     size="small">
                     <IconLabel
-                      label="欠席"
-                      icon={<PencilSlashIcon />} />
+                      icon={<PencilSlashIcon />}
+                      label="欠席" />
                   </FormButton>
                 )}
                 {c.status === 2 && (
@@ -136,8 +136,8 @@ const AttendanceRecordPage: React.FC = () => {
                     onClick={() => updateStatus(id, 1)}
                     size="small">
                     <IconLabel 
-                      label="出席" 
-                      icon={<PencilIcon />} />
+                      icon={<PencilIcon />} 
+                      label="出席" />
                   </FormButton>
                 )}
               </td>

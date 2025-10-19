@@ -1,0 +1,16 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "nct-soleil-api",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-06-27",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "d1-nct-soleil",
+      "database_id": "228bcfcd-0bf9-4de6-881f-a8057e49884c"
+    }
+  ]
+}

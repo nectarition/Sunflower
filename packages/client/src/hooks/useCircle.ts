@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { get, ref, serverTimestamp, set, update } from 'firebase/database'
 import useFirebase from './useFirebase'
-import type { SoleilCircle, SoleilCircleAppModel, SoleilCircleStatus } from 'sunflower'
+import type { SoleilCircle, SoleilCircleAppModel, SoleilCircleStatus } from 'soleil'
 
 interface IUseCircle {
   convertCodeDataByCircleCode: (codeData: string) => { sessionCode: string, circleId: string } | null

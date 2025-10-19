@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { SoleilCircle } from 'sunflower'
+import { SoleilCircle } from 'soleil'
 import FormButton from '../../components/Form/FormButton'
 import FormInput from '../../components/Form/FormInput'
 import FormItem from '../../components/Form/FormItem'
@@ -88,15 +88,17 @@ const CircleManagePage: React.FC = () => {
       </Breadcrumbs>
       <h2>封筒データ上書き</h2>
 
-      <Panel title="※注意" subTitle='既に存在する出欠データを上書きします。' />
+      <Panel
+        subTitle="既に存在する出欠データを上書きします。"
+        title="※注意" />
 
       <FormSection>
         <FormItem>
           <FormLabel>封筒データ</FormLabel>
           <FormInput
-            type="file"
             accept=".tsv"
-            onChange={e => setFile(e.target.files?.[0])} />
+            onChange={e => setFile(e.target.files?.[0])}
+            type="file" />
         </FormItem>
       </FormSection>
       <p>
@@ -105,7 +107,10 @@ const CircleManagePage: React.FC = () => {
       </p>
 
       {error && invalidRows &&
-        <Panel color="danger" title={error} subTitle={`エラー箇所: ${invalidRows.map(row => `${row}行目`).join(', ')}`} />
+        <Panel
+          color="danger"
+          subTitle={`エラー箇所: ${invalidRows.map(row => `${row}行目`).join(', ')}`}
+          title={error} />
       }
 
       <h3>データ確認</h3>

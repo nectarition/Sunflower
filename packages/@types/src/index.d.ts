@@ -1,5 +1,23 @@
+export type LoggedInUser = {
+  name: string
+}
+
+export type AuthenticateResult = {
+  token: string
+}
+
+export type LoginResult = {
+  token: string
+  user: LoggedInUser
+}
+
 export interface SoleilSession {
   name: string
+}
+
+export interface SessionState {
+  sessionCode: string
+  session: SoleilSession
 }
 
 export interface SoleilCircle {
@@ -27,3 +45,15 @@ export type SoleilCircleStatus = 0 | 1 | 2
  * 1: 成功, 2: エラー
  */
 export type RollCallProcessStatus = 1 | 2
+
+export type User = {
+  id: number
+  name: string
+  email: string
+  emailVerified: boolean
+  createdAt: Date
+}
+
+export type SuccessResult = {
+  success: boolean
+}
