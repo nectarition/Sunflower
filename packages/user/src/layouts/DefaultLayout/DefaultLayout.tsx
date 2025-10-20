@@ -3,13 +3,11 @@ import { Link } from 'react-router-dom'
 import styled from '@emotion/styled'
 import { ListIcon, XIcon } from '@phosphor-icons/react'
 import LogotypeSVG from '../../assets/logotype.svg'
-// import useFirebase from '../../hooks/useFirebase'
 import useAccount from '../../hooks/useAccount'
-import useSession from '../../hooks/useSession'
 import useWindowDimension from '../../hooks/useWindowDimension'
 import HeadHelper from '../../libs/Helmet'
 import RequiredLogin from '../../libs/RequiredLogin'
-import SideMenu from './SideMenu'
+import Sidebar from './Sidebar'
 
 interface Props {
   children: React.ReactNode
@@ -17,7 +15,6 @@ interface Props {
   allowAnonymous?: boolean
 }
 const DefaultLayout: React.FC<Props> = (props) => {
-  const { sessionState, resetSession } = useSession()
   const { user, logoutAsync } = useAccount()
   const { isSmallDisplay } = useWindowDimension()
 
@@ -25,7 +22,6 @@ const DefaultLayout: React.FC<Props> = (props) => {
 
   const handleLogout = useCallback(() => {
     logoutAsync()
-      .then(() => resetSession())
       .catch((err) => {
         console.error('ログアウトに失敗しました:', err)
       })
@@ -35,7 +31,7 @@ const DefaultLayout: React.FC<Props> = (props) => {
     <RequiredLogin allowAnonymous={props.allowAnonymous}>
       <Container>
         <HeadHelper title={props.title} />
-        <Sidebar>
+        <SidebarWrap>
           <HeaderWrap>
             <BrandArea>
               <Link to="/">
@@ -51,14 +47,13 @@ const DefaultLayout: React.FC<Props> = (props) => {
             </MenuButtonArea>
           </HeaderWrap>
           <MenuWrap>
-            <SideMenu
+            <Sidebar
               closeMenu={() => setIsShowMenu(false)}
               handleLogout={handleLogout}
-              sessionState={sessionState}
               showMenu={isSmallDisplay === false || showMenu}
               user={user} />
           </MenuWrap>
-        </Sidebar>
+        </SidebarWrap>
         <MainContainer>
           {(props.allowAnonymous ?? (!props.allowAnonymous && user)) && props.children}
         </MainContainer>
@@ -78,7 +73,7 @@ const Container = styled.div`
     grid-template-columns: 1fr;
   }
 `
-const Sidebar = styled.div`
+const SidebarWrap = styled.div`
   display: grid;
   grid-template-rows: auto 1fr;
   background-color: var(--panel-background-color);

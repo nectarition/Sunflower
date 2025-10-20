@@ -30,12 +30,12 @@ const useFetch = (): UseFetch => {
   axios.interceptors.response.use(
     res => res,
     err => {
-      if (err.code === 'ERR_CANCELED' || (!apiToken && err.response.status)) {
+      if (err.code === 'ERR_CANCELED' || err.code === 'ERR_NETWORK' || (!apiToken && err.response.status)) {
         throw err
       } else if (apiToken && err.response.status === 401 && !isRetry) {
         isRetry = true
         const loginAsync = async (): Promise<LoginResult> => {
-          const result = await axios.post<LoginResult>('/users/login', { loginToken })
+          const result = await axios.post<LoginResult>('/accounts/login', { loginToken })
           return result.data
         }
         loginAsync()
@@ -51,7 +51,7 @@ const useFetch = (): UseFetch => {
 
   const getAsync = useCallback(async <T>(endpoint: string, o: { requiredAuthorize?: boolean, abort: AbortController }): Promise<T> => {
     if (o.requiredAuthorize && !apiToken) {
-      throw new Error('unauthorized')
+      throw new Error('Unauthorized')
     }
 
     const result = await axios.get<T>(

@@ -1,8 +1,9 @@
 import { createBrowserRouter, Outlet, RouterProvider, ScrollRestoration } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
-import AttendanceRecordPage from './pages/CircleAttendanceRecordPage/CircleAttendanceRecordPage'
-import CircleManagePage from './pages/CircleManagePage/CircleManagePage'
-import RollCallPage from './pages/CircleRollCallPage/CircleRollCallPage'
+import EventCircleAttendanceRecordPage from './pages/EventCircleAttendanceRecordPage/EventCircleAttendanceRecordPage'
+import EventCircleManagePage from './pages/EventCircleManagePage/EventCircleManagePage'
+import EventCircleRollCallPage from './pages/EventCircleRollCallPage/EventCircleRollCallPage'
+import EventViewPage from './pages/EventViewPage/EventViewPage'
 import GuidePage from './pages/GuidePage/GuidePage'
 import IndexPage from './pages/IndexPage/IndexPage'
 import LoginPage from './pages/LoginPage/LoginPage'
@@ -30,16 +31,30 @@ const router = createBrowserRouter([
         element: <LoginPage />
       },
       {
-        path: 'roll-call',
-        element: <RollCallPage />
-      },
-      {
-        path: 'records',
-        element: <AttendanceRecordPage />
-      },
-      {
-        path: 'manage',
-        element: <CircleManagePage />
+        path: 'events',
+        children: [
+          {
+            path: ':code',
+            children: [
+              {
+                index: true,
+                element: <EventViewPage />
+              },
+              {
+                path: 'roll-call',
+                element: <EventCircleRollCallPage />
+              },
+              {
+                path: 'records',
+                element: <EventCircleAttendanceRecordPage />
+              },
+              {
+                path: 'manage',
+                element: <EventCircleManagePage />
+              }
+            ]
+          }
+        ]
       },
       {
         path: 'guide',

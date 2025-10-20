@@ -19,46 +19,9 @@ model user {
 
   mailTokens mailToken[]
   organizationUsers organizationUser[]
+  auditLogs auditLog[]
 
   @@map("users")
-}
-
-model organization {
-  id   Int    @id @default(autoincrement())
-  name String
-
-  events event[]
-  organizationUsers organizationUser[]
-
-  @@map("organizations")
-}
-
-model event {
-  id           Int      @id @default(autoincrement())
-  name         String
-  organizationId Int
-
-  organization organization @relation(fields: [organizationId], references: [id])
-
-  @@map("events")
-}
-
-model organizationUser {
-  id             Int           @id @default(autoincrement())
-  organizationId Int
-  userId         Int
-  role           UserRoleTypes
-
-  organization organization @relation(fields: [organizationId], references: [id])
-  user         user         @relation(fields: [userId], references: [id])
-
-  @@map("organization_users")
-}
-
-enum UserRoleTypes {
-  User
-  EventOwner
-  SystemAdmin
 }
 
 model mailToken {
@@ -77,4 +40,87 @@ model mailToken {
 enum MailTokenTypes {
   EmailVerify
   PasswordReset
+}
+
+model organization {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  events event[]
+  organizationUsers organizationUser[]
+
+  @@map("organizations")
+}
+
+model organizationUser {
+  id             Int           @id @default(autoincrement())
+  organizationId Int
+  userId         Int
+  role           UserRoleTypes
+
+  organization organization @relation(fields: [organizationId], references: [id])
+  user         user         @relation(fields: [userId], references: [id])
+
+  @@unique([organizationId, userId])
+
+  @@map("organization_users")
+}
+
+enum UserRoleTypes {
+  User
+  Admin
+}
+
+model event {
+  id           Int      @id @default(autoincrement())
+  code        String   @unique
+  name         String
+  organizationId Int
+
+  organization organization @relation(fields: [organizationId], references: [id])
+
+  circles circle[]
+
+  @@map("events")
+}
+
+model circle {
+  id      Int    @id @default(autoincrement())
+  eventId Int
+  code    String @unique
+  spaceNumber String
+  name    String
+  status CircleStatusTypes @default(None)
+  updatedAt DateTime?
+
+  event event @relation(fields: [eventId], references: [id])
+
+  @@map("circles")
+}
+
+enum CircleStatusTypes {
+  None
+  Attend
+  Absent
+}
+
+model auditLog {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  action    String
+  timestamp DateTime @default(now())
+  value1   String?
+  value2   String?
+  value3   String?
+
+  user user @relation(fields: [userId], references: [id])
+
+  @@map("audit_logs")
+}
+
+enum AuditLogActionTypes {
+  UserLogin
+  PasswordChange
+  EmailVerification
+  CircleStatusUpdate
 }

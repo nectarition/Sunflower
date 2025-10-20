@@ -6,7 +6,8 @@ import mailer from './middlewares/mailer'
 import prisma from './middlewares/prisma'
 import requiredLogin from './middlewares/requiredLogin'
 import accountsRouter from './routes/accountsRouter'
-import sessionsRouter from './routes/sessionsRouter'
+import circlesRouter from './routes/circlesRouter'
+import eventsRouter from './routes/eventsRouter'
 import type { Bindings, Variables } from './@types'
 
 const app = new Hono<{ Bindings: Bindings, Variables: Variables }>()
@@ -24,6 +25,7 @@ app.get('/test', requiredLogin, async (c) => {
 })
 
 app.route('/', accountsRouter)
-app.route('/', sessionsRouter)
+app.route('/', eventsRouter)
+app.route('/', circlesRouter)
 
 export default app

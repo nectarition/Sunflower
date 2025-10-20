@@ -5,7 +5,6 @@ import jwtHelper from '../helpers/jwtHelper'
 import APIError from '../libs/APIError'
 import generateRandomString from '../libs/generateRandomString'
 import { createAccountSchema } from '../schemas/accounts'
-import userService from '../services/userService'
 import type { Bindings, Variables } from '../@types'
 
 const accountsRouter = new Hono<{ Bindings: Bindings, Variables: Variables }>()
@@ -34,11 +33,9 @@ accountsRouter.post(
       throw new APIError('invalid-operation', 'user-exists', 'User already exists')
     }
 
-    const user = await prisma.user.create({
+    await prisma.user.create({
       data: { email, name, password: passwordHash }
     })
-
-    await userService.verifyEmailByIdAsync(c, user)
 
     return c.json({ success: true })
   })

@@ -3,11 +3,11 @@ import useFetch from './useFetch'
 import type { SoleilCircle, SoleilCircleAppModel, SoleilCircleStatus } from 'soleil'
 
 interface IUseCircle {
-  convertCodeDataByCircleCode: (codeData: string) => { sessionCode: string, circleId: string } | null
+  convertCodeDataByCircleCode: (codeData: string) => { eventCode: string, circleId: string } | null
   getCircleByCodeAsync: (circleCode: string, abort: AbortController) => Promise<SoleilCircleAppModel>
   updateCircleStatusByCodeAsync: (circleCode: string, status: SoleilCircleStatus, abort: AbortController) => Promise<void>
-  getCirclesBySessionCodeAsync: (sessionCode: string, abort: AbortController) => Promise<Record<string, SoleilCircleAppModel>>
-  createCirclesAsync: (sessionCode: string, circles: Record<string, SoleilCircle>, abort: AbortController) => Promise<void>
+  getCirclesByEventCodeAsync: (eventCode: string, abort: AbortController) => Promise<Record<string, SoleilCircleAppModel>>
+  createCirclesAsync: (eventCode: string, circles: Record<string, SoleilCircle>, abort: AbortController) => Promise<void>
 }
 
 const useCircle = (): IUseCircle => {
@@ -19,9 +19,9 @@ const useCircle = (): IUseCircle => {
       if (!codeData) {
         return null
       }
-      const sessionCode = codeData[1]
+      const eventCode = codeData[1]
       const circleId = codeData[2]
-      return { sessionCode, circleId }
+      return { eventCode, circleId }
     }, [])
 
   const getCircleByCodeAsync =
@@ -30,9 +30,9 @@ const useCircle = (): IUseCircle => {
       if (!codeData) {
         throw new Error('invalid circleCode')
       }
-      const circle = await getAsync<SoleilCircleAppModel>(`/circles/${codeData.sessionCode}/${circleCode}`, { requiredAuthorize: true, abort })
+      const circle = await getAsync<SoleilCircleAppModel>(`/circles/${codeData.eventCode}/${circleCode}`, { requiredAuthorize: true, abort })
       return circle
-    }, [])
+    }, [getAsync])
 
   const updateCircleStatusByCodeAsync =
     useCallback(async (circleCode: string, status: SoleilCircleStatus, abort: AbortController): Promise<void> => {
@@ -40,25 +40,25 @@ const useCircle = (): IUseCircle => {
       if (!codeData) {
         throw new Error('invalid circleCode')
       }
-      await postAsync<void>(`/circles/${codeData.sessionCode}/${circleCode}/status`, { status }, { requiredAuthorize: true, abort })
-    }, [])
+      await postAsync<void>(`/circles/${codeData.eventCode}/${circleCode}/status`, { status }, { requiredAuthorize: true, abort })
+    }, [postAsync])
 
-  const getCirclesBySessionCodeAsync =
-    useCallback(async (sessionCode: string, abort: AbortController): Promise<Record<string, SoleilCircleAppModel>> => {
-      const circles = await getAsync<Record<string, SoleilCircleAppModel>>(`/circles/${sessionCode}`, { requiredAuthorize: true, abort })
+  const getCirclesByEventCodeAsync =
+    useCallback(async (eventCode: string, abort: AbortController): Promise<Record<string, SoleilCircleAppModel>> => {
+      const circles = await getAsync<Record<string, SoleilCircleAppModel>>(`/events/${eventCode}/circles`, { requiredAuthorize: true, abort })
       return circles
-    }, [])
+    }, [getAsync])
 
   const createCirclesAsync =
-    useCallback(async (sessionCode: string, circles: Record<string, SoleilCircle>, abort: AbortController): Promise<void> => {
-      await postAsync<void>(`/circles/${sessionCode}`, circles, { requiredAuthorize: true, abort })
-    }, [])
+    useCallback(async (eventCode: string, circles: Record<string, SoleilCircle>, abort: AbortController): Promise<void> => {
+      await postAsync<void>(`/events/${eventCode}/circles`, circles, { requiredAuthorize: true, abort })
+    }, [postAsync])
 
   return {
     convertCodeDataByCircleCode,
     getCircleByCodeAsync,
     updateCircleStatusByCodeAsync,
-    getCirclesBySessionCodeAsync,
+    getCirclesByEventCodeAsync,
     createCirclesAsync
   }
 }

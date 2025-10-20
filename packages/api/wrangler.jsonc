@@ -12,5 +12,15 @@
       "database_name": "d1-nct-soleil",
       "database_id": "228bcfcd-0bf9-4de6-881f-a8057e49884c"
     }
-  ]
+  ],
+  "observability": {
+    "enabled": false,
+    "head_sampling_rate": 1,
+    "logs": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "persist": true,
+      "invocation_logs": true
+    }
+  }
 }

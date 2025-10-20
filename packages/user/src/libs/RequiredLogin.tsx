@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import useAccount from '../hooks/useAccount'
-import useSession from '../hooks/useSession'
+import useSession from '../hooks/useEvent'
 
 interface Props {
   children: React.ReactNode

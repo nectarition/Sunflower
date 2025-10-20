@@ -11,25 +11,18 @@ export type LoginResult = {
   user: LoggedInUser
 }
 
-export interface SoleilSession {
+export interface SoleilEvent {
+  code: string
   name: string
-}
-
-export interface SessionState {
-  sessionCode: string
-  session: SoleilSession
 }
 
 export interface SoleilCircle {
   name: string
-  space: string
+  spaceNumber: string
   status?: SoleilCircleStatus
 }
 export type SoleilCircleAppModel = SoleilCircle & {
-  updatedAt: number
-}
-export type SoleilCircleDbModel = SoleilCircle & {
-  updatedAt: object
+  updatedAt: number | null
 }
 
 /**
