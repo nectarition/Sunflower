@@ -27,7 +27,7 @@ const EventCircleAttendanceRecordPage: React.FC = () => {
   const filteredCircles = useMemo(() => {
     if (!circles) return null
     return Object.entries(circles)
-      .filter(([_, circle]) => !isShowUnregistered || !circle.status)
+      .filter(([, circle]) => !isShowUnregistered || !circle.status)
       .reduce((acc, [code, circle]) => ({ ...acc, [code]: circle }), {} as Record<string, SoleilCircleAppModel>)
   }, [circles, isShowUnregistered])
 
@@ -150,6 +150,11 @@ const EventCircleAttendanceRecordPage: React.FC = () => {
           {!filteredCircles && (
             <tr>
               <td colSpan={6}>サークルリストを取得中です</td>
+            </tr>
+          )}
+          {filteredCircles && Object.keys(filteredCircles).length === 0 && (
+            <tr>
+              <td colSpan={6}>該当するサークルが存在しません</td>
             </tr>
           )}
           {filteredCircles && Object.entries(filteredCircles).map(([id, c]) => (
