@@ -35,7 +35,7 @@ const EventViewPage: React.FC = () => {
       <Breadcrumbs>
         <li><Link to="/">メニュー</Link></li>
       </Breadcrumbs>
-      <h1>{event?.name ?? <BlinkField />}</h1>
+      <h2>{event ? `${event.name} (${event.code})` : <BlinkField />}</h2>
 
       <FormSection>
         <FormItem>

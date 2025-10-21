@@ -1,6 +1,5 @@
 import { SignInIcon } from '@phosphor-icons/react'
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
 import IconLabel from '../../components/parts/IconLabel'
 import LinkButton from '../../components/parts/LinkButton'
 import useEvent from '../../hooks/useEvent'
@@ -22,29 +21,33 @@ const IndexPage: React.FC = () => {
 
   return (
     <DefaultLayout>
-      <h1>イベントを選択してください</h1>
+      <h2>イベントを選択してください</h2>
 
       <table>
         <thead>
           <tr>
             <th>イベント</th>
+            <th>イベントコード</th>
+            <th>組織</th>
             <th></th>
           </tr>
         </thead>
         <tbody>
           {events === undefined && (
             <tr>
-              <td colSpan={2}>読み込み中…</td>
+              <td colSpan={4}>読み込み中…</td>
             </tr>
           )}
           {events?.length === 0 && (
             <tr>
-              <td colSpan={2}>イベントが登録されていません。</td>
+              <td colSpan={4}>イベントが登録されていません。</td>
             </tr>
           )}
           {events?.map((event) => (
             <tr key={event.code}>
               <td>{event.name}</td>
+              <td>{event.code}</td>
+              <td>{event.organization.name}</td>
               <td>
                 <LinkButton
                   $inlined

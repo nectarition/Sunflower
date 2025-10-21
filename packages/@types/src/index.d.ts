@@ -15,6 +15,7 @@ export type LoginResult = {
 export interface SoleilEvent {
   code: string
   name: string
+  organization: SoleilOrganization
 }
 
 export interface SoleilCircle {
@@ -46,6 +47,10 @@ export type User = {
   email: string
   emailVerified: boolean
   createdAt: Date
+}
+
+export type SoleilOrganization = {
+  name: string
 }
 
 export type SuccessResult = {

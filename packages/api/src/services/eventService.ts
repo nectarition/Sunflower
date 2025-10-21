@@ -9,11 +9,17 @@ const getEventByCodeAsync = async (c: APIContext, eventCode: string): Promise<(S
       code: eventCode,
       organization: {
         organizationUsers: {
-          every: {
+          some: {
             userId: user.id
           }
         }
       }
+    },
+    select: {
+      id: true,
+      code: true,
+      name: true,
+      organization: true
     }
   })
   if (!event) {
@@ -22,7 +28,10 @@ const getEventByCodeAsync = async (c: APIContext, eventCode: string): Promise<(S
   return {
     id: event.id,
     code: event.code,
-    name: event.name
+    name: event.name,
+    organization: {
+      name: event.organization.name
+    }
   }
 }
 

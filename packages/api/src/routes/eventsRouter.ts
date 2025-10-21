@@ -15,16 +15,24 @@ eventsRouter.get('/events', requiredLogin, async (c) => {
     where: {
       organization: {
         organizationUsers: {
-          every: {
+          some: {
             userId: user.id
           }
         }
       }
+    },
+    select: {
+      code: true,
+      name: true,
+      organization: true
     }
   })
   const mappedEvents: SoleilEvent[] = events.map(event => ({
     code: event.code,
-    name: event.name
+    name: event.name,
+    organization: {
+      name: event.organization.name
+    }
   }))
   return c.json(mappedEvents)
 })
@@ -38,7 +46,10 @@ eventsRouter.get('/events/:code', requiredLogin, async (c) => {
   }
   const mappedEvent: SoleilEvent = {
     code: event.code,
-    name: event.name
+    name: event.name,
+    organization: {
+      name: event.organization.name
+    }
   }
   return c.json(mappedEvent)
 })
