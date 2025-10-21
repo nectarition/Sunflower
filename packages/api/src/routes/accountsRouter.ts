@@ -3,8 +3,8 @@ import { Hono } from 'hono'
 import { validator } from 'hono/validator'
 import jwtHelper from '../helpers/jwtHelper'
 import APIError from '../libs/APIError'
-import generateRandomString from '../libs/generateRandomString'
 import { createAccountSchema } from '../schemas/accounts'
+import tokenService from '../services/tokenService'
 import type { Bindings, Variables } from '../@types'
 
 const accountsRouter = new Hono<{ Bindings: Bindings, Variables: Variables }>()
@@ -79,7 +79,13 @@ accountsRouter.post('/accounts/login', async (c) => {
   }
 
   const apiToken = await jwtHelper.signAPITokenAsync(c, { id: user.id })
+
+  const passwordResetToken = user.requirePasswordChange
+    ? await tokenService.createTokenAsync(c, user.id, 'PasswordReset')
+    : null
+
   return c.json({
+    passwordResetToken,
     token: apiToken,
     user: {
       name: user.name
@@ -97,17 +103,7 @@ accountsRouter.post('/accounts/send-password-reset-email', async (c) => {
     return c.json({ success: true })
   }
 
-  const token = generateRandomString(48)
-  const expiredAt = new Date(Date.now() + 10 * 60 * 1000)
-
-  await prisma.mailToken.create({
-    data: {
-      userId: user.id,
-      type: 'PasswordReset',
-      token,
-      expiredAt
-    }
-  })
+  const token = await tokenService.createTokenAsync(c, user.id, 'PasswordReset')
 
   const mailer = c.get('mailer')
   await mailer.sendMail({
@@ -141,7 +137,10 @@ accountsRouter.post('/accounts/reset-password', async (c) => {
 
   await prisma.user.update({
     where: { id: user.id },
-    data: { password: passwordHash }
+    data: {
+      password: passwordHash,
+      requirePasswordChange: false
+    }
   })
 
   await prisma.mailToken.delete({

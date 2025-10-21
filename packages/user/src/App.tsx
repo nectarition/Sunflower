@@ -7,6 +7,7 @@ import EventViewPage from './pages/EventViewPage/EventViewPage'
 import GuidePage from './pages/GuidePage/GuidePage'
 import IndexPage from './pages/IndexPage/IndexPage'
 import LoginPage from './pages/LoginPage/LoginPage'
+import PasswordResetPage from './pages/PasswordResetPage/PasswordResetPage'
 import TestPage from './pages/TestPage/TestPage'
 import AuthenticationProvider from './providers/AuthenticationProvider'
 
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
       {
         path: 'login',
         element: <LoginPage />
+      },
+      {
+        path: 'reset-password',
+        element: <PasswordResetPage />
       },
       {
         path: 'events',

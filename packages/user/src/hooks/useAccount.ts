@@ -3,14 +3,14 @@ import { useAtom } from 'jotai'
 import { userAtom } from '../atoms/credentials'
 import useFetch from './useFetch'
 import useToken from './useToken'
-import type { AuthenticateResult, LoggedInUser, LoginResult } from '../../../@types'
+import type { AuthenticateResult, LoggedInUser, LoginResult } from 'soleil'
 
 interface UseAccount {
   user: LoggedInUser | null | undefined
   createAccountAsync: (email: string, password: string, name: string, abort: AbortController) => Promise<void>
-  authenticateAsync: (email: string, password: string, abort: AbortController) => Promise<void>
-  loginAsync: (loginToken: string, abort: AbortController) => Promise<void>
-  loginDirectlyAsync: (abort: AbortController) => Promise<void>
+  authenticateAsync: (email: string, password: string, abort: AbortController) => Promise<LoginResult>
+  loginAsync: (loginToken: string, abort: AbortController) => Promise<LoginResult>
+  loginDirectlyAsync: (abort: AbortController) => Promise<LoginResult>
   logoutAsync: () => Promise<void>
   verifyEmailAsync: (token: string, abort: AbortController) => Promise<void>
   sendPasswordResetEmailAsync: (email: string, abort: AbortController) => Promise<void>
@@ -36,54 +36,58 @@ const useAccount = (): UseAccount => {
       }, { abort })
     }, [postAsync])
 
-  const authenticateAsync = useCallback(
-    async (email: string, password: string, abort: AbortController): Promise<void> => {
-      const result = await postAsync<AuthenticateResult>('/accounts/authenticate', {
-        email,
-        password
-      }, { abort })
-      setLoginToken(result.token)
+  const authenticateAsync = useCallback(async (email: string, password: string, abort: AbortController) => {
+    const result = await postAsync<AuthenticateResult>('/accounts/authenticate', {
+      email,
+      password
+    }, { abort })
+    setLoginToken(result.token)
 
-      await loginAsync(result.token, abort)
-        .catch(err => { throw err })
-    }, [postAsync])
+    const loginResult = await loginAsync(result.token, abort)
+      .catch(err => { throw err })
 
-  const loginAsync = useCallback(
-    async (token: string, abort: AbortController): Promise<void> => {
-      const result = await postAsync<LoginResult>(
-        '/accounts/login',
-        { token },
-        { abort })
-        .then(res => {
-          return res
-        })
-        .catch(err => {
-          if (err.code === 'ERR_CANCELED') {
-            throw err
-          }
-          setAPIToken(null)
-          setUser(null)
+    return loginResult
+  }, [postAsync])
+
+  const loginAsync = useCallback(async (token: string, abort: AbortController) => {
+    const result = await postAsync<LoginResult>(
+      '/accounts/login',
+      { token },
+      { abort })
+      .then(res => {
+        return res
+      })
+      .catch(err => {
+        if (err.code === 'ERR_CANCELED') {
           throw err
-        })
+        }
+        setAPIToken(null)
+        setUser(null)
+        throw err
+      })
 
-      setAPIToken(result.token)
-      setUser(result.user)
-    }, [postAsync])
+    setAPIToken(result.token)
+    setUser(result.user)
+
+    return result
+  }, [postAsync])
 
   const loginDirectlyAsync = useCallback(async (abort: AbortController) => {
     if (loginToken === undefined) {
-      return
+      throw new Error('Login token is undefined')
     }
     if (!loginToken) {
       setUser(null)
-      return
+      throw new Error('No login token available')
     }
 
-    await loginAsync(loginToken, abort)
+    const result = await loginAsync(loginToken, abort)
       .catch(err => { throw err })
+
+    return result
   }, [loginToken, loginAsync])
 
-  const logoutAsync = useCallback(async (): Promise<void> => {
+  const logoutAsync = useCallback(async () => {
     setLoginToken(null)
     setAPIToken(null)
     setUser(null)

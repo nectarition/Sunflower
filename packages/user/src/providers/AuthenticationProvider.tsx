@@ -12,9 +12,7 @@ const AuthenticationProvider: React.FC<Props> = (props) => {
     const abort = new AbortController()
     loginDirectlyAsync(abort)
       .catch((err) => { throw err })
-    return () => {
-      abort.abort()
-    }
+    return () => abort.abort()
   }, [user, loginDirectlyAsync])
   
   return (
