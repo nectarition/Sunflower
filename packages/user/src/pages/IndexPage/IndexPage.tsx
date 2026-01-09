@@ -1,15 +1,26 @@
 import { SignInIcon } from '@phosphor-icons/react'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import FormCheckbox from '../../components/Form/FormCheckbox'
+import FormItem from '../../components/Form/FormItem'
+import FormSection from '../../components/Form/FormSection'
 import IconLabel from '../../components/parts/IconLabel'
 import LinkButton from '../../components/parts/LinkButton'
+import useDate from '../../hooks/useDate'
 import useEvent from '../../hooks/useEvent'
 import DefaultLayout from '../../layouts/DefaultLayout/DefaultLayout'
 import type { SoleilEvent } from 'soleil'
 
 const IndexPage: React.FC = () => {
   const { getEventsAsync } = useEvent()
+  const { formatDate } = useDate()
 
   const [events, setEvents] = useState<SoleilEvent[]>()
+  const [isVisiblePastEvents, setIsVisiblePastEvents] = useState(false)
+
+  const filteredEvents = useMemo(() => {
+    if (!events) return
+    return events.filter(e => isVisiblePastEvents || formatDate(e.date) >= formatDate(new Date()))
+  }, [events, isVisiblePastEvents])
 
   useEffect(() => {
     const abort = new AbortController()
@@ -23,9 +34,21 @@ const IndexPage: React.FC = () => {
     <DefaultLayout>
       <h2>イベントを選択してください</h2>
 
+      <FormSection>
+        <FormItem>
+          <FormCheckbox
+            checked={isVisiblePastEvents}
+            inlined
+            label="過去のイベントを表示"
+            name="isVisiblePastEvent"
+            onChange={setIsVisiblePastEvents} />
+        </FormItem>
+      </FormSection>
+
       <table>
         <thead>
           <tr>
+            <th>開催日</th>
             <th>イベント</th>
             <th>イベントコード</th>
             <th>組織</th>
@@ -43,8 +66,9 @@ const IndexPage: React.FC = () => {
               <td colSpan={4}>イベントが登録されていません。</td>
             </tr>
           )}
-          {events?.map((event) => (
+          {filteredEvents?.map((event) => (
             <tr key={event.code}>
+              <td>{formatDate(event.date)}</td>
               <td>{event.name}</td>
               <td>{event.code}</td>
               <td>{event.organization.name}</td>

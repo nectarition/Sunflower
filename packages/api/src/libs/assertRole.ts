@@ -1,4 +1,4 @@
-import { APIContext, LoggedInUser } from '../@types'
+import { APIContext } from '../@types'
 import { $Enums } from '../generated/prisma'
 import APIError from './APIError'
 
