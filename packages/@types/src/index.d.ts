@@ -16,6 +16,7 @@ export interface SoleilEvent {
   code: string
   name: string
   organization: SoleilOrganization
+  date: Date
 }
 
 export interface SoleilCircle {

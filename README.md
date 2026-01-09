@@ -41,9 +41,9 @@
 #### マイグレーション
 
 ```bash
-yarn workspace api wrangler d1 migrations create d1-nct-soleil \<migration_name\>
-yarn workspace api prisma migrate diff --from-empty --to-schema-datamodel packages/api/prisma/schema.prisma --script --output packages/api/migrations/d1-nct-soleil/\<migration_name\>/migration.sql # 初回マイグレーション時
-yarn workspace api prisma migrate diff --from-local-d1 --to-schema-datamodel packages/api/prisma/schema.prisma --script --output packages/api/migrations/d1-nct-soleil/\<migration_name\>/data-migration.sql # 2回目以降のマイグレーション時
+yarn workspace api wrangler d1 migrations create d1-nct-soleil マイグレーション名 # migrations/マイグレーション名.sql が作成される
+yarn workspace api prisma migrate diff --from-empty --to-schema-datamodel prisma/schema.prisma --script --output migrations/マイグレーション名.sql # 初回マイグレーション時
+yarn workspace api prisma migrate diff --from-local-d1 --to-schema-datamodel prisma/schema.prisma --script --output migrations/マイグレーション名.sql # 2回目以降のマイグレーション時
 yarn workspace api wrangler d1 migrations apply d1-nct-soleil --local
 yarn workspace api prisma generate
 ```

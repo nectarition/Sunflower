@@ -24,7 +24,11 @@ eventsRouter.get('/events', requiredLogin, async (c) => {
     select: {
       code: true,
       name: true,
-      organization: true
+      organization: true,
+      date: true
+    },
+    orderBy: {
+      date: 'asc'
     }
   })
   const mappedEvents: SoleilEvent[] = events.map(event => ({
@@ -32,7 +36,8 @@ eventsRouter.get('/events', requiredLogin, async (c) => {
     name: event.name,
     organization: {
       name: event.organization.name
-    }
+    },
+    date: event.date
   }))
   return c.json(mappedEvents)
 })
@@ -49,7 +54,8 @@ eventsRouter.get('/events/:code', requiredLogin, async (c) => {
     name: event.name,
     organization: {
       name: event.organization.name
-    }
+    },
+    date: event.date
   }
   return c.json(mappedEvent)
 })
