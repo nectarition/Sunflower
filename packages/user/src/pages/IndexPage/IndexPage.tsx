@@ -12,14 +12,14 @@ import type { SoleilEvent } from 'soleil'
 
 const IndexPage: React.FC = () => {
   const { getEventsAsync } = useEvent()
-  const { formatDate } = useDate()
+  const { formatDate, convertDateOnly } = useDate()
 
   const [events, setEvents] = useState<SoleilEvent[]>()
   const [isVisiblePastEvents, setIsVisiblePastEvents] = useState(false)
 
   const filteredEvents = useMemo(() => {
     if (!events) return
-    return events.filter(e => isVisiblePastEvents || formatDate(e.date) >= formatDate(new Date()))
+    return events.filter(e => isVisiblePastEvents || convertDateOnly(e.date) >= convertDateOnly(new Date()))
   }, [events, isVisiblePastEvents])
 
   useEffect(() => {

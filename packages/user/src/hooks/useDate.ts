@@ -2,6 +2,7 @@ import { useCallback } from 'react'
 
 interface IUseDate {
   formatDate: (date: Date | string) => string
+  convertDateOnly: (date: Date | string) => Date
 }
 
 const useDate = (): IUseDate => {
@@ -15,8 +16,16 @@ const useDate = (): IUseDate => {
     return `${year}/${month}/${day}`
   }, [])
 
+  const convertDateOnly = useCallback((date: Date | string) => {
+    const typedDate =  typeof date === 'string'
+      ? new Date(date)
+      : date
+    return new Date(typedDate.getFullYear(), typedDate.getMonth(), typedDate.getDate())
+  }, [])
+
   return {
-    formatDate
+    formatDate,
+    convertDateOnly
   }
 }
 
