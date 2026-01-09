@@ -1,6 +1,0 @@
-{
-  "name": "@types/sunflower",
-  "version": "1.0.0",
-  "types": "src/index.d.ts",
-  "private": true
-}
