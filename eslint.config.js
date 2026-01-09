@@ -1,8 +1,6 @@
 import eslint from '@eslint/js'
 import stylistic from '@stylistic/eslint-plugin'
 import importPlugin from 'eslint-plugin-import'
-import reactJSXRuntime from 'eslint-plugin-react/configs/jsx-runtime.js'
-import reactRecommended from 'eslint-plugin-react/configs/recommended.js'
 import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
@@ -13,14 +11,15 @@ export default tseslint.config(
     ignores: [
       '.gitignore',
       'node_modules',
-      '**/dist/**'
+      '**/dist/**',
+      '.yarn'
     ]
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   {
     rules: {
-      '@typescript-eslint/no-unused-vars': 'off'
+      '@typescript-eslint/no-explicit-any': 'off'
     }
   },
   {
@@ -44,7 +43,7 @@ export default tseslint.config(
           ],
           pathGroups: [
             {
-              pattern: '{react,react-dom/**,react-router-dom,react-icons/**,styled-components}',
+              pattern: '{react,react-dom/**,react-router-dom,react-icons/**,@emotion/**,@phosphor-icons/**}',
               group: 'builtin',
               position: 'before'
             }
@@ -60,43 +59,25 @@ export default tseslint.config(
   {
     ...stylistic.configs['recommended-flat'],
     rules: {
-      '@stylistic/semi': 'off',
+      '@stylistic/semi': ['error', 'never'],
       '@stylistic/quotes': ['error', 'single'],
       '@stylistic/eol-last': 'error',
       '@stylistic/indent': ['error', 2],
       '@stylistic/multiline-ternary': ['error', 'always-multiline'],
       '@stylistic/member-delimiter-style': 'off',
       '@stylistic/prop-types': 'off',
+      '@stylistic/jsx-first-prop-new-line': ['error', 'multiline'],
+      '@stylistic/jsx-max-props-per-line': ['error', { maximum: 1 }],
+      '@stylistic/jsx-indent-props': ['error', 2],
+      '@stylistic/jsx-sort-props': 'error',
       '@stylistic/react-in-jsx-scope': 'off',
       '@stylistic/array-bracket-spacing': ['error', 'never'],
       '@stylistic/comma-spacing': ['error', { after: true }],
       '@stylistic/object-curly-spacing': ['error', 'always'],
       '@stylistic/jsx-tag-spacing': ['error', { beforeSelfClosing: 'always' }],
-      '@stylistic/comma-dangle': ['error', 'never']
-    }
-  },
-  {
-    files: ['**/*.{js,jsx,ts,tsx}'],
-    ...reactRecommended,
-    ...reactJSXRuntime,
-    settings: {
-      react: {
-        version: 'detect'
-      }
-    },
-    plugins: {
-      ...reactRecommended.plugins,
-      ...reactJSXRuntime.plugins
-    },
-    languageOptions: {
-      ...reactRecommended.languageOptions,
-      ...reactJSXRuntime.languageOptions
-    },
-    rules: {
-      ...reactRecommended.rules,
-      ...reactJSXRuntime.rules,
-      'react/prop-types': 'off',
-      'react/jsx-closing-bracket-location': ['error', 'after-props']
+      '@stylistic/jsx-quotes': ['error', 'prefer-double'],
+      '@stylistic/comma-dangle': ['error', 'never'],
+      '@stylistic/no-multiple-empty-lines': ['error', { 'max': 1, 'maxEOF': 0 }]
     }
   }
 )
