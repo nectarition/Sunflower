@@ -1,18 +1,19 @@
-import { useCallback, useState } from 'react'
-import { Link } from 'react-router-dom'
 import styled from '@emotion/styled'
 import { ListIcon, XIcon } from '@phosphor-icons/react'
+import { useCallback, useState } from 'react'
+import { Link } from 'react-router-dom'
 import LogotypeSVG from '../../assets/logotype.svg'
 import useAccount from '../../hooks/useAccount'
 import useWindowDimension from '../../hooks/useWindowDimension'
 import HeadHelper from '../../libs/Helmet'
-import RequiredLogin from '../../libs/RequiredLogin'
+import RequiredLogin, { type RedirectAfterLogin } from '../../libs/RequiredLogin'
 import Sidebar from './Sidebar'
 
 interface Props {
   children: React.ReactNode
   title?: string
   allowAnonymous?: boolean
+  redirectAfterLogin?: RedirectAfterLogin
 }
 const DefaultLayout: React.FC<Props> = (props) => {
   const { user, logoutAsync } = useAccount()
@@ -28,7 +29,9 @@ const DefaultLayout: React.FC<Props> = (props) => {
   }, [])
 
   return (
-    <RequiredLogin allowAnonymous={props.allowAnonymous}>
+    <RequiredLogin
+      allowAnonymous={props.allowAnonymous}
+      redirectAfterLogin={props.redirectAfterLogin}>
       <Container>
         <HeadHelper title={props.title} />
         <SidebarWrap>

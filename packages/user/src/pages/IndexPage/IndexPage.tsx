@@ -66,6 +66,11 @@ const IndexPage: React.FC = () => {
               <td colSpan={4}>イベントが登録されていません。</td>
             </tr>
           )}
+          {filteredEvents?.length === 0 && (
+            <tr>
+              <td colSpan={4}>開催前のイベントはありません。</td>
+            </tr>
+          )}
           {filteredEvents?.map((event) => (
             <tr key={event.code}>
               <td>{formatDate(event.date)}</td>

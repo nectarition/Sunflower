@@ -3,6 +3,7 @@ import { useAtom } from 'jotai'
 import { apiTokenAtom, loginTokenAtom, loginTokenKey } from '../atoms/credentials'
 
 interface UseToken {
+  isReady: boolean
   loginToken: string | null | undefined
   apiToken: string | null
   setLoginToken: (token: string | null) => void
@@ -33,6 +34,7 @@ const useToken = (): UseToken => {
   const setAPIToken = useCallback((token: string | null) => setStateAPIToken(token), [])
 
   return {
+    isReady,
     loginToken,
     apiToken: stateAPIToken,
     setLoginToken,

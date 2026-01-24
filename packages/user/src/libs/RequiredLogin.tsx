@@ -2,9 +2,15 @@ import { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import useAccount from '../hooks/useAccount'
 
+export type RedirectAfterLogin = {
+  pathname: string
+  state?: object
+}
+
 interface Props {
   children: React.ReactNode
   allowAnonymous?: boolean
+  redirectAfterLogin?: RedirectAfterLogin
 }
 const RequiredLogin: React.FC<Props> = (props) => {
   const navigate = useNavigate()
@@ -14,9 +20,15 @@ const RequiredLogin: React.FC<Props> = (props) => {
   useEffect(() => {
     if (user === undefined) return
     if (props.allowAnonymous && user === null) return
-    if (user !== null && location.pathname === '/login') {
-      const beforeLocationPath = `${location.state?.from?.pathname ?? ''}${location.state?.from?.search ?? ''}` || '/'
-      navigate(beforeLocationPath, { replace: true })
+    if (user && (location.pathname === '/login' || location.pathname === '/oidc/callback')) {
+      if (location.state?.from) {
+        const fromLocation = location.state.from as { pathname: string; search: string }
+        navigate(`${fromLocation.pathname}${fromLocation.search}`, { replace: true })
+      } else if (props.redirectAfterLogin) {
+        navigate(props.redirectAfterLogin.pathname, { replace: true, state: props.redirectAfterLogin.state })
+      } else {
+        navigate('/', { replace: true })
+      }
       return
     }
     if (user !== null) return
@@ -24,7 +36,7 @@ const RequiredLogin: React.FC<Props> = (props) => {
       state: { from: (location.pathname !== '/' && location) || undefined },
       replace: true
     })
-  }, [user, location])
+  }, [user, location, props.redirectAfterLogin, props.allowAnonymous])
 
   return <>
     {(user || props.allowAnonymous) && props.children}
