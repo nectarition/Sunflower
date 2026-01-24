@@ -1,7 +1,6 @@
 import styled from '@emotion/styled'
 import { SignInIcon } from '@phosphor-icons/react'
 import { useCallback, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import FormButton from '../../components/Form/FormButton'
 import FormInput from '../../components/Form/FormInput'
 import FormItem from '../../components/Form/FormItem'
@@ -10,39 +9,55 @@ import FormSection from '../../components/Form/FormSection'
 import IconLabel from '../../components/parts/IconLabel'
 import Panel from '../../components/parts/Panel'
 import useAccount from '../../hooks/useAccount'
+import useNectaritionID from '../../hooks/useNectaritionID'
 import DefaultLayout from '../../layouts/DefaultLayout/DefaultLayout'
+import type { RedirectAfterLogin } from '../../libs/RequiredLogin'
 
 const LoginPage: React.FC = () => {
-  const navigate = useNavigate()
   const { authenticateAsync } = useAccount()
+  const { getAuthorizeURLAsync } = useNectaritionID()
 
   const [email, setEmail] = useState<string>()
   const [password, setPassword] = useState<string>()
   
-  const [isProcess, setProcess] = useState(false)
+  const [isProgress, setProgress] = useState(false)
   const [error, setError] = useState<string>()
+  const [redirectAfterLogin, setRedirectAfterLogin] = useState<RedirectAfterLogin>()
 
   const handleLogin = useCallback(() => {
     if (!email || !password) return
     const abort = new AbortController()
-    setProcess(true)
+    setProgress(true)
     authenticateAsync(email, password, abort)
       .then((res) => {
         if (res.passwordResetToken) {
-          navigate('/reset-password', { state: { passwordResetToken: res.passwordResetToken } })
-          return
+          setRedirectAfterLogin({
+            pathname: '/reset-password',
+            state: { passwordResetToken: res.passwordResetToken }
+          })
+        } else {
+          setRedirectAfterLogin({
+            pathname: '/'
+          })
         }
-        navigate('/')
       })
       .catch(err => {
         setError(err.message)
-        setProcess(false)
+        setProgress(false)
       })
   }, [email, password])
 
+  const handleLoginWithNectaritionID = useCallback(() => {
+    getAuthorizeURLAsync(new AbortController())
+      .then(url => {
+        window.location.href = url
+      })
+  }, [getAuthorizeURLAsync])
+
   return (
     <DefaultLayout
-      allowAnonymous
+      allowAnonymous={true}
+      redirectAfterLogin={redirectAfterLogin}
       title="ログイン">
       <HeroContainer>
         <HeroTitle>🌻Soleil <small>ねくたりしょんソレイユ</small></HeroTitle>
@@ -51,10 +66,22 @@ const LoginPage: React.FC = () => {
         </p>
       </HeroContainer>
 
-      <h2>ログイン</h2>
+      <FormSection>
+        <FormItem $inlined>
+          <FormButton
+            $inlined
+            onClick={handleLoginWithNectaritionID}>
+            <LogoImage src="https://id.nectarition.jp/assets/logo/black.png" />
+            ねくたりしょん ID でログイン
+          </FormButton>
+        </FormItem>
+      </FormSection>
+
+      <h3>ID/パスワード ログイン</h3>
 
       <p>
-        主催から提供されたアカウントでログインしてください。
+        ID/パスワード認証は 2026/2/28 に廃止予定です。<br />
+        ねくたりしょん ID でのログインをお使いください。
       </p>
 
       <FormSection>
@@ -77,7 +104,7 @@ const LoginPage: React.FC = () => {
         <FormItem>
           <FormButton
             $inlined
-            disabled={!email || !password || isProcess}
+            disabled={!email || !password || isProgress}
             onClick={handleLogin}>
             <IconLabel
               icon={<SignInIcon />}
@@ -100,10 +127,22 @@ export default LoginPage
 const HeroContainer = styled.div`
   margin-bottom: 20px;
   padding: 20px;
-  background-color: #f0f0f0;
+  background-color: #f0d180;
   border-radius: 5px;
 `
 const HeroTitle = styled.div`
   font-size: 1.5em;
   font-weight: bold;
+`
+
+const LogoImage = styled.img`
+  height: 1.25em;
+  vertical-align: sub;
+  padding-right: 0.5em;
+
+  transition: filter 0.2s;
+  
+  button:disabled & {
+    filter: contrast(0.1)
+  }
 `

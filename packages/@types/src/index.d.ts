@@ -2,6 +2,10 @@ export type LoggedInUser = {
   name: string
 }
 
+export type AuthorizeURLResult = {
+  url: string
+}
+
 export type AuthenticateResult = {
   token: string
 }

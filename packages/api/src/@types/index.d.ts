@@ -6,11 +6,16 @@ type Bindings = {
   JWT_LOGIN_TOKEN_SECRET: string
   JWT_API_TOKEN_SECRET: string
   JWT_PASSWORD_RESET_TOKEN_SECRET: string
+  JWT_STATE_TOKEN_SECRET: string
   SMTP_HOST: string
   SMTP_PORT: number
   SMTP_USER: string
   SMTP_PASS: string,
   USER_APP_URL: string
+  OIDC_CLIENT_ID: string
+  OIDC_CLIENT_SECRET: string
+  OIDC_CALLBACK_URI: string
+  ALLOWED_ORIGINS: string
 }
 
 type Variables = {

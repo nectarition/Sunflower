@@ -23,7 +23,8 @@ const useFetch = (): UseFetch => {
   const setUser = useSetAtom(userAtom)
 
   const axios = Axios.create({
-    baseURL: import.meta.env.VITE_SERVER_URL
+    baseURL: import.meta.env.VITE_SERVER_URL,
+    withCredentials: true
   })
 
   let isRetry = false

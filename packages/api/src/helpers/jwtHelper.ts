@@ -1,4 +1,5 @@
 import { sign, verify } from 'hono/jwt'
+import { EncryptJWT, jwtDecrypt } from 'jose'
 import { APIContext, LoggedInUser } from '../@types'
 import APIError from '../libs/APIError'
 
@@ -64,11 +65,56 @@ const verifyCoreAsync = async (token: string, secret: string) => {
       throw new APIError('unauthorized', 'unauthorized', 'Token expired')
     }
     throw err
-  }}
+  }
+}
+
+const signStateTokenAsync = async (c: APIContext, codeVerifier: string) => {
+  const secret = c.env.JWT_STATE_TOKEN_SECRET
+  if (!secret) {
+    throw new Error('JWT secret not configured')
+  }
+
+  const payload = {
+    codeVerifier,
+    exp: Math.floor(Date.now() / 1000) + 60 * 10 // 10 minutes
+  }
+
+  const key = new TextEncoder().encode(secret.padEnd(32, '0').slice(0, 32))
+  const jwe = await new EncryptJWT(payload)
+    .setProtectedHeader({ alg: 'dir', enc: 'A256GCM' })
+    .setExpirationTime('10m')
+    .encrypt(key)
+  
+  return jwe
+}
+
+const verifyStateTokenAsync = async (c: APIContext, token: string) => {
+  const secret = c.env.JWT_STATE_TOKEN_SECRET
+  if (!secret) {
+    throw new Error('JWT secret not configured')
+  }
+
+  try {
+    const key = new TextEncoder().encode(secret.padEnd(32, '0').slice(0, 32))
+    const decryptResult = await jwtDecrypt<{ codeVerifier: string }>(token, key)
+    
+    if (!decryptResult.payload.codeVerifier) {
+      return null
+    }
+    return decryptResult.payload.codeVerifier as string
+  } catch (err: any) {
+    if (err?.code === 'ERR_JWT_EXPIRED') {
+      throw new APIError('invalid-operation', 'state-expired', 'State expired')
+    }
+    throw new APIError('invalid-operation', 'invalid-state', 'Invalid state token')
+  }
+}
 
 export default {
   signLoginTokenAsync,
   signAPITokenAsync,
   verifyLoginTokenAsync,
-  verifyAPITokenAsync
+  verifyAPITokenAsync,
+  signStateTokenAsync,
+  verifyStateTokenAsync
 }

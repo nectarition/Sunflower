@@ -10,17 +10,18 @@ datasource db {
 }
 
 model user {
-  id            Int      @id @default(autoincrement())
-  email         String   @unique
-  password      String
-  name          String
-  emailVerified Boolean  @default(false)
+  id                    Int      @id @default(autoincrement())
+  email                 String   @unique
+  password              String
+  name                  String
+  emailVerified         Boolean  @default(false)
   requirePasswordChange Boolean  @default(false)
-  createdAt     DateTime @default(now())
+  createdAt             DateTime @default(now())
+  oidcSub               String?  @unique
 
-  mailTokens mailToken[]
+  mailTokens        mailToken[]
   organizationUsers organizationUser[]
-  auditLogs auditLog[]
+  auditLogs         auditLog[]
 
   @@map("users")
 }
@@ -47,7 +48,7 @@ model organization {
   id   Int    @id @default(autoincrement())
   name String
 
-  events event[]
+  events            event[]
   organizationUsers organizationUser[]
 
   @@map("organizations")
@@ -63,7 +64,6 @@ model organizationUser {
   user         user         @relation(fields: [userId], references: [id])
 
   @@unique([organizationId, userId])
-
   @@map("organization_users")
 }
 
@@ -73,11 +73,11 @@ enum UserRoleTypes {
 }
 
 model event {
-  id           Int      @id @default(autoincrement())
-  code        String   @unique
-  name         String
+  id             Int      @id @default(autoincrement())
+  code           String   @unique
+  name           String
   organizationId Int
-  date         DateTime @default(now())
+  date           DateTime @default(now())
 
   organization organization @relation(fields: [organizationId], references: [id])
 
@@ -87,13 +87,13 @@ model event {
 }
 
 model circle {
-  id      Int    @id @default(autoincrement())
-  eventId Int
-  code    String @unique
+  id          Int               @id @default(autoincrement())
+  eventId     Int
+  code        String            @unique
   spaceNumber String
-  name    String
-  status CircleStatusTypes @default(None)
-  updatedAt DateTime?
+  name        String
+  status      CircleStatusTypes @default(None)
+  updatedAt   DateTime?
 
   event event @relation(fields: [eventId], references: [id])
 
@@ -111,9 +111,9 @@ model auditLog {
   userId    Int
   action    String
   timestamp DateTime @default(now())
-  value1   String?
-  value2   String?
-  value3   String?
+  value1    String?
+  value2    String?
+  value3    String?
 
   user user @relation(fields: [userId], references: [id])
 
