@@ -99,10 +99,15 @@ accountsRouter.get('/accounts/authorize-url', async (c) => {
   const clientId = c.env.OIDC_CLIENT_ID
   const redirectUri = c.env.OIDC_CALLBACK_URI
   
+  const requestId = crypto.randomUUID()
   const codeVerifier = crypto.randomBytes(32).toString('base64url')
-  const state = await jwtHelper.signStateTokenAsync(c, codeVerifier)
+  const nonce = crypto.randomBytes(32).toString('base64url')
+  
+  const state = await jwtHelper.signStateTokenAsync(c, requestId, codeVerifier)
 
-  setCookie(c, 'oidc_state', state, {
+  // nonce をハッシュ化してクッキーに保存
+  const hashedNonce = crypto.createHash('sha256').update(nonce).digest('base64url')
+  setCookie(c, `oidc_nonce_${requestId}`, hashedNonce, {
     httpOnly: true,
     secure: true,
     sameSite: 'None',
@@ -117,6 +122,7 @@ accountsRouter.get('/accounts/authorize-url', async (c) => {
     + `&redirect_uri=${encodeURIComponent(redirectUri)}`
     + '&scope=openid%20profile%20email'
     + `&state=${encodeURIComponent(state)}`
+    + `&nonce=${encodeURIComponent(nonce)}`
     + '&code_challenge_method=S256'
     + `&code_challenge=${encodeURIComponent(codeChallenge)}`
   return c.json({ url })
@@ -125,17 +131,22 @@ accountsRouter.get('/accounts/authorize-url', async (c) => {
 accountsRouter.post('/accounts/oidc-callback', async (c) => {
   const { code, state } = await c.req.json()
   
-  const cookieState = getCookie(c, 'oidc_state')
-  if (!state || state !== cookieState) {
-    throw new APIError('invalid-operation', 'invalid-state', 'Invalid state parameter')
-  }
-  
-  const codeVerifier = await jwtHelper.verifyStateTokenAsync(c, state)
-  if (!codeVerifier) {
+  // state JWT をデコードして requestId と codeVerifier を取得
+  const statePayload = await jwtHelper.verifyStateTokenAsync(c, state)
+  if (!statePayload) {
     throw new APIError('invalid-operation', 'invalid-state', 'Invalid state token')
   }
-  
-  setCookie(c, 'oidc_state', '', {
+
+  const { requestId, codeVerifier } = statePayload
+
+  // requestId に対応する nonce クッキーを取得
+  const hashedNonce = getCookie(c, `oidc_nonce_${requestId}`)
+  if (!hashedNonce) {
+    throw new APIError('invalid-operation', 'nonce-not-found', 'Nonce not found or expired')
+  }
+
+  // nonce クッキーを削除
+  setCookie(c, `oidc_nonce_${requestId}`, '', {
     httpOnly: true,
     secure: true,
     sameSite: 'None',
@@ -182,6 +193,7 @@ accountsRouter.post('/accounts/oidc-callback', async (c) => {
     sub: string
     email: string
     name: string
+    nonce: string
   }
 
   const oidcSub = payload.sub
@@ -192,6 +204,12 @@ accountsRouter.post('/accounts/oidc-callback', async (c) => {
   const email = payload.email
   if (!email) {
     throw new APIError('invalid-operation', 'email-not-found', 'Email not found in ID token')
+  }
+
+  // nonce を検証
+  const receivedNonceHash = crypto.createHash('sha256').update(payload.nonce).digest('base64url')
+  if (receivedNonceHash !== hashedNonce) {
+    throw new APIError('invalid-operation', 'invalid-nonce', 'Invalid nonce')
   }
 
   const prisma = c.get('prisma')

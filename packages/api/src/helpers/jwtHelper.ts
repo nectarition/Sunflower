@@ -68,13 +68,14 @@ const verifyCoreAsync = async (token: string, secret: string) => {
   }
 }
 
-const signStateTokenAsync = async (c: APIContext, codeVerifier: string) => {
+const signStateTokenAsync = async (c: APIContext, requestId: string, codeVerifier: string) => {
   const secret = c.env.JWT_STATE_TOKEN_SECRET
   if (!secret) {
     throw new Error('JWT secret not configured')
   }
 
   const payload = {
+    requestId,
     codeVerifier,
     exp: Math.floor(Date.now() / 1000) + 60 * 10 // 10 minutes
   }
@@ -96,12 +97,12 @@ const verifyStateTokenAsync = async (c: APIContext, token: string) => {
 
   try {
     const key = new TextEncoder().encode(secret.padEnd(32, '0').slice(0, 32))
-    const decryptResult = await jwtDecrypt<{ codeVerifier: string }>(token, key)
+    const decryptResult = await jwtDecrypt<{ requestId: string; codeVerifier: string }>(token, key)
     
-    if (!decryptResult.payload.codeVerifier) {
+    if (!decryptResult.payload.requestId || !decryptResult.payload.codeVerifier) {
       return null
     }
-    return decryptResult.payload.codeVerifier as string
+    return decryptResult.payload as { requestId: string; codeVerifier: string }
   } catch (err: any) {
     if (err?.code === 'ERR_JWT_EXPIRED') {
       throw new APIError('invalid-operation', 'state-expired', 'State expired')
