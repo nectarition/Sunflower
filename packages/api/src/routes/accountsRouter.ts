@@ -111,7 +111,7 @@ accountsRouter.get('/accounts/authorize-url', async (c) => {
   
   const codeChallenge = crypto.createHash('sha256').update(codeVerifier).digest('base64url')
   
-  const url = 'https://idapi.nectarition.jp/authorize'
+  const url = 'https://idapi.nectarition.jp/oidc/authorize'
     + '?response_type=code'
     + `&client_id=${encodeURIComponent(clientId)}`
     + `&redirect_uri=${encodeURIComponent(redirectUri)}`
@@ -146,7 +146,7 @@ accountsRouter.post('/accounts/oidc-callback', async (c) => {
   const clientSecret = c.env.OIDC_CLIENT_SECRET
   const redirectUri = c.env.OIDC_CALLBACK_URI
 
-  const tokenResponse = await fetch('https://idapi.nectarition.jp/token', {
+  const tokenResponse = await fetch('https://idapi.nectarition.jp/oidc/token', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
