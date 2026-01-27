@@ -1,7 +1,6 @@
 import crypto from 'crypto'
 import bcrypt from 'bcryptjs'
 import { Hono } from 'hono'
-import { setCookie, getCookie } from 'hono/cookie'
 import { validator } from 'hono/validator'
 import jwtHelper from '../helpers/jwtHelper'
 import APIError from '../libs/APIError'
@@ -104,16 +103,6 @@ accountsRouter.get('/accounts/authorize-url', async (c) => {
   const nonce = crypto.randomBytes(32).toString('base64url')
   
   const state = await jwtHelper.signStateTokenAsync(c, requestId, codeVerifier)
-
-  // nonce をハッシュ化してクッキーに保存
-  const hashedNonce = crypto.createHash('sha256').update(nonce).digest('base64url')
-  setCookie(c, `oidc_nonce_${requestId}`, hashedNonce, {
-    httpOnly: true,
-    secure: true,
-    sameSite: 'None',
-    maxAge: 60 * 10
-  })
-  
   const codeChallenge = crypto.createHash('sha256').update(codeVerifier).digest('base64url')
   
   const url = 'https://idapi.nectarition.jp/oidc/authorize'
@@ -136,19 +125,7 @@ accountsRouter.post('/accounts/oidc-callback', async (c) => {
     throw new APIError('invalid-operation', 'invalid-state', 'Invalid state token')
   }
 
-  const { requestId, codeVerifier } = statePayload
-
-  const hashedNonce = getCookie(c, `oidc_nonce_${requestId}`)
-  if (!hashedNonce) {
-    throw new APIError('invalid-operation', 'nonce-not-found', 'Nonce not found or expired')
-  }
-
-  setCookie(c, `oidc_nonce_${requestId}`, '', {
-    httpOnly: true,
-    secure: true,
-    sameSite: 'None',
-    maxAge: 0
-  })
+  const { codeVerifier } = statePayload
 
   const clientId = c.env.OIDC_CLIENT_ID
   const clientSecret = c.env.OIDC_CLIENT_SECRET
@@ -196,11 +173,6 @@ accountsRouter.post('/accounts/oidc-callback', async (c) => {
   const email = payload.email
   if (!email) {
     throw new APIError('invalid-operation', 'email-not-found', 'Email not found in ID token')
-  }
-
-  const receivedNonceHash = crypto.createHash('sha256').update(payload.nonce).digest('base64url')
-  if (receivedNonceHash !== hashedNonce) {
-    throw new APIError('invalid-operation', 'invalid-nonce', 'Invalid nonce')
   }
 
   const prisma = c.get('prisma')
