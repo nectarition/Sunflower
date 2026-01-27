@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import LinkButton from '../../components/parts/LinkButton'
 import useNectaritionID from '../../hooks/useNectaritionID'
 import RequiredLogin, { type RedirectAfterLogin } from '../../libs/RequiredLogin'
 
@@ -9,13 +10,19 @@ const OIDCCallbackPage: React.FC = () => {
   const [searchParams] = useSearchParams()
   const code = searchParams.get('code')
   const state = searchParams.get('state')
+  const error = searchParams.get('error')
 
   const [redirectAfterLogin, setRedirectAfterLogin] = useState<RedirectAfterLogin>()
-  const [error, setError] = useState<string>()
+  const [requestError, setRequestError] = useState<string>()
 
   useEffect(() => {
-    const abort = new AbortController()
+    if (error) {
+      const errorMessage = error === 'access_denied' ? 'ログインがキャンセルされました。' : error
+      setRequestError(`OIDC エラー: ${errorMessage}`)
+      return
+    }
     if (!code || !state) return
+    const abort = new AbortController()
     processCallbackAsync(code, state, abort)
       .then(res => {
         if (res.passwordResetToken) {
@@ -27,16 +34,23 @@ const OIDCCallbackPage: React.FC = () => {
       .catch(err => {
         if (err.code === 'ERR_CANCELED') return
         console.error(err)
-        setError(err.message || 'Unknown error')
+        setRequestError(err.message || 'Unknown error')
       })
     return () => abort.abort()
-  }, [code, state])
+  }, [error, code, state])
 
   return (
     <RequiredLogin
       allowAnonymous={true}
       redirectAfterLogin={redirectAfterLogin}>
-      {error ? `エラーが発生しました: ${error}` : 'ログイン処理中...'}
+      {requestError
+        ? <>
+          エラーが発生しました: {requestError}<br />
+          <LinkButton to="/login">ログイン画面に戻る</LinkButton>
+        </>
+        : <>
+          ログイン処理中...
+        </>}
     </RequiredLogin> 
   )
 }
