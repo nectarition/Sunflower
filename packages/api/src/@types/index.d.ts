@@ -17,7 +17,6 @@ type Bindings = {
 type Variables = {
   prisma: PrismaClient
   user: LoggedInUser
-  mailer: nodemailer.Transporter<SMTPTransport.SentMessageInfo, SMTPTransport.Options>
 }
 
 export type APIContext = Context<{ Bindings: Bindings, Variables: Variables }>

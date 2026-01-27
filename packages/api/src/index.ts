@@ -2,7 +2,6 @@ import 'dotenv/config'
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import errorHandler from './middlewares/errorHandler'
-import mailer from './middlewares/mailer'
 import prisma from './middlewares/prisma'
 import requiredLogin from './middlewares/requiredLogin'
 import accountsRouter from './routes/accountsRouter'
@@ -34,7 +33,6 @@ app.use('*', (c, next) => {
   })(c, next)
 })
 app.use('*', prisma)
-app.use('*', mailer)
 
 app.get('/', (c) => {
   return c.text('Hello world!')

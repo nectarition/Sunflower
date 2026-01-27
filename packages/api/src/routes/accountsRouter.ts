@@ -239,29 +239,6 @@ accountsRouter.post('/accounts/oidc-callback', async (c) => {
   })
 })
 
-accountsRouter.post('/accounts/send-password-reset-email', async (c) => {
-  const { email } = await c.req.json()
-  const prisma = c.get('prisma')
-  const user = await prisma.user.findUnique({
-    where: { email }
-  })
-  if (!user || !user.emailVerified) {
-    return c.json({ success: true })
-  }
-
-  const token = await tokenService.createTokenAsync(c, user.id, 'PasswordReset')
-
-  const mailer = c.get('mailer')
-  await mailer.sendMail({
-    from: '"鳩の会 CHECK-IN" <no-reply@seidouren.jp>',
-    to: user.email,
-    subject: 'パスワードリセット',
-    text: `以下のリンクをクリックしてパスワードをリセットしてください。\n\n${c.env.USER_APP_URL}/action?mode=reset&token=${token}`
-  })
-
-  return c.json({ success: true })
-})
-
 accountsRouter.post('/accounts/reset-password', async (c) => {
   const { token, password } = await c.req.json()
   const prisma = c.get('prisma')
