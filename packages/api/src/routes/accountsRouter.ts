@@ -131,7 +131,6 @@ accountsRouter.get('/accounts/authorize-url', async (c) => {
 accountsRouter.post('/accounts/oidc-callback', async (c) => {
   const { code, state } = await c.req.json()
   
-  // state JWT をデコードして requestId と codeVerifier を取得
   const statePayload = await jwtHelper.verifyStateTokenAsync(c, state)
   if (!statePayload) {
     throw new APIError('invalid-operation', 'invalid-state', 'Invalid state token')
@@ -139,13 +138,11 @@ accountsRouter.post('/accounts/oidc-callback', async (c) => {
 
   const { requestId, codeVerifier } = statePayload
 
-  // requestId に対応する nonce クッキーを取得
   const hashedNonce = getCookie(c, `oidc_nonce_${requestId}`)
   if (!hashedNonce) {
     throw new APIError('invalid-operation', 'nonce-not-found', 'Nonce not found or expired')
   }
 
-  // nonce クッキーを削除
   setCookie(c, `oidc_nonce_${requestId}`, '', {
     httpOnly: true,
     secure: true,
@@ -182,19 +179,14 @@ accountsRouter.post('/accounts/oidc-callback', async (c) => {
   
   const idToken = tokenData.id_token
 
-  const idTokenParts = idToken.split('.')
-  if (idTokenParts.length !== 3) {
-    throw new APIError('invalid-operation', 'invalid-id-token', 'Invalid ID token')
-  }
-
-  const payloadBase64 = idTokenParts[1]
-  const payloadJson = Buffer.from(payloadBase64, 'base64').toString('utf-8')
-  const payload = JSON.parse(payloadJson) as {
-    sub: string
-    email: string
-    name: string
-    nonce: string
-  }
+  const jwksUri = 'https://idapi.nectarition.jp/.well-known/jwks.json'
+  const expectedIssuer = 'https://idapi.nectarition.jp'
+  const payload = await jwtHelper.verifyIdTokenAsync(
+    idToken,
+    jwksUri,
+    clientId,
+    expectedIssuer
+  )
 
   const oidcSub = payload.sub
   if (!oidcSub) {
@@ -206,7 +198,6 @@ accountsRouter.post('/accounts/oidc-callback', async (c) => {
     throw new APIError('invalid-operation', 'email-not-found', 'Email not found in ID token')
   }
 
-  // nonce を検証
   const receivedNonceHash = crypto.createHash('sha256').update(payload.nonce).digest('base64url')
   if (receivedNonceHash !== hashedNonce) {
     throw new APIError('invalid-operation', 'invalid-nonce', 'Invalid nonce')

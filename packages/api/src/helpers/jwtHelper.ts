@@ -1,5 +1,5 @@
 import { sign, verify } from 'hono/jwt'
-import { EncryptJWT, jwtDecrypt } from 'jose'
+import { EncryptJWT, jwtDecrypt, jwtVerify, createRemoteJWKSet } from 'jose'
 import { APIContext, LoggedInUser } from '../@types'
 import APIError from '../libs/APIError'
 
@@ -111,11 +111,38 @@ const verifyStateTokenAsync = async (c: APIContext, token: string) => {
   }
 }
 
+const verifyIdTokenAsync = async (
+  idToken: string,
+  jwksUri: string,
+  expectedAudience: string,
+  expectedIssuer: string
+) => {
+  try {
+    const JWKS = createRemoteJWKSet(new URL(jwksUri))
+    
+    const result = await jwtVerify(idToken, JWKS, {
+      audience: expectedAudience,
+      issuer: expectedIssuer
+    })
+    
+    return result.payload as {
+      sub: string
+      email: string
+      name?: string
+      nonce: string
+      [key: string]: any
+    }
+  } catch (err: any) {
+    throw new APIError('invalid-operation', 'invalid-id-token', 'ID Token verification failed')
+  }
+}
+
 export default {
   signLoginTokenAsync,
   signAPITokenAsync,
   verifyLoginTokenAsync,
   verifyAPITokenAsync,
   signStateTokenAsync,
-  verifyStateTokenAsync
+  verifyStateTokenAsync,
+  verifyIdTokenAsync
 }
