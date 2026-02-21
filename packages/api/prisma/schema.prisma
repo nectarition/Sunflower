@@ -18,6 +18,7 @@ model user {
   requirePasswordChange Boolean  @default(false)
   createdAt             DateTime @default(now())
   oidcSub               String?  @unique
+  isAdmin               Boolean  @default(false)
 
   mailTokens        mailToken[]
   organizationUsers organizationUser[]

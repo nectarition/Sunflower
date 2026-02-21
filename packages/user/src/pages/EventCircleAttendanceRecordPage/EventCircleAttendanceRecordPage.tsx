@@ -110,7 +110,7 @@ const EventCircleAttendanceRecordPage: React.FC = () => {
         <li><Link to={`/events/${code}`}>{event?.name ?? <BlinkField />}</Link></li>
       </Breadcrumbs>
 
-      <h2>出席簿</h2>
+      <h1>出席簿</h1>
 
       <FormSection>
         <FormItem>

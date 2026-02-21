@@ -5,6 +5,7 @@ import errorHandler from './middlewares/errorHandler'
 import prisma from './middlewares/prisma'
 import requiredLogin from './middlewares/requiredLogin'
 import accountsRouter from './routes/accountsRouter'
+import adminRouter from './routes/adminRouter'
 import circlesRouter from './routes/circlesRouter'
 import eventsRouter from './routes/eventsRouter'
 import type { APIContext, Bindings, Variables } from './@types'
@@ -45,5 +46,6 @@ app.get('/test', requiredLogin, async (c) => {
 app.route('/', accountsRouter)
 app.route('/', eventsRouter)
 app.route('/', circlesRouter)
+app.route('/', adminRouter)
 
 export default app

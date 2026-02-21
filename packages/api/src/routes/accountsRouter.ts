@@ -89,7 +89,8 @@ accountsRouter.post('/accounts/login', async (c) => {
     passwordResetToken,
     token: apiToken,
     user: {
-      name: user.name
+      name: user.name,
+      isAdmin: user.isAdmin
     }
   })
 })

@@ -1,6 +1,6 @@
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
-import { HouseIcon, SignInIcon, SignOutIcon } from '@phosphor-icons/react'
+import { ConfettiIcon, HouseIcon, SignInIcon, SignOutIcon, UserIcon, UsersIcon } from '@phosphor-icons/react'
 import { InfoIcon } from '@phosphor-icons/react/dist/ssr'
 import { Link } from 'react-router-dom'
 import type { LoggedInUser } from 'soleil'
@@ -8,12 +8,23 @@ import type { LoggedInUser } from 'soleil'
 const menuLinks = [
   {
     sectionName: null,
+    isAdmin: false,
     items: [
       { to: '/', icon: <HouseIcon />, label: 'ホーム' }
     ]
   },
   {
-    sectionName: '管理者向け',
+    sectionName: 'システム管理',
+    isAdmin: true,
+    items: [
+      { to: '/admin/organizations', icon: <UsersIcon />, label: '組織管理' },
+      { to: '/admin/users', icon: <UserIcon />, label: 'ユーザ管理' },
+      { to: '/admin/events', icon: <ConfettiIcon />, label: 'イベント管理' }
+    ]
+  },
+  {
+    sectionName: 'イベント主催者',
+    isAdmin: false,
     items: [
       { to: '/guide', icon: <InfoIcon />, label: '利用ガイドを見る' }
     ]
@@ -54,6 +65,7 @@ const Sidebar: React.FC<Props> = (props) => {
                 </MenuButtonItem>
               </MenuSection>
               {menuLinks
+                .filter(menuLink => !menuLink.isAdmin || props.user?.isAdmin)
                 .map((menuLink, index) => (
                   <MenuSection key={index}>
                     {menuLink.sectionName && (

@@ -9,7 +9,7 @@ const GuidePage: React.FC = () => {
       <Breadcrumbs>
         <li><Link to="/">メニュー</Link></li>
       </Breadcrumbs>
-      <h2>ガイド</h2>
+      <h1>ガイド</h1>
 
       <h3>利用準備</h3>
       <p>

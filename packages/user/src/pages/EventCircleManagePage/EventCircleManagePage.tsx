@@ -102,7 +102,7 @@ const EventCircleManagePage: React.FC = () => {
         <li><Link to={`/events/${code}`}>{event?.name}</Link></li>
       </Breadcrumbs>
 
-      <h2>封筒データ設定</h2>
+      <h1>封筒データ設定</h1>
 
       <Panel
         subTitle="既に存在する出欠データを上書きします。"

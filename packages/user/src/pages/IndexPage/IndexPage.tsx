@@ -32,7 +32,7 @@ const IndexPage: React.FC = () => {
 
   return (
     <DefaultLayout>
-      <h2>イベントを選択してください</h2>
+      <h1>イベントを選択してください</h1>
 
       <FormSection>
         <FormItem>
