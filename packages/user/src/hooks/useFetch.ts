@@ -36,7 +36,7 @@ const useFetch = (): UseFetch => {
       } else if (apiToken && err.response.status === 401 && !isRetry) {
         isRetry = true
         const loginAsync = async (): Promise<LoginResult> => {
-          const result = await axios.post<LoginResult>('/accounts/login', { loginToken })
+          const result = await axios.post<LoginResult>('/accounts/login', { token: loginToken })
           return result.data
         }
         loginAsync()
