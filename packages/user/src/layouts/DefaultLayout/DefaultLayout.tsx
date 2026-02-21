@@ -13,6 +13,7 @@ interface Props {
   children: React.ReactNode
   title?: string
   allowAnonymous?: boolean
+  requiredAdmin?: boolean
   redirectAfterLogin?: RedirectAfterLogin
 }
 const DefaultLayout: React.FC<Props> = (props) => {
@@ -31,7 +32,8 @@ const DefaultLayout: React.FC<Props> = (props) => {
   return (
     <RequiredLogin
       allowAnonymous={props.allowAnonymous}
-      redirectAfterLogin={props.redirectAfterLogin}>
+      redirectAfterLogin={props.redirectAfterLogin}
+      requiredAdmin={props.requiredAdmin}>
       <Container>
         <HeadHelper title={props.title} />
         <SidebarWrap>

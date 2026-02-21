@@ -1,5 +1,5 @@
 import { sign, verify } from 'hono/jwt'
-import { EncryptJWT, jwtDecrypt } from 'jose'
+import { EncryptJWT, jwtDecrypt, jwtVerify, createRemoteJWKSet } from 'jose'
 import { APIContext, LoggedInUser } from '../@types'
 import APIError from '../libs/APIError'
 
@@ -68,13 +68,14 @@ const verifyCoreAsync = async (token: string, secret: string) => {
   }
 }
 
-const signStateTokenAsync = async (c: APIContext, codeVerifier: string) => {
+const signStateTokenAsync = async (c: APIContext, requestId: string, codeVerifier: string) => {
   const secret = c.env.JWT_STATE_TOKEN_SECRET
   if (!secret) {
     throw new Error('JWT secret not configured')
   }
 
   const payload = {
+    requestId,
     codeVerifier,
     exp: Math.floor(Date.now() / 1000) + 60 * 10 // 10 minutes
   }
@@ -96,17 +97,43 @@ const verifyStateTokenAsync = async (c: APIContext, token: string) => {
 
   try {
     const key = new TextEncoder().encode(secret.padEnd(32, '0').slice(0, 32))
-    const decryptResult = await jwtDecrypt<{ codeVerifier: string }>(token, key)
+    const decryptResult = await jwtDecrypt<{ requestId: string; codeVerifier: string }>(token, key)
     
-    if (!decryptResult.payload.codeVerifier) {
+    if (!decryptResult.payload.requestId || !decryptResult.payload.codeVerifier) {
       return null
     }
-    return decryptResult.payload.codeVerifier as string
+    return decryptResult.payload as { requestId: string; codeVerifier: string }
   } catch (err: any) {
     if (err?.code === 'ERR_JWT_EXPIRED') {
       throw new APIError('invalid-operation', 'state-expired', 'State expired')
     }
     throw new APIError('invalid-operation', 'invalid-state', 'Invalid state token')
+  }
+}
+
+const verifyIdTokenAsync = async (
+  idToken: string,
+  jwksUri: string,
+  expectedAudience: string,
+  expectedIssuer: string
+) => {
+  try {
+    const JWKS = createRemoteJWKSet(new URL(jwksUri))
+    
+    const result = await jwtVerify(idToken, JWKS, {
+      audience: expectedAudience,
+      issuer: expectedIssuer
+    })
+    
+    return result.payload as {
+      sub: string
+      email: string
+      name?: string
+      nonce: string
+      [key: string]: any
+    }
+  } catch (err: any) {
+    throw new APIError('invalid-operation', 'invalid-id-token', 'ID Token verification failed')
   }
 }
 
@@ -116,5 +143,6 @@ export default {
   verifyLoginTokenAsync,
   verifyAPITokenAsync,
   signStateTokenAsync,
-  verifyStateTokenAsync
+  verifyStateTokenAsync,
+  verifyIdTokenAsync
 }

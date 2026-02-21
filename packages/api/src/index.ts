@@ -2,10 +2,10 @@ import 'dotenv/config'
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import errorHandler from './middlewares/errorHandler'
-import mailer from './middlewares/mailer'
 import prisma from './middlewares/prisma'
 import requiredLogin from './middlewares/requiredLogin'
 import accountsRouter from './routes/accountsRouter'
+import adminRouter from './routes/adminRouter'
 import circlesRouter from './routes/circlesRouter'
 import eventsRouter from './routes/eventsRouter'
 import type { APIContext, Bindings, Variables } from './@types'
@@ -34,7 +34,6 @@ app.use('*', (c, next) => {
   })(c, next)
 })
 app.use('*', prisma)
-app.use('*', mailer)
 
 app.get('/', (c) => {
   return c.text('Hello world!')
@@ -47,5 +46,6 @@ app.get('/test', requiredLogin, async (c) => {
 app.route('/', accountsRouter)
 app.route('/', eventsRouter)
 app.route('/', circlesRouter)
+app.route('/', adminRouter)
 
 export default app

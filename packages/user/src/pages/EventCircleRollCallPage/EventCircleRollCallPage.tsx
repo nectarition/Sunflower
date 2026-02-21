@@ -152,7 +152,7 @@ const EventCircleRollCallPage: React.FC = () => {
 
       <Layout>
         <Column>
-          <h2>出席登録</h2>
+          <h1>出席登録</h1>
           <FormSection>
             <FormItem>
               <FormLabel>スキャナーモード</FormLabel>

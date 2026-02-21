@@ -1,5 +1,6 @@
 export type LoggedInUser = {
   name: string
+  isAdmin: boolean
 }
 
 export type AuthorizeURLResult = {
@@ -52,6 +53,11 @@ export type User = {
   email: string
   emailVerified: boolean
   createdAt: Date
+}
+
+export type Organization = {
+  id: number
+  name: string
 }
 
 export type SoleilOrganization = {

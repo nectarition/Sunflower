@@ -9,7 +9,8 @@ export type RedirectAfterLogin = {
 
 interface Props {
   children: React.ReactNode
-  allowAnonymous?: boolean
+  allowAnonymous: boolean | undefined
+  requiredAdmin: boolean | undefined
   redirectAfterLogin?: RedirectAfterLogin
 }
 const RequiredLogin: React.FC<Props> = (props) => {
@@ -20,6 +21,10 @@ const RequiredLogin: React.FC<Props> = (props) => {
   useEffect(() => {
     if (user === undefined) return
     if (props.allowAnonymous && user === null) return
+    if (props.requiredAdmin && !user?.isAdmin) {
+      navigate('/', { replace: true })
+      return
+    }
     if (user && (location.pathname === '/login' || location.pathname === '/oidc/callback')) {
       if (location.state?.from) {
         const fromLocation = location.state.from as { pathname: string; search: string }

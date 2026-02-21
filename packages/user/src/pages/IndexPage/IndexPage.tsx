@@ -32,7 +32,7 @@ const IndexPage: React.FC = () => {
 
   return (
     <DefaultLayout>
-      <h2>イベントを選択してください</h2>
+      <h1>イベントを選択してください</h1>
 
       <FormSection>
         <FormItem>
@@ -66,7 +66,7 @@ const IndexPage: React.FC = () => {
               <td colSpan={4}>イベントが登録されていません。</td>
             </tr>
           )}
-          {filteredEvents?.length === 0 && (
+          {events?.length !== 0 && filteredEvents?.length === 0 && (
             <tr>
               <td colSpan={4}>開催前のイベントはありません。</td>
             </tr>

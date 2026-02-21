@@ -1,7 +1,6 @@
 import crypto from 'crypto'
 import bcrypt from 'bcryptjs'
 import { Hono } from 'hono'
-import { setCookie, getCookie } from 'hono/cookie'
 import { validator } from 'hono/validator'
 import jwtHelper from '../helpers/jwtHelper'
 import APIError from '../libs/APIError'
@@ -90,7 +89,8 @@ accountsRouter.post('/accounts/login', async (c) => {
     passwordResetToken,
     token: apiToken,
     user: {
-      name: user.name
+      name: user.name,
+      isAdmin: user.isAdmin
     }
   })
 })
@@ -99,24 +99,20 @@ accountsRouter.get('/accounts/authorize-url', async (c) => {
   const clientId = c.env.OIDC_CLIENT_ID
   const redirectUri = c.env.OIDC_CALLBACK_URI
   
+  const requestId = crypto.randomUUID()
   const codeVerifier = crypto.randomBytes(32).toString('base64url')
-  const state = await jwtHelper.signStateTokenAsync(c, codeVerifier)
-
-  setCookie(c, 'oidc_state', state, {
-    httpOnly: true,
-    secure: true,
-    sameSite: 'None',
-    maxAge: 60 * 10
-  })
+  const nonce = crypto.randomBytes(32).toString('base64url')
   
+  const state = await jwtHelper.signStateTokenAsync(c, requestId, codeVerifier)
   const codeChallenge = crypto.createHash('sha256').update(codeVerifier).digest('base64url')
   
-  const url = 'https://idapi.nectarition.jp/authorize'
+  const url = 'https://idapi.nectarition.jp/oidc/authorize'
     + '?response_type=code'
     + `&client_id=${encodeURIComponent(clientId)}`
     + `&redirect_uri=${encodeURIComponent(redirectUri)}`
     + '&scope=openid%20profile%20email'
     + `&state=${encodeURIComponent(state)}`
+    + `&nonce=${encodeURIComponent(nonce)}`
     + '&code_challenge_method=S256'
     + `&code_challenge=${encodeURIComponent(codeChallenge)}`
   return c.json({ url })
@@ -125,28 +121,18 @@ accountsRouter.get('/accounts/authorize-url', async (c) => {
 accountsRouter.post('/accounts/oidc-callback', async (c) => {
   const { code, state } = await c.req.json()
   
-  const cookieState = getCookie(c, 'oidc_state')
-  if (!state || state !== cookieState) {
-    throw new APIError('invalid-operation', 'invalid-state', 'Invalid state parameter')
-  }
-  
-  const codeVerifier = await jwtHelper.verifyStateTokenAsync(c, state)
-  if (!codeVerifier) {
+  const statePayload = await jwtHelper.verifyStateTokenAsync(c, state)
+  if (!statePayload) {
     throw new APIError('invalid-operation', 'invalid-state', 'Invalid state token')
   }
-  
-  setCookie(c, 'oidc_state', '', {
-    httpOnly: true,
-    secure: true,
-    sameSite: 'None',
-    maxAge: 0
-  })
+
+  const { codeVerifier } = statePayload
 
   const clientId = c.env.OIDC_CLIENT_ID
   const clientSecret = c.env.OIDC_CLIENT_SECRET
   const redirectUri = c.env.OIDC_CALLBACK_URI
 
-  const tokenResponse = await fetch('https://idapi.nectarition.jp/token', {
+  const tokenResponse = await fetch('https://idapi.nectarition.jp/oidc/token', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
@@ -171,18 +157,14 @@ accountsRouter.post('/accounts/oidc-callback', async (c) => {
   
   const idToken = tokenData.id_token
 
-  const idTokenParts = idToken.split('.')
-  if (idTokenParts.length !== 3) {
-    throw new APIError('invalid-operation', 'invalid-id-token', 'Invalid ID token')
-  }
-
-  const payloadBase64 = idTokenParts[1]
-  const payloadJson = Buffer.from(payloadBase64, 'base64').toString('utf-8')
-  const payload = JSON.parse(payloadJson) as {
-    sub: string
-    email: string
-    name: string
-  }
+  const jwksUri = 'https://idapi.nectarition.jp/.well-known/jwks.json'
+  const expectedIssuer = 'https://idapi.nectarition.jp'
+  const payload = await jwtHelper.verifyIdTokenAsync(
+    idToken,
+    jwksUri,
+    clientId,
+    expectedIssuer
+  )
 
   const oidcSub = payload.sub
   if (!oidcSub) {
@@ -228,29 +210,6 @@ accountsRouter.post('/accounts/oidc-callback', async (c) => {
   return c.json({
     token: loginToken
   })
-})
-
-accountsRouter.post('/accounts/send-password-reset-email', async (c) => {
-  const { email } = await c.req.json()
-  const prisma = c.get('prisma')
-  const user = await prisma.user.findUnique({
-    where: { email }
-  })
-  if (!user || !user.emailVerified) {
-    return c.json({ success: true })
-  }
-
-  const token = await tokenService.createTokenAsync(c, user.id, 'PasswordReset')
-
-  const mailer = c.get('mailer')
-  await mailer.sendMail({
-    from: '"鳩の会 CHECK-IN" <no-reply@seidouren.jp>',
-    to: user.email,
-    subject: 'パスワードリセット',
-    text: `以下のリンクをクリックしてパスワードをリセットしてください。\n\n${c.env.USER_APP_URL}/action?mode=reset&token=${token}`
-  })
-
-  return c.json({ success: true })
 })
 
 accountsRouter.post('/accounts/reset-password', async (c) => {

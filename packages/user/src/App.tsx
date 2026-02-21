@@ -1,5 +1,8 @@
 import { createBrowserRouter, Outlet, RouterProvider, ScrollRestoration } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
+import AdminEventListPage from './pages/AdminEventListPage/AdminEventListPage'
+import AdminOrganizationListPage from './pages/AdminOrganizationListPage/AdminOrganizationListPage'
+import AdminUserListPage from './pages/AdminUserListPage/AdminUserListPage'
 import EventCircleAttendanceRecordPage from './pages/EventCircleAttendanceRecordPage/EventCircleAttendanceRecordPage'
 import EventCircleManagePage from './pages/EventCircleManagePage/EventCircleManagePage'
 import EventCircleRollCallPage from './pages/EventCircleRollCallPage/EventCircleRollCallPage'
@@ -57,6 +60,38 @@ const router = createBrowserRouter([
               {
                 path: 'manage',
                 element: <EventCircleManagePage />
+              }
+            ]
+          }
+        ]
+      },
+      {
+        path: 'admin',
+        children: [
+          {
+            path: 'organizations',
+            children: [
+              {
+                index: true,
+                element: <AdminOrganizationListPage />
+              }
+            ]
+          },
+          {
+            path: 'users',
+            children: [
+              {
+                index: true,
+                element: <AdminUserListPage />
+              }
+            ]
+          },
+          {
+            path: 'events',
+            children: [
+              {
+                index: true,
+                element: <AdminEventListPage />
               }
             ]
           }
