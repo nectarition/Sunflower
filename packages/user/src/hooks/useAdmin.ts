@@ -9,7 +9,7 @@ interface UseAdmin {
 }
 
 const useAdmin = (): UseAdmin => {
-  const { getAsync, postAsync } = useFetch()
+  const { getAsync } = useFetch()
 
   const getOrganizationsAsync = useCallback(async (abort: AbortController) => {
     const result = await getAsync<Organization[]>('/admin/organizations', { abort })
