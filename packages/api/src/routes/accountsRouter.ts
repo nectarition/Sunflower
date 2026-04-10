@@ -2,7 +2,6 @@ import crypto from 'crypto'
 import { Hono } from 'hono'
 import jwtHelper from '../helpers/jwtHelper'
 import APIError from '../libs/APIError'
-import tokenService from '../services/tokenService'
 import type { Bindings, Variables } from '../@types'
 
 const accountsRouter = new Hono<{ Bindings: Bindings, Variables: Variables }>()
@@ -24,12 +23,7 @@ accountsRouter.post('/accounts/login', async (c) => {
 
   const apiToken = await jwtHelper.signAPITokenAsync(c, { id: user.id })
 
-  const passwordResetToken = user.requirePasswordChange
-    ? await tokenService.createTokenAsync(c, user.id, 'PasswordReset')
-    : null
-
   return c.json({
-    passwordResetToken,
     token: apiToken,
     user: {
       name: user.name,
@@ -139,7 +133,7 @@ accountsRouter.post('/accounts/oidc-callback', async (c) => {
 
   if (!user) {
     user = await prisma.user.create({
-      data: { email, name: payload.name || email.split('@')[0], password: '', oidcSub }
+      data: { email, name: payload.name || email.split('@')[0], oidcSub }
     })
   } else if (user.email === email && user.oidcSub !== oidcSub) {
     user = await prisma.user.update({

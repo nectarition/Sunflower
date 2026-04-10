@@ -13,7 +13,6 @@ export type AuthenticateResult = {
 
 export type LoginResult = {
   token: string
-  passwordResetToken: string | null
   user: LoggedInUser
 }
 

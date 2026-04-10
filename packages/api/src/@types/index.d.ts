@@ -5,7 +5,6 @@ type Bindings = {
   DB: D1Database
   JWT_LOGIN_TOKEN_SECRET: string
   JWT_API_TOKEN_SECRET: string
-  JWT_PASSWORD_RESET_TOKEN_SECRET: string
   JWT_STATE_TOKEN_SECRET: string
   USER_APP_URL: string
   OIDC_CLIENT_ID: string
