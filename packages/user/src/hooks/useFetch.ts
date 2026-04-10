@@ -44,6 +44,7 @@ const useFetch = (): UseFetch => {
             setAPIToken(result.token)
             setUser(result.user)
             await axios(err.config as AxiosRequestConfig)
+            isRetry = false
           })
           .catch(err => { throw err })
       }

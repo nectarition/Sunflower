@@ -1,51 +1,13 @@
 import styled from '@emotion/styled'
-import { SignInIcon } from '@phosphor-icons/react'
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
 import FormButton from '../../components/Form/FormButton'
-import FormInput from '../../components/Form/FormInput'
 import FormItem from '../../components/Form/FormItem'
-import FormLabel from '../../components/Form/FormLabel'
 import FormSection from '../../components/Form/FormSection'
-import IconLabel from '../../components/parts/IconLabel'
-import Panel from '../../components/parts/Panel'
-import useAccount from '../../hooks/useAccount'
 import useNectaritionID from '../../hooks/useNectaritionID'
 import DefaultLayout from '../../layouts/DefaultLayout/DefaultLayout'
-import type { RedirectAfterLogin } from '../../libs/RequiredLogin'
 
 const LoginPage: React.FC = () => {
-  const { authenticateAsync } = useAccount()
   const { getAuthorizeURLAsync } = useNectaritionID()
-
-  const [email, setEmail] = useState<string>()
-  const [password, setPassword] = useState<string>()
-  
-  const [isProgress, setProgress] = useState(false)
-  const [error, setError] = useState<string>()
-  const [redirectAfterLogin, setRedirectAfterLogin] = useState<RedirectAfterLogin>()
-
-  const handleLogin = useCallback(() => {
-    if (!email || !password) return
-    const abort = new AbortController()
-    setProgress(true)
-    authenticateAsync(email, password, abort)
-      .then((res) => {
-        if (res.passwordResetToken) {
-          setRedirectAfterLogin({
-            pathname: '/reset-password',
-            state: { passwordResetToken: res.passwordResetToken }
-          })
-        } else {
-          setRedirectAfterLogin({
-            pathname: '/'
-          })
-        }
-      })
-      .catch(err => {
-        setError(err.message)
-        setProgress(false)
-      })
-  }, [email, password])
 
   const handleLoginWithNectaritionID = useCallback(() => {
     getAuthorizeURLAsync(new AbortController())
@@ -57,7 +19,6 @@ const LoginPage: React.FC = () => {
   return (
     <DefaultLayout
       allowAnonymous={true}
-      redirectAfterLogin={redirectAfterLogin}
       title="ログイン">
       <HeroContainer>
         <HeroTitle>🌻Soleil <small>ねくたりしょんソレイユ</small></HeroTitle>
@@ -76,48 +37,6 @@ const LoginPage: React.FC = () => {
           </FormButton>
         </FormItem>
       </FormSection>
-
-      <h3>ID/パスワード ログイン</h3>
-
-      <p>
-        ID/パスワード認証は 2026/2/28 に廃止予定です。<br />
-        ねくたりしょん ID でのログインをお使いください。
-      </p>
-
-      <FormSection>
-        <FormItem>
-          <FormLabel>メールアドレス</FormLabel>
-          <FormInput
-            onChange={e => setEmail(e.target.value)}
-            type="email"
-            value={email} />
-        </FormItem>
-        <FormItem>
-          <FormLabel>パスワード</FormLabel>
-          <FormInput
-            onChange={e => setPassword(e.target.value)}
-            type="password"
-            value={password} />
-        </FormItem>
-      </FormSection>
-      <FormSection>
-        <FormItem>
-          <FormButton
-            $inlined
-            disabled={!email || !password || isProgress}
-            onClick={handleLogin}>
-            <IconLabel
-              icon={<SignInIcon />}
-              label="ログイン" />
-          </FormButton>
-        </FormItem>
-      </FormSection>
-
-      {error &&
-        <Panel
-          subTitle={error}
-          title="ログインに失敗しました" />
-      }
     </DefaultLayout>
   )
 }
