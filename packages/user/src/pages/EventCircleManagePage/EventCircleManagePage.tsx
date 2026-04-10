@@ -73,7 +73,7 @@ const EventCircleManagePage: React.FC = () => {
     const abort = new AbortController()
     createCirclesAsync(code, circles, abort)
       .then(() => alert('反映しました'))
-  }, [circles, code])
+  }, [circles, code, createCirclesAsync])
 
   useEffect(() => {
     if (!code) return

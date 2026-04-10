@@ -18,7 +18,7 @@ const signAPITokenAsync = async (c: APIContext, user: LoggedInUser) => {
     throw new Error('JWT secret not configured')
   }
 
-  return await signCoreAsync(secret, user.id, 60)
+  return await signCoreAsync(secret, user.id, 30)
 }
 
 const signCoreAsync = async (secret: string, userId: number, expiredMinutes: number) => {

@@ -27,26 +27,36 @@ const useFetch = (): UseFetch => {
     withCredentials: true
   })
 
-  let isRetry = false
+  let retryPromise: Promise<LoginResult> | null = null
   axios.interceptors.response.use(
     res => res,
-    err => {
+    async err => {
       if (err.code === 'ERR_CANCELED' || err.code === 'ERR_NETWORK' || (!apiToken && err.response.status)) {
         throw err
-      } else if (apiToken && err.response.status === 401 && !isRetry) {
-        isRetry = true
-        const loginAsync = async (): Promise<LoginResult> => {
-          const result = await axios.post<LoginResult>('/accounts/login', { token: loginToken })
-          return result.data
+      } else if (apiToken && err.response.status === 401) {
+        if (!retryPromise) {
+          const loginAsync = async (): Promise<LoginResult> => {
+            const result = await axios.post<LoginResult>('/accounts/login', { token: loginToken })
+            return result.data
+          }
+          retryPromise = loginAsync()
         }
-        loginAsync()
-          .then(async (result) => {
+        return retryPromise
+          .then((result) => {
             setAPIToken(result.token)
             setUser(result.user)
-            await axios(err.config as AxiosRequestConfig)
-            isRetry = false
+            return axios({
+              ...err.config,
+              headers: {
+                ...err.config?.headers,
+                Authorization: `Bearer ${result.token}`
+              }
+            } as AxiosRequestConfig)
           })
           .catch(err => { throw err })
+          .finally(() => {
+            retryPromise = null
+          })
       }
       throw err
     })
