@@ -42,7 +42,8 @@ const OIDCCallbackPage: React.FC = () => {
   return (
     <RequiredLogin
       allowAnonymous={true}
-      redirectAfterLogin={redirectAfterLogin}>
+      redirectAfterLogin={redirectAfterLogin}
+      requiredAdmin={false}>
       {requestError
         ? <>
           エラーが発生しました: {requestError}<br />

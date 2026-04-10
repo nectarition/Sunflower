@@ -16,13 +16,11 @@ import type { SoleilEvent,  SoleilCircle } from 'soleil'
 const EventCircleManagePage: React.FC = () => {
   const { code } = useParams()
   const { getEventByCodeAsync } = useEvent()
-
-  const [event, setEvent] = useState<SoleilEvent>()
-
-  const [file, setFile] = useState<File>()
-  const { openAsText, data } = useFile()
   const { createCirclesAsync, convertCodeDataByCircleCode } = useCircle()
 
+  const [event, setEvent] = useState<SoleilEvent>()
+  const [file, setFile] = useState<File>()
+  const { openAsText, data } = useFile()
   const [circles, setCircles] = useState<Record<string, SoleilCircle>>()
   const [error, setError] = useState<string>()
   const [invalidRows, setInvalidRows] = useState<number[]>()

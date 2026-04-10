@@ -101,7 +101,7 @@ const EventCircleRollCallPage: React.FC = () => {
         }
       }
     )
-  }, [eventCode, updateCircleStatusByCodeAsync, convertCodeDataByCircleCode, circles])
+  }, [eventCode, getCircleByCodeAsync, updateCircleStatusByCodeAsync, convertCodeDataByCircleCode, circles])
 
   const handleSubmit = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
