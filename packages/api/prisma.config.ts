@@ -1,7 +1,10 @@
-import path from 'node:path'
-import type { PrismaConfig } from 'prisma'
+import 'dotenv/config'
+import { listLocalDatabases } from '@prisma/adapter-d1'
+import { defineConfig } from 'prisma/config'
 
-export default {
-  // earlyAccess: true,
-  schema: path.join('prisma', 'schema.prisma')
-} satisfies PrismaConfig
+export default defineConfig({
+  schema: 'prisma/schema.prisma',
+  datasource: {
+    url: `file:${listLocalDatabases()[0]}`
+  }
+})

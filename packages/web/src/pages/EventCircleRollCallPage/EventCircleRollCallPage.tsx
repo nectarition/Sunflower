@@ -81,7 +81,6 @@ const EventCircleRollCallPage: React.FC = () => {
     if (!circles[code]) {
       getCircleByCodeAsync(code, abort)
         .then(circle => setCircles(s => ({ ...s, [code]: circle })))
-        .catch(err => { throw err })
     }
 
     await toast.promise(
@@ -90,10 +89,10 @@ const EventCircleRollCallPage: React.FC = () => {
         loading: '出席登録中…',
         success: () => {
           setProcessResults(s => ({ ...s, [guid]: 1 }))
+          setCode('')
           return '出席登録が完了しました。'
         },
         error: (err) => {
-          console.error(err)
           setProcessResults(s => ({ ...s, [guid]: 2 }))
           if (err.message === 'circle not found') {
             return 'この封筒コードは登録されていません。'
@@ -102,8 +101,7 @@ const EventCircleRollCallPage: React.FC = () => {
         }
       }
     )
-    setCode('')
-  }, [eventCode])
+  }, [eventCode, getCircleByCodeAsync, updateCircleStatusByCodeAsync, convertCodeDataByCircleCode, circles])
 
   const handleSubmit = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
@@ -124,7 +122,7 @@ const EventCircleRollCallPage: React.FC = () => {
   const handleOnData = useCallback((data: string) => {
     submitCodeAsync(data)
       .then(() => playOKSE())
-  }, [playOKSE])
+  }, [submitCodeAsync, playOKSE])
 
   const getCircle = useCallback((code: string) => {
     const circle = circles[code]

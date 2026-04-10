@@ -76,7 +76,7 @@ const EventCircleAttendanceRecordPage: React.FC = () => {
         }))
       })
       .catch(err => { throw err })
-  }, [circles, forceAttendanceCheck])
+  }, [circles, forceAttendanceCheck, updateCircleStatusByCodeAsync])
 
   const handleRefresh = useCallback(() => {
     if (!code) return

@@ -24,12 +24,8 @@ const OIDCCallbackPage: React.FC = () => {
     if (!code || !state) return
     const abort = new AbortController()
     processCallbackAsync(code, state, abort)
-      .then(res => {
-        if (res.passwordResetToken) {
-          setRedirectAfterLogin({ pathname: '/password-reset', state: { token: res.passwordResetToken } })
-        } else {
-          setRedirectAfterLogin({ pathname: '/' })
-        }
+      .then(() => {
+        setRedirectAfterLogin({ pathname: '/' })
       })
       .catch(err => {
         if (err.code === 'ERR_CANCELED') return
@@ -42,7 +38,8 @@ const OIDCCallbackPage: React.FC = () => {
   return (
     <RequiredLogin
       allowAnonymous={true}
-      redirectAfterLogin={redirectAfterLogin}>
+      redirectAfterLogin={redirectAfterLogin}
+      requiredAdmin={false}>
       {requestError
         ? <>
           エラーが発生しました: {requestError}<br />

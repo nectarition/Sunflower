@@ -1,68 +1,10 @@
 import crypto from 'crypto'
-import bcrypt from 'bcryptjs'
 import { Hono } from 'hono'
-import { validator } from 'hono/validator'
 import jwtHelper from '../helpers/jwtHelper'
 import APIError from '../libs/APIError'
-import { createAccountSchema } from '../schemas/accounts'
-import tokenService from '../services/tokenService'
 import type { Bindings, Variables } from '../@types'
 
 const accountsRouter = new Hono<{ Bindings: Bindings, Variables: Variables }>()
-
-accountsRouter.post(
-  '/accounts',
-  validator(
-    'json',
-    (value) => {
-      const schema = createAccountSchema.safeParse(value)
-      if (!schema.success) {
-        throw new APIError('invalid-operation', 'invalid-input', 'Invalid input')
-      } 
-      return schema.data
-    }),
-  async (c) => {
-    const { email, name, password } = await c.req.json()
-    const prisma = c.get('prisma')
-
-    const passwordHash = await bcrypt.hash(password, 10)
-
-    const existingUser = await prisma.user.findUnique({
-      where: { email }
-    })
-    if (existingUser) {
-      throw new APIError('invalid-operation', 'user-exists', 'User already exists')
-    }
-
-    await prisma.user.create({
-      data: { email, name, password: passwordHash }
-    })
-
-    return c.json({ success: true })
-  })
-
-accountsRouter.post('/accounts/authenticate', async (c) => {
-  const { email, password } = await c.req.json()
-  const prisma = c.get('prisma')
-
-  const user = await prisma.user.findUnique({
-    where: { email }
-  })
-  if (!user) {
-    throw new APIError('invalid-operation', 'invalid-user', 'Invalid user')
-  }
-
-  const isPasswordValid = await bcrypt.compare(password, user.password)
-  if (!isPasswordValid) {
-    throw new APIError('invalid-operation', 'invalid-user', 'Invalid user')
-  }
-
-  const token = await jwtHelper.signLoginTokenAsync(c, { id: user.id })
-
-  return c.json({
-    token
-  })
-})
 
 accountsRouter.post('/accounts/login', async (c) => {
   const { token } = await c.req.json()
@@ -81,12 +23,7 @@ accountsRouter.post('/accounts/login', async (c) => {
 
   const apiToken = await jwtHelper.signAPITokenAsync(c, { id: user.id })
 
-  const passwordResetToken = user.requirePasswordChange
-    ? await tokenService.createTokenAsync(c, user.id, 'PasswordReset')
-    : null
-
   return c.json({
-    passwordResetToken,
     token: apiToken,
     user: {
       name: user.name,
@@ -196,7 +133,7 @@ accountsRouter.post('/accounts/oidc-callback', async (c) => {
 
   if (!user) {
     user = await prisma.user.create({
-      data: { email, name: payload.name || email.split('@')[0], password: '', oidcSub }
+      data: { email, name: payload.name || email.split('@')[0], oidcSub }
     })
   } else if (user.email === email && user.oidcSub !== oidcSub) {
     user = await prisma.user.update({
@@ -210,70 +147,6 @@ accountsRouter.post('/accounts/oidc-callback', async (c) => {
   return c.json({
     token: loginToken
   })
-})
-
-accountsRouter.post('/accounts/reset-password', async (c) => {
-  const { token, password } = await c.req.json()
-  const prisma = c.get('prisma')
-  const mailToken = await prisma.mailToken.findUnique({
-    where: { token }
-  })
-  if (!mailToken || mailToken.type !== 'PasswordReset') {
-    throw new APIError('invalid-operation', 'invalid-token', 'Invalid token')
-  }
-
-  const user = await prisma.user.findUnique({
-    where: { id: mailToken.userId }
-  })
-  if (!user) {
-    throw new Error('User not found')
-  }
-
-  const passwordHash = await bcrypt.hash(password, 10)
-
-  await prisma.user.update({
-    where: { id: user.id },
-    data: {
-      password: passwordHash,
-      requirePasswordChange: false
-    }
-  })
-
-  await prisma.mailToken.delete({
-    where: { id: mailToken.id }
-  })
-
-  return c.json({ success: true })
-})
-
-accountsRouter.post('/accounts/verify-email', async (c) => {
-  const { token } = await c.req.json()
-
-  const prisma = c.get('prisma')
-  const mailToken = await prisma.mailToken.findUnique({
-    where: { token }
-  })
-  if (!mailToken || mailToken.type !== 'EmailVerify') {
-    throw new APIError('invalid-operation', 'invalid-token', 'Invalid token')
-  }
-
-  const user = await prisma.user.findUnique({
-    where: { id: mailToken.userId }
-  })
-  if (!user) {
-    throw new Error('User not found')
-  }
-
-  await prisma.user.update({
-    where: { id: user.id },
-    data: { emailVerified: true }
-  })
-
-  await prisma.mailToken.delete({
-    where: { id: mailToken.id }
-  })
-
-  return c.json({ success: true })
 })
 
 export default accountsRouter
