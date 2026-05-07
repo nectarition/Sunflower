@@ -82,11 +82,11 @@ eventsRouter.post('/events/:code/circles', requiredLogin, async (c) => {
       spaceNumber: circle.spaceNumber
     }))
 
-  createData.forEach(async c => {
+  for (const data of createData) {
     await prisma.circle.create({
-      data: c
+      data
     })
-  })
+  }
 
   return c.json({ success: true })
 })
