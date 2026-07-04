@@ -82,10 +82,12 @@ eventsRouter.post('/events/:code/circles', requiredLogin, async (c) => {
       spaceNumber: circle.spaceNumber
     }))
 
-  await prisma.circle.createMany({
-    data: createData
-  })
-  
+  for (const data of createData) {
+    await prisma.circle.create({
+      data
+    })
+  }
+
   return c.json({ success: true })
 })
 
@@ -101,15 +103,17 @@ eventsRouter.get('/events/:code/circles', requiredLogin, async (c) => {
   const circles = await prisma.circle.findMany({
     where: { eventId: event.id }
   })
-  const mappedCircles: Record<string, SoleilCircleAppModel> = circles.reduce((acc, circle) => ({
-    ...acc,
-    [circle.code]: {
-      spaceNumber: circle.spaceNumber,
-      name: circle.name,
-      status: circle.status === 'Attend' ? 1 : circle.status === 'Absent' ? 2 : 0,
-      updatedAt: circle.updatedAt?.getTime() || null
-    }
-  }), {})
+  const mappedCircles: Record<string, SoleilCircleAppModel> = circles
+    .sort((a, b) => a.code.localeCompare(b.code))
+    .reduce((acc, circle) => ({
+      ...acc,
+      [circle.code]: {
+        spaceNumber: circle.spaceNumber,
+        name: circle.name,
+        status: circle.status === 'Attend' ? 1 : circle.status === 'Absent' ? 2 : 0,
+        updatedAt: circle.updatedAt?.getTime() || null
+      }
+    }), {})
   return c.json(mappedCircles)
 })
 

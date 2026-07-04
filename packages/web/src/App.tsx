@@ -3,6 +3,7 @@ import { HelmetProvider } from 'react-helmet-async'
 import AdminEventListPage from './pages/AdminEventListPage/AdminEventListPage'
 import AdminOrganizationListPage from './pages/AdminOrganizationListPage/AdminOrganizationListPage'
 import AdminUserListPage from './pages/AdminUserListPage/AdminUserListPage'
+import CircleAttendanceExportPage from './pages/CircleAttendanceExportPage/CircleAttendanceExportPage'
 import EventCircleAttendanceRecordPage from './pages/EventCircleAttendanceRecordPage/EventCircleAttendanceRecordPage'
 import EventCircleManagePage from './pages/EventCircleManagePage/EventCircleManagePage'
 import EventCircleRollCallPage from './pages/EventCircleRollCallPage/EventCircleRollCallPage'
@@ -54,6 +55,10 @@ const router = createBrowserRouter([
               {
                 path: 'manage',
                 element: <EventCircleManagePage />
+              },
+              {
+                path: 'export',
+                element: <CircleAttendanceExportPage />
               }
             ]
           }
