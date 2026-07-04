@@ -1,4 +1,4 @@
-import { GearIcon, ListIcon, PencilIcon } from '@phosphor-icons/react'
+import { DownloadSimpleIcon, GearIcon, ListIcon, PencilIcon } from '@phosphor-icons/react'
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import FormItem from '../../components/Form/FormItem'
@@ -66,6 +66,13 @@ const EventViewPage: React.FC = () => {
             <IconLabel
               icon={<GearIcon />}
               label="封筒データ設定" />
+          </LinkButton>
+          <LinkButton
+            $inlined
+            to={`/events/${code}/export`}>
+            <IconLabel
+              icon={<DownloadSimpleIcon />}
+              label="出欠情報のエクスポート" />
           </LinkButton>
         </FormItem>
       </FormSection>
