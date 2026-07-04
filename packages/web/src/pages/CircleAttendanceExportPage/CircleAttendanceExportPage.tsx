@@ -19,6 +19,7 @@ const CircleAttendanceExportPage: React.FC = () => {
   const attendancesTSV = useMemo(() => {
     if (!circles) return ''
     const tsv = Object.values(circles)
+      .filter(c => c.status !== 0)
       .map(c => `${c.spaceNumber}\t${c.status === 1 ? 1 : 0}\t${c.updatedAt}`)
       .join('\n')
     return tsv
@@ -44,6 +45,10 @@ const CircleAttendanceExportPage: React.FC = () => {
       </Breadcrumbs>
 
       <h1>出欠情報のエクスポート</h1>
+
+      <p>
+        出欠情報が未登録のサークルは出力されません。
+      </p>
 
       <FormTextarea
         readOnly
