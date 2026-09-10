@@ -34,6 +34,7 @@ const EventCircleManagePage: React.FC = () => {
     const rowData = tsv.split('\n')
       .filter(row => row)
       .map(row => row.split('\t'))
+      .filter(row => row[0] !== '配置番号')
 
     const invalidColumns = rowData
       .map((data, i) => ({ dataCount: data.length, rowNumber: i + 1 }))
