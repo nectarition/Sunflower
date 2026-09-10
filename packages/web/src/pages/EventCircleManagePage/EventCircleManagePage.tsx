@@ -37,7 +37,7 @@ const EventCircleManagePage: React.FC = () => {
 
     const invalidColumns = rowData
       .map((data, i) => ({ dataCount: data.length, rowNumber: i + 1 }))
-      .filter(row => row.dataCount !== 3)
+      .filter(row => row.dataCount < 3)
       .map(row => row.rowNumber)
     if (invalidColumns.length > 0) {
       setError('データの形式は「封筒コード\tスペース\tサークル名」である必要があります。')
