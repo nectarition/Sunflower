@@ -1,6 +1,6 @@
-import { useMemo } from 'react'
 import styled from '@emotion/styled'
 import { CheckIcon, HourglassIcon, WarningIcon } from '@phosphor-icons/react'
+import { useMemo } from 'react'
 import IconLabel from './IconLabel'
 import type { RollCallProcessStatus } from '../../../../@types/src'
 
@@ -60,8 +60,8 @@ const Container = styled.span`
 
   &.error {
     border: 1px solid #dc3545;
-    color: #dc3545;
-    background-color: #fbe2e4;
+    color: #fff;
+    background-color: #dc3545;
   }
 
   &.pending {
