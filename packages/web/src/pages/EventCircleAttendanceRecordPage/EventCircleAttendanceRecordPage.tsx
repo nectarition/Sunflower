@@ -31,6 +31,10 @@ const EventCircleAttendanceRecordPage: React.FC = () => {
       .reduce((acc, [code, circle]) => ({ ...acc, [code]: circle }), {} as Record<string, SoleilCircleAppModel>)
   }, [circles, isShowUnregistered])
 
+  const totalCircles = useMemo(() => Object.keys(circles ?? {}).length, [circles])
+  const attendedCircles = useMemo(() => Object.values(circles ?? {}).filter(c => c.status !== 0).length, [circles])
+  const absentCircles = useMemo(() => Object.values(circles ?? {}).filter(c => c.status === 2).length, [circles])
+
   const convertStatusText = useCallback((status: SoleilCircleStatus | undefined) => {
     return status === 1
       ? '出席済み'
@@ -134,6 +138,11 @@ const EventCircleAttendanceRecordPage: React.FC = () => {
             onChange={checked => setIsShowUnregistered(checked)} />
         </FormItem>
       </FormSection>
+
+      <ul>
+        <li>提出済: {attendedCircles} / {totalCircles} サークル ({totalCircles > 0 ? ((attendedCircles / totalCircles) * 100).toFixed(2) : '0.00'}%)</li>
+        <li>未提出: {totalCircles - attendedCircles - absentCircles} / {totalCircles} サークル</li>
+      </ul>
 
       <table>
         <thead>
