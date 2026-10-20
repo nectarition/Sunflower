@@ -16,7 +16,9 @@ import AuthenticationProvider from './providers/AuthenticationProvider'
 
 const Root: React.FC = () => (
   <>
-    <Outlet />
+    <AuthenticationProvider>
+      <Outlet />
+    </AuthenticationProvider>
     <ScrollRestoration />
   </>
 )
@@ -111,9 +113,7 @@ const router = createBrowserRouter([
 const App: React.FC = () => {
   return (
     <HelmetProvider>
-      <AuthenticationProvider>
-        <RouterProvider router={router} />
-      </AuthenticationProvider>
+      <RouterProvider router={router} />
     </HelmetProvider>
   )
 }
