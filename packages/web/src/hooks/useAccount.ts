@@ -7,24 +7,20 @@ import type { LoggedInUser, LoginResult } from 'soleil'
 
 interface UseAccount {
   user: LoggedInUser | null | undefined
-  loginAsync: (loginToken: string, abort: AbortController) => Promise<LoginResult>
+  loginAsync: (abort: AbortController) => Promise<LoginResult>
   loginDirectlyAsync: (abort: AbortController) => Promise<LoginResult>
-  logoutAsync: () => Promise<void>
+  logoutAsync: (abort: AbortController) => Promise<void>
 }
 const useAccount = (): UseAccount => {
-  const {
-    loginToken,
-    setLoginToken,
-    setAPIToken
-  } = useToken()
+  const { setAPIToken } = useToken()
   const { postAsync } = useFetch()
 
   const [user, setUser] = useAtom(userAtom)
 
-  const loginAsync = useCallback(async (token: string, abort: AbortController) => {
+  const loginAsync = useCallback(async (abort: AbortController) => {
     const result = await postAsync<LoginResult>(
       '/accounts/login',
-      { token },
+      {},
       { abort })
       .then(res => {
         return res
@@ -45,25 +41,17 @@ const useAccount = (): UseAccount => {
   }, [postAsync])
 
   const loginDirectlyAsync = useCallback(async (abort: AbortController) => {
-    if (loginToken === undefined) {
-      throw new Error('Login token is undefined')
-    }
-    if (!loginToken) {
-      setUser(null)
-      throw new Error('No login token available')
-    }
-
-    const result = await loginAsync(loginToken, abort)
+    const result = await loginAsync(abort)
       .catch(err => { throw err })
 
     return result
-  }, [loginToken, loginAsync])
+  }, [loginAsync])
 
-  const logoutAsync = useCallback(async () => {
-    setLoginToken(null)
+  const logoutAsync = useCallback(async (abort: AbortController) => {
+    await postAsync('/accounts/logout', {}, { abort })
     setAPIToken(null)
     setUser(null)
-  }, [])
+  }, [postAsync])
 
   return {
     user,

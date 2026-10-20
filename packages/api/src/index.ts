@@ -8,9 +8,9 @@ import accountsRouter from './routes/accountsRouter'
 import adminRouter from './routes/adminRouter'
 import circlesRouter from './routes/circlesRouter'
 import eventsRouter from './routes/eventsRouter'
-import type { APIContext, Bindings, Variables } from './@types'
+import type { APIContext, APIEnv } from './@types'
 
-const app = new Hono<{ Bindings: Bindings, Variables: Variables }>()
+const app = new Hono<APIEnv>()
 app.onError(errorHandler)
 
 const getAllowedOrigins = (c: APIContext): string[] => {
@@ -33,6 +33,7 @@ app.use('*', (c, next) => {
     maxAge: 600
   })(c, next)
 })
+
 app.use('*', prisma)
 
 app.get('/', (c) => {

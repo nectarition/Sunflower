@@ -14,11 +14,7 @@ interface UseFetch {
 }
 const useFetch = (): UseFetch => {
   const [isConnected, setConnected] = useState<boolean>()
-  const {
-    loginToken,
-    apiToken,
-    setAPIToken
-  } = useToken()
+  const { apiToken, setAPIToken } = useToken()
 
   const setUser = useSetAtom(userAtom)
 
@@ -36,7 +32,7 @@ const useFetch = (): UseFetch => {
       } else if (apiToken && err.response.status === 401) {
         if (!retryPromise) {
           const loginAsync = async (): Promise<LoginResult> => {
-            const result = await axios.post<LoginResult>('/accounts/login', { token: loginToken })
+            const result = await axios.post<LoginResult>('/accounts/login')
             return result.data
           }
           retryPromise = loginAsync()

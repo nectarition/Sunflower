@@ -1,24 +1,14 @@
 import { Context } from 'hono'
 import type { PrismaClient } from '../generated/prisma'
-
-type Bindings = {
-  DB: D1Database
-  JWT_LOGIN_TOKEN_SECRET: string
-  JWT_API_TOKEN_SECRET: string
-  JWT_STATE_TOKEN_SECRET: string
-  USER_APP_URL: string
-  OIDC_CLIENT_ID: string
-  OIDC_CLIENT_SECRET: string
-  OIDC_CALLBACK_URI: string
-  ALLOWED_ORIGINS: string
-}
+import '../../worker-configuration'
 
 type Variables = {
   prisma: PrismaClient
   user: LoggedInUser
 }
 
-export type APIContext = Context<{ Bindings: Bindings, Variables: Variables }>
+export type APIEnv = { Bindings: Env, Variables: Variables }
+export type APIContext = Context<APIEnv>
 
 export type ErrorType = 'not-found'
   | 'invalid-operation'

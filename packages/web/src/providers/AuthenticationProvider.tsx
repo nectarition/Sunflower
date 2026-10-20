@@ -1,21 +1,19 @@
 import { useEffect } from 'react'
 import useAccount from '../hooks/useAccount'
-import useToken from '../hooks/useToken'
 
 interface Props {
   children: React.ReactNode
 }
 const AuthenticationProvider: React.FC<Props> = (props) => {
   const { user, loginDirectlyAsync } = useAccount()
-  const { isReady } = useToken()
 
   useEffect(() => {
-    if (user !== undefined || !isReady) return
+    if (user !== undefined ) return
     const abort = new AbortController()
     loginDirectlyAsync(abort)
       .catch((err) => { throw err })
     return () => abort.abort()
-  }, [isReady, user, loginDirectlyAsync])
+  }, [user, loginDirectlyAsync])
   
   return (
     <>

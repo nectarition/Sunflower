@@ -1,15 +1,40 @@
 import crypto from 'crypto'
 import { Hono } from 'hono'
+import { deleteCookie, getCookie, setCookie } from 'hono/cookie'
 import jwtHelper from '../helpers/jwtHelper'
 import APIError from '../libs/APIError'
-import type { Bindings, Variables } from '../@types'
+import type { APIContext, APIEnv } from '../@types'
 
-const accountsRouter = new Hono<{ Bindings: Bindings, Variables: Variables }>()
+const accountsRouter = new Hono<APIEnv>()
+
+const LOGIN_TOKEN_COOKIE_NAME = 'nct_soleil_login_token'
+const LOGIN_TOKEN_COOKIE_MAX_AGE = 60 * 60 * 24 * 3 // 3 days
+
+const loginTokenCookieOptions = {
+  httpOnly: true,
+  secure: true,
+  sameSite: 'None' as const,
+  path: '/accounts',
+  maxAge: LOGIN_TOKEN_COOKIE_MAX_AGE
+}
+
+const setLoginTokenCookie = (c: APIContext, token: string) => {
+  setCookie(c, LOGIN_TOKEN_COOKIE_NAME, token, loginTokenCookieOptions)
+}
+
+const clearLoginTokenCookie = (c: APIContext) => {
+  deleteCookie(c, LOGIN_TOKEN_COOKIE_NAME, loginTokenCookieOptions)
+}
 
 accountsRouter.post('/accounts/login', async (c) => {
-  const { token } = await c.req.json()
+  const loginToken = getCookie(c, LOGIN_TOKEN_COOKIE_NAME)
+  if (!loginToken) {
+    clearLoginTokenCookie(c)
+    throw new APIError('invalid-argument', 'login-token-not-found', 'Login token not found')
+  }
+
   const prisma = c.get('prisma')
-  const payload = await jwtHelper.verifyLoginTokenAsync(c, token)
+  const payload = await jwtHelper.verifyLoginTokenAsync(c, loginToken)
   if (!payload) {
     throw new APIError('invalid-operation', 'invalid-token', 'Invalid token')
   }
@@ -30,6 +55,11 @@ accountsRouter.post('/accounts/login', async (c) => {
       isAdmin: user.isAdmin
     }
   })
+})
+
+accountsRouter.post('/accounts/logout', async (c) => {
+  clearLoginTokenCookie(c)
+  return c.json({ success: true })
 })
 
 accountsRouter.get('/accounts/authorize-url', async (c) => {
@@ -144,9 +174,9 @@ accountsRouter.post('/accounts/oidc-callback', async (c) => {
 
   const loginToken = await jwtHelper.signLoginTokenAsync(c, { id: user.id })
 
-  return c.json({
-    token: loginToken
-  })
+  setLoginTokenCookie(c, loginToken)
+
+  return c.json({ success: true })
 })
 
 export default accountsRouter

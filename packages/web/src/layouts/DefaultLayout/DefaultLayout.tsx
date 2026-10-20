@@ -23,7 +23,7 @@ const DefaultLayout: React.FC<Props> = (props) => {
   const [showMenu, setIsShowMenu] = useState(false)
 
   const handleLogout = useCallback(() => {
-    logoutAsync()
+    logoutAsync(new AbortController())
       .catch((err) => {
         console.error('ログアウトに失敗しました:', err)
       })
