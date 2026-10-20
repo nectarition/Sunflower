@@ -18,13 +18,8 @@ const useAccount = (): UseAccount => {
   const [user, setUser] = useAtom(userAtom)
 
   const loginAsync = useCallback(async (abort: AbortController) => {
-    const result = await postAsync<LoginResult>(
-      '/accounts/login',
-      {},
-      { abort })
-      .then(res => {
-        return res
-      })
+    const result = await postAsync<LoginResult>('/accounts/login', {}, { abort })
+      .then(res => { return res })
       .catch(err => {
         if (err.code === 'ERR_CANCELED') {
           throw err
@@ -34,7 +29,7 @@ const useAccount = (): UseAccount => {
         throw err
       })
 
-    setAPIToken(result.token)
+    setAPIToken(result.apiToken)
     setUser(result.user)
 
     return result

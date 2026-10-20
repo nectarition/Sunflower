@@ -39,13 +39,13 @@ const useFetch = (): UseFetch => {
         }
         return retryPromise
           .then((result) => {
-            setAPIToken(result.token)
+            setAPIToken(result.apiToken)
             setUser(result.user)
             return axios({
               ...err.config,
               headers: {
                 ...err.config?.headers,
-                Authorization: `Bearer ${result.token}`
+                Authorization: `Bearer ${result.apiToken}`
               }
             } as AxiosRequestConfig)
           })

@@ -49,13 +49,15 @@ accountsRouter.post('/accounts/login', async (c) => {
 
   const apiToken = await jwtHelper.signAPITokenAsync(c, { id: user.id })
 
-  return c.json({
-    token: apiToken,
+  const result: LoginResult = {
+    apiToken,
     user: {
       name: user.name,
       isAdmin: user.isAdmin
     }
-  })
+  }
+
+  return c.json(result)
 })
 
 accountsRouter.post('/accounts/logout', async (c) => {
