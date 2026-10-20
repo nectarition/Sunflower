@@ -1,6 +1,7 @@
 import crypto from 'crypto'
 import { Hono } from 'hono'
 import { deleteCookie, getCookie, setCookie } from 'hono/cookie'
+import { LoginResult } from 'soleil'
 import jwtHelper from '../helpers/jwtHelper'
 import APIError from '../libs/APIError'
 import type { APIContext, APIEnv } from '../@types'
@@ -173,10 +174,19 @@ accountsRouter.post('/accounts/oidc-callback', async (c) => {
   }
 
   const loginToken = await jwtHelper.signLoginTokenAsync(c, { id: user.id })
-
   setLoginTokenCookie(c, loginToken)
 
-  return c.json({ success: true })
+  const apiToken = await jwtHelper.signAPITokenAsync(c, { id: user.id })
+
+  const result: LoginResult = {
+    apiToken,
+    user: {
+      name: user.name,
+      isAdmin: user.isAdmin
+    }
+  }
+
+  return c.json(result)
 })
 
 export default accountsRouter

@@ -7,12 +7,8 @@ export type AuthorizeURLResult = {
   url: string
 }
 
-export type AuthenticateResult = {
-  token: string
-}
-
 export type LoginResult = {
-  token: string
+  apiToken: string
   user: LoggedInUser
 }
 
