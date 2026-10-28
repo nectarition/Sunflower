@@ -1,5 +1,6 @@
 import { createBrowserRouter, Outlet, RouterProvider, ScrollRestoration } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
+import WebKitBlurCanceller from './components/parts/WebKitBlurCanceller'
 import AdminEventListPage from './pages/AdminEventListPage/AdminEventListPage'
 import AdminOrganizationListPage from './pages/AdminOrganizationListPage/AdminOrganizationListPage'
 import AdminUserListPage from './pages/AdminUserListPage/AdminUserListPage'
@@ -112,9 +113,12 @@ const router = createBrowserRouter([
 
 const App: React.FC = () => {
   return (
-    <HelmetProvider>
-      <RouterProvider router={router} />
-    </HelmetProvider>
+    <>
+      <WebKitBlurCanceller />
+      <HelmetProvider>
+        <RouterProvider router={router} />
+      </HelmetProvider>
+    </>
   )
 }
 
