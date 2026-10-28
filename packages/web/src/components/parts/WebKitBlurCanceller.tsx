@@ -8,7 +8,7 @@ const WebKitBlurCanceller = styled.div`
   height: 11px;
   z-index: 2147483647;
   pointer-events: none;
-  background-color: #ffffff;
+  background-color: var(--body-background-color);
   -webkit-background-clip: text;
   background-clip: text;
 `
