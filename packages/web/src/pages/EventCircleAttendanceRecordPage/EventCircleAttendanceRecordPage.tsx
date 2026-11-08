@@ -33,7 +33,6 @@ const EventCircleAttendanceRecordPage: React.FC = () => {
 
   const totalCircles = useMemo(() => Object.keys(circles ?? {}).length, [circles])
   const attendedCircles = useMemo(() => Object.values(circles ?? {}).filter(c => c.status !== 0).length, [circles])
-  const absentCircles = useMemo(() => Object.values(circles ?? {}).filter(c => c.status === 2).length, [circles])
 
   const convertStatusText = useCallback((status: SoleilCircleStatus | undefined) => {
     return status === 1
@@ -141,7 +140,7 @@ const EventCircleAttendanceRecordPage: React.FC = () => {
 
       <ul>
         <li>提出済: {attendedCircles} / {totalCircles} サークル ({totalCircles > 0 ? ((attendedCircles / totalCircles) * 100).toFixed(2) : '0.00'}%)</li>
-        <li>未提出: {totalCircles - attendedCircles - absentCircles} / {totalCircles} サークル</li>
+        <li>未提出: {totalCircles - attendedCircles} / {totalCircles} サークル</li>
       </ul>
 
       <table>
