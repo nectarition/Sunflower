@@ -1,7 +1,6 @@
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
-import { ConfettiIcon, HouseIcon, SignInIcon, SignOutIcon, UserIcon, UsersIcon } from '@phosphor-icons/react'
-import { InfoIcon } from '@phosphor-icons/react/dist/ssr'
+import { ConfettiIcon, HouseIcon, SignInIcon, SignOutIcon, UserIcon, UsersIcon, InfoIcon } from '@phosphor-icons/react'
 import { Link } from 'react-router-dom'
 import type { LoggedInUser } from 'soleil'
 
